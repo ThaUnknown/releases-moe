@@ -1,0 +1,40 @@
+:root {
+  --navbar-brand-image-height: 3rem;
+
+  --dark-color-base-hue: 0;
+  --dark-color-base-saturation: 0%;
+  --dark-color-hsl: var(--dark-color-base-hue), var(--dark-color-base-saturation), 4%;
+  --dark-color-very-light-hsl: var(--dark-color-base-hue), var(--dark-color-base-saturation), 1%;
+
+  --blue-color-base-hue: 183;
+  --blue-color-base-saturation: 45%;
+  --blue-color-hsl: var(--blue-color-base-hue), var(--blue-color-base-saturation), 50%;
+  --blue-color-light-hsl: var(--blue-color-base-hue), var(--blue-color-base-saturation), 60%;
+  --blue-color-very-light-hsl: var(--blue-color-base-hue), var(--blue-color-base-saturation), 90;
+}
+
+[data-sonner-toaster][data-theme='dark'] {
+  --normal-bg: var(--dark-color) !important;
+  --normal-border: none !important;
+  --normal-text: var(--dm-base-text-color) !important;
+
+  /* --success-bg: var(--success-color) !important; */
+  --success-border: none !important;
+  /* --success-text: var(--lm-base-text-color) !important; */
+
+  /* --error-bg: hsl(358, 76%, 10%); */
+  --error-border: none !important;
+  /* --error-text: hsl(358, 100%, 81%); */
+}
+
+.pointer {
+  cursor: pointer
+}
+
+.editing {
+  cursor: text
+}
+
+.disabled {
+  cursor: not-allowed;
+}
