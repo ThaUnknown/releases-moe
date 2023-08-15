@@ -7,8 +7,8 @@ services:
     command: "/app/pb/pocketbase serve --http 0.0.0.0:8090 --publicDir ../sk/build"
     # command: tail -f /dev/null
     user: ${UID}:${GID}
-    expose:
-      - 8090
+    ports:
+      - 8090:8090
     working_dir: /app/pb
     environment:
       - HOME=/app/pb
