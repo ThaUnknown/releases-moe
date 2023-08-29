@@ -1,8 +1,8 @@
 migrate((db) => {
   const collection = new Collection({
     "id": "3fhw2mfr9zrgodj",
-    "created": "2022-12-23 22:30:35.443Z",
-    "updated": "2022-12-23 22:30:35.443Z",
+    "created": "2023-08-29 08:24:16.562Z",
+    "updated": "2023-08-29 08:24:16.562Z",
     "name": "hooks",
     "type": "base",
     "system": false,
@@ -76,8 +76,31 @@ migrate((db) => {
           "max": null,
           "pattern": ""
         }
+      },
+      {
+        "system": false,
+        "id": "balsaeka",
+        "name": "expands",
+        "type": "text",
+        "required": false,
+        "unique": false,
+        "options": {
+          "min": null,
+          "max": null,
+          "pattern": ""
+        }
+      },
+      {
+        "system": false,
+        "id": "emgxgcok",
+        "name": "disabled",
+        "type": "bool",
+        "required": false,
+        "unique": false,
+        "options": {}
       }
     ],
+    "indexes": [],
     "listRule": null,
     "viewRule": null,
     "createRule": null,
@@ -93,4 +116,3 @@ migrate((db) => {
 
   return dao.deleteCollection(collection);
 })
-

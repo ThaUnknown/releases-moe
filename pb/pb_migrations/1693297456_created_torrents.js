@@ -1,41 +1,58 @@
 migrate((db) => {
   const collection = new Collection({
-    "id": "3l2x9nxip35gqb5",
-    "created": "2023-07-17 15:51:56.223Z",
-    "updated": "2023-07-17 15:51:56.223Z",
+    "id": "oiwizhmushn5qqh",
+    "created": "2023-08-29 08:24:16.563Z",
+    "updated": "2023-08-29 08:24:16.563Z",
     "name": "torrents",
     "type": "base",
     "system": false,
     "schema": [
       {
         "system": false,
-        "id": "7aqgnstu",
+        "id": "lt2phbxp",
         "name": "infoHash",
         "type": "text",
         "required": true,
         "unique": false,
         "options": {
-          "min": 20,
-          "max": 20,
+          "min": 40,
+          "max": 40,
           "pattern": "[0-9a-f]+"
         }
       },
       {
         "system": false,
-        "id": "569bwutq",
-        "name": "name",
-        "type": "text",
+        "id": "jp5spaaa",
+        "name": "tracker",
+        "type": "select",
         "required": true,
         "unique": false,
         "options": {
-          "min": 2,
-          "max": null,
-          "pattern": ""
+          "maxSelect": 1,
+          "values": [
+            "Nyaa",
+            "AnimeBytes",
+            "AniDex",
+            "RuTracker",
+            "AnimeTosho"
+          ]
         }
       },
       {
         "system": false,
-        "id": "zl40bbcd",
+        "id": "hcahkpo7",
+        "name": "url",
+        "type": "url",
+        "required": true,
+        "unique": false,
+        "options": {
+          "exceptDomains": [],
+          "onlyDomains": []
+        }
+      },
+      {
+        "system": false,
+        "id": "scgskbr2",
         "name": "files",
         "type": "json",
         "required": true,
@@ -44,22 +61,29 @@ migrate((db) => {
       },
       {
         "system": false,
-        "id": "c3izxdlr",
-        "name": "field",
-        "type": "relation",
+        "id": "yllvndrm",
+        "name": "dualAudio",
+        "type": "bool",
+        "required": false,
+        "unique": false,
+        "options": {}
+      },
+      {
+        "system": false,
+        "id": "g2ikws7s",
+        "name": "releaseGroup",
+        "type": "text",
         "required": true,
         "unique": false,
         "options": {
-          "collectionId": "9prkra0sspoqcdg",
-          "cascadeDelete": false,
-          "minSelect": 1,
-          "maxSelect": null,
-          "displayFields": []
+          "min": 1,
+          "max": null,
+          "pattern": ""
         }
       }
     ],
     "indexes": [
-      "CREATE INDEX `idx_nrSbHzP` ON `torrents` (`field`)"
+      "CREATE UNIQUE INDEX `idx_K2zQ0nH` ON `torrents` (`infoHash`)"
     ],
     "listRule": "",
     "viewRule": "",
@@ -72,7 +96,7 @@ migrate((db) => {
   return Dao(db).saveCollection(collection);
 }, (db) => {
   const dao = new Dao(db);
-  const collection = dao.findCollectionByNameOrId("3l2x9nxip35gqb5");
+  const collection = dao.findCollectionByNameOrId("oiwizhmushn5qqh");
 
   return dao.deleteCollection(collection);
 })
