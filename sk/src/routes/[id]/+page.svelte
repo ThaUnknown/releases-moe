@@ -6,7 +6,7 @@
 
   const { entry, media } = data
 
-  const torrents = entry.expand?.torrents
+  const torrents = entry.expand?.trs
 </script>
 <MediaDetails {media} />
 {#if entry.incomplete}

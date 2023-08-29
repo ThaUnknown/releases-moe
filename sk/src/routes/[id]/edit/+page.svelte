@@ -31,7 +31,7 @@
   export let data: PageData
 
   const { entry, media } = data
-  let torrents = entry?.expand?.torrents || []
+  let torrents = entry?.expand?.trs || []
 
   async function processSingleTorrent (file: Blob) {
     const torrent = await parseTorrent(new Uint8Array(await file.arrayBuffer()))

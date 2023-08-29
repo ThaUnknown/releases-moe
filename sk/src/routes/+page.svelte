@@ -100,7 +100,7 @@
             <td class='py-10 px-20'>{media.seasonYear ?? 'N/A'}</td>
             <td class='py-10 px-20'>{media.episodes ?? 'N/A'}</td>
             <td class='py-10 px-20'>{best?.releaseGroup ?? ''}</td>
-            <td class='py-10 px-20'>{media.expand?.torrents?.find(({ id }) => id !== best?.id)?.releaseGroup ?? ''}</td>
+            <td class='py-10 px-20'>{media.expand?.trs?.find(({ id }) => id !== best?.id)?.releaseGroup ?? ''}</td>
           </tr>
         {/each}
       {/if}

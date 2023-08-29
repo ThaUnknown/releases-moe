@@ -3,7 +3,9 @@
 */
 
 export enum Collections {
+	Auditlog = "auditlog",
 	Entries = "entries",
+	Hooks = "hooks",
 	Torrents = "torrents",
 	Users = "users",
 }
@@ -32,13 +34,43 @@ export type AuthSystemFields<T = never> = {
 
 // Record types for each collection
 
+export type AuditlogRecord<Tdata = unknown, Toriginal = unknown> = {
+	collection: string
+	record: string
+	event: string
+	user?: RecordIdString
+	admin?: string
+	data?: null | Tdata
+	original?: null | Toriginal
+}
+
 export type EntriesRecord = {
-	torrents: RecordIdString[]
+	trs: RecordIdString[]
 	alID: number
 	notes?: string
-	comparison?: string
 	incomplete?: boolean
 	best?: RecordIdString
+	comparison?: string
+}
+
+export enum HooksEventOptions {
+	"insert" = "insert",
+	"update" = "update",
+	"delete" = "delete",
+}
+
+export enum HooksActionTypeOptions {
+	"command" = "command",
+	"post" = "post",
+}
+export type HooksRecord = {
+	collection: string
+	event: HooksEventOptions
+	action_type: HooksActionTypeOptions
+	action: string
+	action_params?: string
+	expands?: string
+	disabled?: boolean
 }
 
 export enum TorrentsTrackerOptions {
@@ -64,20 +96,26 @@ export type UsersRecord = {
 }
 
 // Response types include system fields and match responses from the PocketBase API
+export type AuditlogResponse<Tdata = unknown, Toriginal = unknown, Texpand = unknown> = Required<AuditlogRecord<Tdata, Toriginal>> & BaseSystemFields<Texpand>
 export type EntriesResponse<Texpand = unknown> = Required<EntriesRecord> & BaseSystemFields<Texpand>
+export type HooksResponse<Texpand = unknown> = Required<HooksRecord> & BaseSystemFields<Texpand>
 export type TorrentsResponse<Tfiles = unknown, Texpand = unknown> = Required<TorrentsRecord<Tfiles>> & BaseSystemFields<Texpand>
 export type UsersResponse<Texpand = unknown> = Required<UsersRecord> & AuthSystemFields<Texpand>
 
 // Types containing all Records and Responses, useful for creating typing helper functions
 
 export type CollectionRecords = {
+	auditlog: AuditlogRecord
 	entries: EntriesRecord
+	hooks: HooksRecord
 	torrents: TorrentsRecord
 	users: UsersRecord
 }
 
 export type CollectionResponses = {
+	auditlog: AuditlogResponse
 	entries: EntriesResponse
+	hooks: HooksResponse
 	torrents: TorrentsResponse
 	users: UsersResponse
 }
