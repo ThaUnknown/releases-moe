@@ -20,7 +20,7 @@
   $: items = searchAndMap(title)
 
   type Texpand = {
-    torrents: TorrentsResponse<any>[],
+    trs: TorrentsResponse<any>[],
     best: TorrentsResponse<any>
   }
 
@@ -37,7 +37,7 @@
     }
     const res: ListResult<EntriesResponse<Texpand>> = await client.collection('entries').getList(1, 50, {
       filter: Object.keys(foundIDs).map((id: string) => 'alID=' + id).join('||'),
-      expand: 'best,torrents'
+      expand: 'best,tor'
     })
 
     for (const item of res.items) {

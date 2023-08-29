@@ -25,7 +25,7 @@ export type alResponse = {
   media: media[]
 }
 
-export async function search (search: string, fetch = window.fetch, id?: number): alResponse {
+export async function search (search: string, fetch = window.fetch, id?: number): Promise<alResponse> {
   const opts = {
     method: 'POST',
     headers: {
