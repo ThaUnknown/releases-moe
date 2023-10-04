@@ -8,7 +8,6 @@ import { readable, type Readable, type Subscriber } from 'svelte/store'
 import { browser } from '$app/environment'
 import { base } from '$app/paths'
 import type { UsersResponse } from './generated-types'
-import { invalidateAll } from "$app/navigation"
 
 export const client = new PocketBase(
   browser ? window.location.origin + '/' + base : undefined
@@ -19,7 +18,6 @@ export const authModel = readable<UsersResponse | null>(
   function (set) {
     client.authStore.onChange((token, model) => {
       set(model)
-      invalidateAll()
     }, true)
   }
 )

@@ -1,5 +1,5 @@
 import { client } from '$lib/pocketbase/index.js'
-import type { PageLoad } from './$types'
+import type { LayoutLoad } from './$types'
 import { search } from '$lib/anilist'
 import { error } from '@sveltejs/kit'
 import type { EntriesResponse, TorrentsResponse } from '$lib/pocketbase/generated-types'
@@ -8,14 +8,14 @@ type Texpand = {
   trs: TorrentsResponse<any>[]
 }
 
-export const load: PageLoad = async function ({ fetch, url, params: { id } }) {
+export const load: LayoutLoad = async function ({ fetch, url, params: { id } }) {
   let entry: EntriesResponse<Texpand> = {}
   try {
     entry = await client
       .collection('entries')
       .getFirstListItem<EntriesResponse<Texpand>>(`alID="${id}"`, { expand: 'trs' })
   } catch (e) {
-    if (!url.pathname.endsWith('edit/')) throw error(404, 'Index Entry Not Found')
+    if (!url.pathname.includes('edit')) throw error(404, 'Index Entry Not Found')
   }
 
   const res = await search('', fetch, id)

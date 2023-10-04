@@ -7,6 +7,6 @@ export const ssr = false
 
 export const load: PageLoad = async function ({ parent }) {
   const user = get(authModel)
-  if (!user?.canEdit) throw error('403', 'Not Authorized')
+  if (!user?.canEdit) throw error(403, 'Not Authorized')
   return parent()
 }
