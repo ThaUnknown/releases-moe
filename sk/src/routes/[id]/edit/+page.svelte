@@ -1,7 +1,7 @@
 <script lang='ts' context='module'>
   import parseTorrent from 'parse-torrent'
   import anitomyScript from 'anitomyscript'
-  import { TorrentsTrackerOptions, type TorrentsResponse } from '$lib/pocketbase/generated-types'
+  import { TorrentsTrackerOptions, type TorrentsResponse, type EntriesRecord } from '$lib/pocketbase/generated-types'
 
   function getTrackerByComment (comment: string): { tracker: TorrentsTrackerOptions, url: string } {
     if (comment.startsWith('https://nyaa.si/view/')) return { tracker: TorrentsTrackerOptions.Nyaa, url: comment }
@@ -63,7 +63,7 @@
         savedTorrents.push(await save('torrents', torrent))
       }
       const best = savedTorrents.find(({ infoHash }) => infoHash === bestRelease)?.id
-      const newEntry = { ...entry, alID: media.id, torrents: savedTorrents.map(({ id }) => id), best }
+      const newEntry: EntriesRecord = { ...entry, alID: media.id, trs: savedTorrents.map(({ id }) => id), best }
 
       await save('entries', newEntry)
       toast.success('Entry Created')
