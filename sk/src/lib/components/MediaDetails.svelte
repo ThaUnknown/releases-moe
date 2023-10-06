@@ -1,5 +1,7 @@
 <script lang='ts'>
+  import { goto } from '$app/navigation'
   import type { media as _media } from '$lib/anilist'
+  import { authModel } from '$lib/pocketbase'
 
   export let media: _media
 
@@ -62,6 +64,9 @@
           </div>
         {/each}
       </div>
+    {/if}
+    {#if $authModel?.canEdit}
+      <button class='btn btn-danger' type='button' on:click={() => goto('./edit')}>Edit</button>
     {/if}
   </div>
 </div>

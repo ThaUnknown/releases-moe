@@ -36,7 +36,7 @@
   {/if}
 </div>
 <h4 class='font-weight-bold mb-10 text-white'>Notes</h4>
-<div class='mb-15'>
+<div class='mb-15' style='white-space: pre-wrap;'>
   {entry.notes}
 </div>
 <h4 class='font-weight-bold mb-10 text-white'>Comparisons</h4>
