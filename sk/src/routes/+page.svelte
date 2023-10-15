@@ -37,7 +37,7 @@
     }
     const res: ListResult<EntriesResponse<Texpand>> = await client.collection('entries').getList(1, 50, {
       filter: Object.keys(foundIDs).map((id: string) => 'alID=' + id).join('||'),
-      expand: 'best,tor'
+      expand: 'best,trs'
     })
 
     for (const item of res.items) {

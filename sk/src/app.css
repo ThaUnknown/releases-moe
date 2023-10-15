@@ -1,5 +1,8 @@
 :root {
   --navbar-brand-image-height: 3rem;
+  --base-html-font-size: 62.5%;
+  --base-html-font-size-1600: 75%;
+  --base-html-font-size-1920: 75%;
 
   --dark-color-base-hue: 0;
   --dark-color-base-saturation: 0%;

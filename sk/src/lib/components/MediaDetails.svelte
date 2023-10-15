@@ -1,7 +1,5 @@
 <script lang='ts'>
-  import { goto } from '$app/navigation'
   import type { media as _media } from '$lib/anilist'
-  import { authModel } from '$lib/pocketbase'
 
   export let media: _media
 
@@ -16,64 +14,38 @@
     undefined: 'N/A',
     null: 'N/A'
   }
+
   const format = media.format as keyof typeof formatMap
 </script>
 
-<div class='d-flex flex-row align-items-end pb-15'>
-  <div class='cover d-flex flex-row align-items-end'>
-    <img class='rounded cover-img w-full overflow-hidden' alt='cover-art' src={media.coverImage?.extraLarge} />
-  </div>
-  <div class='pl-20 ml-20'>
-    <h1 class='font-weight-bold text-white select-all'>{media.title.userPreferred}</h1>
-    <p class='d-flex flex-row font-size-18'>
-      {#if media.averageScore}
-        <span class='material-symbols-outlined mx-10 font-size-24'> trending_up </span>
-        <span class='mr-20'>
-          Rating: {media.averageScore + '%'}
-        </span>
-      {/if}
-      {#if media.format}
-        <span class='material-symbols-outlined mx-10 font-size-24'> monitor </span>
-        <span class='mr-20 text-capitalize'>
-          Format: {formatMap[format]}
-        </span>
-      {/if}
-      {#if media.episodes !== 1}
-        <span class='material-symbols-outlined mx-10 font-size-24'> theaters </span>
-        <span class='mr-20'>
-          Episodes: {media.episodes}
-        </span>
-      {:else if media.duration}
-        <span class='material-symbols-outlined mx-10 font-size-24'> timer </span>
-        <span class='mr-20'>
-          Length: {media.duration + ' min'}
-        </span>
-      {/if}
-      {#if media.season || media.seasonYear}
-        <span class='material-symbols-outlined mx-10 font-size-24'> spa </span>
-        <span class='text-capitalize'>
-          {[media.season?.toString().toLowerCase(), media.seasonYear].filter(f => f).join(' ')}
-        </span>
-      {/if}
-    </p>
-    {#if media.genres}
-      <div class='d-flex flex-row pt-10'>
-        {#each media.genres as genre}
-          <div class='bg-dark px-20 py-10 mr-10 rounded font-size-16'>
-            {genre}
-          </div>
-        {/each}
+<div class='d-flex position-relative w-full'>
+  <div class='w-full d-flex flex-column h-full content-visibility-auto'>
+    <img loading='lazy' src={media.coverImage.extraLarge || ''} alt='cover' class='rounded' style:--color={media.coverImage.color || '#1890ff'} />
+    <h2 class='text-white font-weight-bold pt-15 title overflow-hidden my-0'>
+      {media.title.userPreferred}
+    </h2>
+    <div class='d-flex flex-row mt-auto pt-10 justify-content-between w-full text-muted font-size-18'>
+      <div class='d-flex align-items-center' style='margin-left: -3px'>
+        <span class='material-symbols-outlined font-size-24 pr-10'>calendar_month</span>
+        {media.seasonYear || 'N/A'}
       </div>
-    {/if}
-    {#if $authModel?.canEdit}
-      <button class='btn btn-danger' type='button' on:click={() => goto('./edit')}>Edit</button>
-    {/if}
+      <div class='d-flex align-items-center'>
+        {formatMap[format]}
+        <span class='material-symbols-outlined font-size-24 pl-10'>monitor</span>
+      </div>
+    </div>
   </div>
 </div>
 
 <style>
-  .cover {
+  .title {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+  img {
     aspect-ratio: 7/10;
-    max-width: 25%;
+    object-fit: cover;
+    background-color: var(--color) !important;
   }
 </style>
