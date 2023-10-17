@@ -1,7 +1,5 @@
 import PocketBase, {
-  ListResult,
-  type AuthProviderInfo,
-  RecordService
+  type AuthProviderInfo, type ListResult, type RecordService
 } from 'pocketbase'
 
 import { readable, type Readable, type Subscriber } from 'svelte/store'
