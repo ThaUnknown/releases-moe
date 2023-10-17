@@ -39,6 +39,11 @@ const entriesList = await entriesResponse.json()`
     Automation enjoyings! Metadata provided is great for automation.<br />
     Old index was also annoying for linking to people, and difficult to find the desired anime/OVA.
   </p>
+  <h3 class='font-weight-bold mb-0'>Are there any extensions/scripts?</h3>
+  <ul>
+    <li><a href={`${origin}/nyaablue.user.js`} target='_blank'>NyaaBlue</a></li>
+    <li>AB Releases Marking [WIP]</li>
+  </ul>
   <h3 class='font-weight-bold mb-0'>Who are the editors?</h3>
 
   {#await editors}
