@@ -4,8 +4,8 @@ import fs from 'fs'
 
 // detect if we're running inside docker and set the backend accordingly
 const pocketbaseUrl = fs.existsSync('/.dockerenv')
-  ? 'http://pb:8090' // docker-to-docker
-  : 'http://127.0.0.1:8090' // localhost-to-localhost
+  ? 'http://pb:59991' // docker-to-docker
+  : 'http://127.0.0.1:59991' // localhost-to-localhost
 
 const config: UserConfig = {
   plugins: [sveltekit()],

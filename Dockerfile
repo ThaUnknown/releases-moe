@@ -12,4 +12,4 @@ WORKDIR /app/pb
 COPY --from=builder /build/pocketbase /app/pb/pocketbase
 COPY pb/pb_migrations ./pb_migrations
 COPY ./sk/build /app/pb/pb_public
-CMD ["/app/pb/pocketbase","serve", "--http", "0.0.0.0:8090"]
+CMD ["/app/pb/pocketbase","serve", "--http", "0.0.0.0:59991"]
