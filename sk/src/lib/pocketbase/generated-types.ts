@@ -4,6 +4,7 @@
 
 export enum Collections {
 	Auditlog = "auditlog",
+	Editors = "editors",
 	Entries = "entries",
 	Hooks = "hooks",
 	Torrents = "torrents",
@@ -44,12 +45,16 @@ export type AuditlogRecord<Tdata = unknown, Toriginal = unknown> = {
 	original?: null | Toriginal
 }
 
+export type EditorsRecord = {
+	username?: string
+	avatar?: string
+}
+
 export type EntriesRecord = {
 	trs: RecordIdString[]
 	alID: number
 	notes?: string
 	incomplete?: boolean
-	best?: RecordIdString
 	comparison?: string
 }
 
@@ -87,6 +92,7 @@ export type TorrentsRecord<Tfiles = unknown> = {
 	files: null | Tfiles
 	dualAudio?: boolean
 	releaseGroup: string
+	isBest?: boolean
 }
 
 export type UsersRecord = {
@@ -97,6 +103,7 @@ export type UsersRecord = {
 
 // Response types include system fields and match responses from the PocketBase API
 export type AuditlogResponse<Tdata = unknown, Toriginal = unknown, Texpand = unknown> = Required<AuditlogRecord<Tdata, Toriginal>> & BaseSystemFields<Texpand>
+export type EditorsResponse<Texpand = unknown> = Required<EditorsRecord> & BaseSystemFields<Texpand>
 export type EntriesResponse<Texpand = unknown> = Required<EntriesRecord> & BaseSystemFields<Texpand>
 export type HooksResponse<Texpand = unknown> = Required<HooksRecord> & BaseSystemFields<Texpand>
 export type TorrentsResponse<Tfiles = unknown, Texpand = unknown> = Required<TorrentsRecord<Tfiles>> & BaseSystemFields<Texpand>
@@ -106,6 +113,7 @@ export type UsersResponse<Texpand = unknown> = Required<UsersRecord> & AuthSyste
 
 export type CollectionRecords = {
 	auditlog: AuditlogRecord
+	editors: EditorsRecord
 	entries: EntriesRecord
 	hooks: HooksRecord
 	torrents: TorrentsRecord
@@ -114,6 +122,7 @@ export type CollectionRecords = {
 
 export type CollectionResponses = {
 	auditlog: AuditlogResponse
+	editors: EditorsResponse
 	entries: EntriesResponse
 	hooks: HooksResponse
 	torrents: TorrentsResponse

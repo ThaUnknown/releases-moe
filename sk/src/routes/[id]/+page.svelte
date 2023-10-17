@@ -20,8 +20,8 @@
     {#if $authModel?.canEdit}
       <button class='btn btn-primary mt-15' type='button' on:click={() => goto('./edit')}>Edit</button>
     {/if}
-    <hr class='my-20 bg-light' />
     {#if entry.comparison}
+      <hr class='my-20 bg-light' />
       <h4 class='font-weight-bold mb-10 text-white'>Comparisons</h4>
       <div class='d-flex flex-column mb-20 pb-20'>
         {#each entry.comparison.split(',') as comp}
@@ -42,7 +42,7 @@
     <h4 class='font-weight-bold mb-10 text-white'>Torrents</h4>
     <div class='row w-full'>
       {#if torrents}
-        {#each torrents as { dualAudio, infoHash, tracker, url, releaseGroup, id }}
+        {#each torrents as { dualAudio, infoHash, tracker, url, releaseGroup, isBest }}
           <a href={url} class='col-4' target='_blank' title={infoHash}>
             <div class='card m-5 border-0 h-150 d-flex flex-column'>
               <h2 class='card-title mb-15 text-white'>
@@ -53,7 +53,7 @@
                 {#if dualAudio}
                   <div class='badge badge-primary mr-5'>DualAudio</div>
                 {/if}
-                {#if entry.best === id}
+                {#if isBest}
                   <div class='badge badge-primary'>Best</div>
                 {/if}
               </div>

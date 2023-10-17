@@ -55,8 +55,6 @@
     }
   }
 
-  let bestRelease = ''
-
   async function submit (e: Event) {
     if (!torrents?.length) return toast.error('No Torrent Files Provided')
     try {
@@ -64,8 +62,7 @@
       for (const torrent of torrents) {
         savedTorrents.push(await save('torrents', torrent))
       }
-      const best = savedTorrents.find(({ infoHash }) => infoHash === bestRelease)?.id
-      const newEntry: EntriesRecord = { ...entry, alID: media.id, trs: savedTorrents.map(({ id }) => id), best }
+      const newEntry: EntriesRecord = { ...entry, alID: media.id, trs: savedTorrents.map(({ id }) => id) }
 
       await save('entries', newEntry)
       toast.success('Entry Created')
@@ -233,7 +230,7 @@
         </div>
         <div class='form-group'>
           <div class='custom-switch'>
-            <input type='checkbox' id={'isBest' + i} checked={bestRelease === torrent.infoHash} on:input={({ target }) => { bestRelease = target.checked ? torrent.infoHash : '' }} />
+            <input type='checkbox' id={'isBest' + i} checked={torrent.isBest} />
             <label for={'isBest' + i}>Is Best</label>
           </div>
         </div>

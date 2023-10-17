@@ -18,7 +18,7 @@ const entriesList = await pb.collection('entries').getList(1, 50, { filter: 'alI
 
 const seadexEndpoint = tinyRest('${origin}/api/collections/')
 
-const entriesResponse = await seadexEndpoint('entries', { filter: 'alID=1' })
+const entriesResponse = await seadexEndpoint('entries/records', { filter: 'alID=1' })
 
 const entriesList = await entriesResponse.json()`
 
@@ -50,7 +50,9 @@ const entriesList = await entriesResponse.json()`
           {#if avatar}
             <img src={client.files.getUrl({ id, collectionName: 'users' }, avatar)} alt='avatar' class='avatar rounded mr-10' />
           {/if}
-          {username}
+          <div class='mr-20'>
+            {username}
+          </div>
         </div>
       {/each}
     </div>

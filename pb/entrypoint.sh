@@ -14,4 +14,6 @@ if [ ! -x "$(which modd)" ]; then
   go install github.com/cortesi/modd/cmd/modd@latest
 fi
 
+pocketbase migrate up
+
 exec "$@"

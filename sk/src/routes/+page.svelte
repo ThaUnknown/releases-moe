@@ -88,7 +88,6 @@
     {:then mediaList}
       {#if mediaList}
         {#each mediaList as media, i}
-          {@const best = media.expand?.best}
           {@const disabled = !isEditing && !media.dbid}
           <tr class='border-0' on:click={() => { if (!disabled) rowClick(media) }}
             class:pointer={!isEditing && media.dbid}
@@ -99,8 +98,8 @@
             <td class='py-10 px-20 text-nowrap'>{media.title.userPreferred}</td>
             <td class='py-10 px-20'>{media.seasonYear ?? 'N/A'}</td>
             <td class='py-10 px-20'>{media.episodes ?? 'N/A'}</td>
-            <td class='py-10 px-20'>{best?.releaseGroup ?? ''}</td>
-            <td class='py-10 px-20'>{media.expand?.trs?.find(({ id }) => id !== best?.id)?.releaseGroup ?? ''}</td>
+            <td class='py-10 px-20'>{media.expand?.trs?.find(({ isBest }) => isBest)?.releaseGroup ?? ''}</td>
+            <td class='py-10 px-20'>{media.expand?.trs?.find(({ isBest }) => !isBest)?.releaseGroup ?? ''}</td>
           </tr>
         {/each}
       {/if}
