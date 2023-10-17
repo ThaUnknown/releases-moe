@@ -230,7 +230,7 @@
         </div>
         <div class='form-group'>
           <div class='custom-switch'>
-            <input type='checkbox' id={'isBest' + i} checked={torrent.isBest} />
+            <input type='checkbox' id={'isBest' + i} bind:checked={torrent.isBest} />
             <label for={'isBest' + i}>Is Best</label>
           </div>
         </div>
