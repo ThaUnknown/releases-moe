@@ -72,10 +72,12 @@ const entriesList = await entriesResponse.json()`
   <h3 class='font-weight-bold mb-0'>API usage examples:</h3>
   <p>Using the official pocketbase library:</p>
   <code class='bg-dark mt-10 py-5 px-10 border rounded' style='white-space: pre;'>
+    <!-- eslint-disable-next-line svelte/no-at-html-tags -->
     {@html pocketBaseCode}
   </code>
   <p>Or if you want to use a smaller library:</p>
   <code class='bg-dark mt-10 py-5 px-10 border rounded' style='white-space: pre;'>
+    <!-- eslint-disable-next-line svelte/no-at-html-tags -->
     {@html tinyRestCode}
   </code>
 </div>
