@@ -8,6 +8,9 @@ dependencies:
   anitomyscript:
     specifier: github:ThaUnknown/anitomyscript
     version: github.com/ThaUnknown/anitomyscript/cf70c6c2a44040ca42bce22c7d890884e93fea66
+  highlight.js:
+    specifier: ^11.9.0
+    version: 11.9.0
   parse-torrent:
     specifier: ^11.0.12
     version: 11.0.12
@@ -15,8 +18,8 @@ dependencies:
     specifier: ^1.0.0
     version: 1.0.0
   pocketbase:
-    specifier: ^0.15.3
-    version: 0.15.3
+    specifier: ^0.18.3
+    version: 0.18.3
   svelte-sonner:
     specifier: ^0.1.2
     version: 0.1.2(svelte@4.0.5)
@@ -1952,6 +1955,11 @@ packages:
       function-bind: 1.1.1
     dev: true
 
+  /highlight.js@11.9.0:
+    resolution: {integrity: sha512-fJ7cW7fQGCYAkgv4CPfwFHrfd/cLS4Hau96JuJ+ZTOWhjnhoeN1ub1tFmALm/+lW5z4WCAuAV9bm05AP0mS6Gw==}
+    engines: {node: '>=12.0.0'}
+    dev: false
+
   /http-cache-semantics@4.1.1:
     resolution: {integrity: sha512-er295DKPVsV82j5kw1Gjt+ADA/XYHsajl82cGNQG2eyoPkvgUhX+nDIyelzhIWbbsXP39EHcI6l5tYs2FYqYXQ==}
     dev: true
@@ -2736,8 +2744,8 @@ packages:
       - supports-color
     dev: true
 
-  /pocketbase@0.15.3:
-    resolution: {integrity: sha512-sjM0XO4wHUlVZs94VhRJi4FeYtbLqvxFbRDJlfjFb/4FkxypbGwxLM4HDAEr8q6jdreuxAM1/n/b5HB1GjQ1Vg==}
+  /pocketbase@0.18.3:
+    resolution: {integrity: sha512-zE4+oue0p0Ntwoil17b2geBpPwV6B6bYdsbXmNWmod6XOqBK2+jLDT5/SlAP3une4bo3U5ZAW2GvigEBAV3bBg==}
     dev: false
 
   /postcss-load-config@3.1.4(postcss@8.4.26):
