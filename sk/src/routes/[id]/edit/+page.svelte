@@ -1,7 +1,7 @@
 <script lang='ts' context='module'>
   import parseTorrent from 'parse-torrent'
-  import anitomyscript from 'anitomyscript'
-  import { TorrentsTrackerOptions, type TorrentsResponse, type EntriesRecord } from '$lib/pocketbase/generated-types'
+  import anitomyscript, { type AnitomyResult } from 'anitomyscript'
+  import { TorrentsTrackerOptions, type TorrentsResponse, type EntriesRecord, type TorrentsRecord } from '$lib/pocketbase/generated-types'
 
   function getTrackerByComment (comment: string): { tracker: TorrentsTrackerOptions, url: string } {
     if (comment.startsWith('https://nyaa.si/view/')) return { tracker: TorrentsTrackerOptions.Nyaa, url: comment }
@@ -12,8 +12,8 @@
     return { url: '', tracker: TorrentsTrackerOptions.AnimeBytes }
   }
 
-  function isDualAudio (audioTerm: string | string[]) {
-    const check = (string: string) => string?.toLowerCase().replace(/[ -]/g, '').includes('dualaudio')
+  function isDualAudio (audioTerm?: string | string[]) {
+    const check = (string?: string) => string?.toLowerCase().replace(/[ -]/g, '').includes('dualaudio')
     if (Array.isArray(audioTerm)) return audioTerm.some(check)
     return check(audioTerm)
   }
@@ -32,22 +32,29 @@
 
   export let data: PageData
 
-  const { entry, media } = data
-  let torrents = entry?.expand?.trs || []
+  type TorrentData = TorrentsRecord|TorrentsResponse
 
-  async function processSingleTorrent (file: Blob) {
+  const { entry, media } = data
+  let torrents: TorrentData[] = entry?.expand?.trs || []
+
+  let addTorrentsAsPrivate = false
+
+  async function processSingleTorrent (file: Blob): Promise<TorrentData> {
     const torrent = await parseTorrent(new Uint8Array(await file.arrayBuffer()))
-    try {
-      return await client
-        .collection('torrents')
-        .getFirstListItem<TorrentsResponse<any>>(`infoHash="${torrent.infoHash}"`)
-    } catch (e) {}
+    if (!addTorrentsAsPrivate) {
+      try {
+        return await client
+          .collection('torrents')
+          .getFirstListItem<TorrentsResponse<any>>(`infoHash="${torrent.infoHash}"`)
+      } catch (e) {}
+    }
 
     const { tracker, url } = getTrackerByComment(torrent.comment)
-    const parseObject: any = await anitomyscript(torrent.name)
+    const parseObject: AnitomyResult = await anitomyscript(torrent.name)
     return {
-      infoHash: torrent.infoHash,
-      dualAudio: isDualAudio(parseObject.audio_term),
+      infoHash: addTorrentsAsPrivate ? '<redacted>' : torrent.infoHash,
+      dualAudio: !!isDualAudio(parseObject.audio_term),
+      isBest: false,
       files: torrent.files.map(({ length, name }: any) => ({ length, name })),
       releaseGroup: parseObject.release_group || '',
       tracker,
@@ -75,10 +82,10 @@
   async function parseTorrentFiles ({ target }: Event) {
     const files = [...(target as HTMLInputElement).files as FileList]
 
-    torrents = [...torrents, ...await Promise.all(files.map(file => processSingleTorrent(file)))] as TorrentsResponse<any>[]
+    torrents = [...torrents, ...await Promise.all(files.map(file => processSingleTorrent(file)))]
   }
 
-  function remove (torrent: TorrentsResponse) {
+  function remove (torrent: TorrentData) {
     const index = torrents.indexOf(torrent)
     torrents.splice(index, 1)
     torrents = torrents
@@ -109,7 +116,7 @@
     const torrentRequest = await fetch(row.link)
     const torrentData = await torrentRequest.arrayBuffer()
     const file = new File([torrentData], row.title || '')
-    torrents = [...torrents, await processSingleTorrent(file)] as TorrentsResponse<any>[]
+    torrents = [...torrents, await processSingleTorrent(file)]
   }
 </script>
 
@@ -177,6 +184,17 @@
       <MediaDetails {media} />
       <input class='btn btn-primary mt-15' value='Save' type='submit' />
       <button class='btn btn-success' type='button' on:click={findTorrents}>Find Torrents</button>
+      <div class='form-group pt-20 mb-5'>
+        <label for='torrents' class='required'>Torrent Files</label>
+        <div class='custom-file'>
+          <input type='file' id='torrents' accept='.torrent' multiple on:change={parseTorrentFiles} />
+          <label for='torrents' class='border'>Add Torrent File(s)</label>
+        </div>
+      </div>
+      <div class='custom-checkbox'>
+        <input type='checkbox' id='addTorrentsAsPrivate' bind:checked={addTorrentsAsPrivate} />
+        <label for='addTorrentsAsPrivate'>Parse Next Torrent File As Private</label>
+      </div>
     </div>
     <div class='col ml-lg-20'>
       <div class='form-group'>
@@ -193,15 +211,9 @@
           <label for='incomplete'>Is Incomplete</label>
         </div>
       </div>
-      <div class='form-group'>
-        <label for='torrents' class='required'>Torrent Files</label>
-        <div class='custom-file'>
-          <input type='file' id='torrents' accept='.torrent' multiple on:change={parseTorrentFiles} />
-          <label for='torrents'>Choose Files</label>
-        </div>
-      </div>
-      <hr class='my-20 bg-light' />
+
       {#each torrents || [] as torrent, i (torrent.infoHash)}
+        <hr class='my-20 bg-light' />
         <div class='form-group'>
           <label for={'infohash' + i} class='required'>InfoHash</label>
           <input type='text' class='form-control' required disabled id={'infohash' + i} bind:value={torrent.infoHash} />
@@ -235,7 +247,6 @@
           </div>
         </div>
         <button class='btn btn-danger' type='button' on:click={() => remove(torrent)}>Delete Torrent</button>
-        <hr class='my-20 bg-light' />
       {/each}
     </div>
   </div>
