@@ -3,7 +3,8 @@
   import Nav from '$lib/components/Nav.svelte'
   import { site } from '$lib/config'
   import '../app.css'
-  import 'quartermoon/css/quartermoon-variables.css'
+  import 'halfmoon/css/cores/halfmoon.modern.css'
+  import 'halfmoon/css/halfmoon.min.css'
   import { Toaster } from 'svelte-sonner'
 </script>
 
@@ -21,8 +22,6 @@
 
 <Nav />
 <Toaster visibleToasts={3} position='top-right' theme='dark' richColors duration={10000} />
-<div class='content-wrapper'>
-  <div class='container pt-20'>
-    <slot />
-  </div>
+<div class='container py-4'>
+  <slot />
 </div>

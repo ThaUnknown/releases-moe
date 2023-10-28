@@ -4,6 +4,8 @@
   import { authModel, client, providerLogin, logout } from '../pocketbase/index.js'
   import { toast } from 'svelte-sonner'
 
+  window.t = toast
+
   export const authCollection = 'users'
 
   const coll = client.collection(authCollection)
@@ -26,43 +28,48 @@
   ]
 </script>
 
-<nav class='navbar'>
-  <!-- Navbar content (with toggle sidebar button) -->
+<nav class='navbar navbar-expand docs-navbar sticky-top'>
+  <div class='container-fluid'>
+    <a href={`${base}/`} class='navbar-brand'>
+      <img src={`${base}/favicon.png`} alt='logo' />
+      SeaDex
+    </a>
 
-  <!-- Navbar brand -->
-  <a href={`${base}/`} class='navbar-brand'>
-    <img src={`${base}/favicon.png`} alt='logo' />
-    SeaDex
-  </a>
-
-  <ul class='navbar-nav d-flex mr-auto'>
-    {#each links as [path, label]}
-      {@const active = $page.url.pathname === path}
-      <li class='nav-item' class:active>
-        <a href={`${base}${path}`} class='nav-link'>{label}</a>
-      </li>
-    {/each}
-  </ul>
-  {#if $authModel}
-    <div class='navbar-brand'>
-      <img src={client.files.getUrl($authModel, $authModel.avatar)} alt='profile pic' />
-    </div>
-    <div class='font-size-14 mr-10 text-light'>
-      {$authModel.username}
-    </div>
-    <button class='btn text-capitalize' on:pointerdown={logout}>
-      Sign Out
-    </button>
-  {:else}
-    {#await authMethods then methods}
-      {#each methods.authProviders as p}
-        <button class='btn btn-primary text-capitalize ml-5' on:pointerdown={() => providerLogin(p, coll)}>
-          Sign-In With {p.name}
-        </button>
+    <ul class='navbar-nav me-auto'>
+      {#each links as [path, label]}
+        {@const active = $page.url.pathname === path}
+        <li class='nav-item' class:active>
+          <a href={`${base}${path}`} class='nav-link'>{label}</a>
+        </li>
       {/each}
-    {:catch}
-      <!-- pocketbase not working -->
-    {/await}
-  {/if}
-
+    </ul>
+    {#if $authModel}
+      <div class='navbar-brand me-2'>
+        <img src={client.files.getUrl($authModel, $authModel.avatar)} alt='profile pic' />
+      </div>
+      <div class='font-size-14 me-4 text-info-emphasis'>
+        {$authModel.username}
+      </div>
+      <button class='btn btn-secondary' on:pointerdown={logout}>
+        Sign Out
+      </button>
+    {:else}
+      {#await authMethods then methods}
+        {#each methods.authProviders as p}
+          <button class='btn btn-primary text-capitalize ms-3' on:pointerdown={() => providerLogin(p, coll)}>
+            Sign-In With {p.name}
+          </button>
+        {/each}
+      {:catch}
+        <!-- pocketbase not working -->
+      {/await}
+    {/if}
+  </div>
 </nav>
+
+<style>
+  .navbar-brand img {
+    width: 24px;
+    height: 24px;
+  }
+</style>

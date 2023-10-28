@@ -29,22 +29,22 @@ const entriesList = await entriesResponse.json()`
 </script>
 
 <div class='d-flex flex-column pb-20'>
-  <h3 class='font-weight-bold mb-0'>What is this?</h3>
+  <h3 class='font-weight-bold'>What is this?</h3>
   <p>
     Anime index for tracking the best releases of anime torrents across many trackers.<br />
     This site only provides names and metadata, there are no actual torrents here!
   </p>
-  <h3 class='font-weight-bold mb-0'>Why was this made?</h3>
+  <h3 class='font-weight-bold'>Why was this made?</h3>
   <p>
     Automation enjoyings! Metadata provided is great for automation.<br />
     Old index was also annoying for linking to people, and difficult to find the desired anime/OVA.
   </p>
-  <h3 class='font-weight-bold mb-0'>Are there any extensions/scripts?</h3>
+  <h3 class='font-weight-bold'>Are there any extensions/scripts?</h3>
   <ul>
     <li><a href={`${origin}/nyaablue.user.js`} target='_blank'>NyaaBlue</a></li>
     <li>AB Releases Marking [WIP]</li>
   </ul>
-  <h3 class='font-weight-bold mb-0'>Who are the editors?</h3>
+  <h3 class='font-weight-bold'>Who are the editors?</h3>
 
   {#await editors}
     Loading...
@@ -53,9 +53,9 @@ const entriesList = await entriesResponse.json()`
       {#each items || [] as { avatar, username, id }}
         <div class='d-inline-flex align-items-center'>
           {#if avatar}
-            <img src={client.files.getUrl({ id, collectionName: 'users' }, avatar)} alt='avatar' class='avatar rounded mr-10' />
+            <img src={client.files.getUrl({ id, collectionName: 'users' }, avatar)} alt='avatar' class='avatar rounded me-3' />
           {/if}
-          <div class='mr-20'>
+          <div class='me-5'>
             {username}
           </div>
         </div>
@@ -63,7 +63,7 @@ const entriesList = await entriesResponse.json()`
     </div>
   {/await}
 
-  <h3 class='font-weight-bold mb-0'>How to programmatically access the data?</h3>
+  <h3 class='font-weight-bold'>How to programmatically access the data?</h3>
   <p>
     We provide a REST API under <a href={`${origin}/api/collections`}>{origin}/api/collections</a>.<br />
     Publicly available endpoints are:
@@ -76,14 +76,14 @@ const entriesList = await entriesResponse.json()`
     For details on how to use the query parameters visit the <a href='https://pocketbase.io/docs/api-records/#listsearch-records'>PocketBase documentation</a>.
   </p>
 
-  <h3 class='font-weight-bold mb-0'>API usage examples:</h3>
+  <h3 class='font-weight-bold'>API usage examples:</h3>
   <p>Using the official pocketbase library:</p>
-  <code class='bg-dark mt-10 py-5 px-10 border rounded' style='white-space: pre;'>
+  <code class='bg-dark py-2 px-3 mb-2 border rounded' style='white-space: pre;'>
     <!-- eslint-disable-next-line svelte/no-at-html-tags -->
     {@html pocketBaseCode}
   </code>
   <p>Or if you want to use a smaller library:</p>
-  <code class='bg-dark mt-10 py-5 px-10 border rounded' style='white-space: pre;'>
+  <code class='bg-dark py-2 px-3 border rounded' style='white-space: pre;'>
     <!-- eslint-disable-next-line svelte/no-at-html-tags -->
     {@html tinyRestCode}
   </code>
@@ -91,7 +91,7 @@ const entriesList = await entriesResponse.json()`
 
 <style>
   .avatar {
-    height: 3rem;
-    width: 3rem;
+    height: 2rem;
+    width: 2rem;
   }
 </style>

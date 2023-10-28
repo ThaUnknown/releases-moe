@@ -59,27 +59,22 @@
 
 <div class='input-group'>
   {#if $authModel?.canEdit}
-    <div class='input-group-prepend'>
-      <div class='input-group-text'>
-        <div class='custom-checkbox d-inline-block'>
-          <input type='checkbox' id='editor' bind:checked={isEditing} />
-          <label for='editor' class='blank' style='position:initial' />
-        </div>
-      </div>
+    <div class='input-group-text'>
+      <input type='checkbox' class='form-check-input mt-0' bind:checked={isEditing} aria-label='Checkbox for following input' />
     </div>
   {/if}
-  <input type='text' class='form-control' placeholder='Search anime title' bind:value={title} />
+  <input type='text' class='form-control' placeholder='Search anime title' aria-label='Input with checkbox' bind:value={title} />
 </div>
 
-<table class='table table-hover font-size-14 position-relative overflow-x-auto w-full'>
-  <thead>
-    <tr class='border-0'>
-      <td class='y-15 pl-20 pr-0' />
-      <td class='py-15 px-20'>Name</td>
-      <td class='py-15 px-20'>Year</td>
-      <td class='py-15 px-20'>Episodes</td>
-      <td class='py-15 px-20'>Best</td>
-      <td class='py-15 px-20'>Alt</td>
+<table class='table table-hover font-size-14 position-relative overflow-x-auto w-100 mt-4'>
+  <thead class='table-secondary'>
+    <tr>
+      <th>#</th>
+      <th>Name</th>
+      <th>Year</th>
+      <th>Episodes</th>
+      <th>Best</th>
+      <th>Alt</th>
     </tr>
   </thead>
   <tbody>
@@ -89,17 +84,16 @@
       {#if mediaList}
         {#each mediaList as media, i}
           {@const disabled = !isEditing && !media.dbid}
-          <tr class='border-0' on:click={() => { if (!disabled) rowClick(media) }}
+          <tr on:click={() => { if (!disabled) rowClick(media) }}
             class:pointer={!isEditing && media.dbid}
             class:editing={isEditing}
-            class:disabled
-            class:text-muted={disabled}>
-            <td class='py-10 pl-20 pr-0'>{i + 1}</td>
-            <td class='py-10 px-20 text-nowrap'>{media.title.userPreferred}</td>
-            <td class='py-10 px-20'>{media.seasonYear ?? 'N/A'}</td>
-            <td class='py-10 px-20'>{media.episodes ?? 'N/A'}</td>
-            <td class='py-10 px-20'>{media.expand?.trs?.find(({ isBest }) => isBest)?.releaseGroup ?? ''}</td>
-            <td class='py-10 px-20'>{media.expand?.trs?.find(({ isBest }) => !isBest)?.releaseGroup ?? ''}</td>
+            class:disabled>
+            <td class:text-light={disabled} class='py-10 pl-20 pr-0'>{i + 1}</td>
+            <td class:text-light={disabled} class='py-10 px-20 text-nowrap'>{media.title.userPreferred}</td>
+            <td class:text-light={disabled} class='py-10 px-20'>{media.seasonYear ?? 'N/A'}</td>
+            <td class:text-light={disabled} class='py-10 px-20'>{media.episodes ?? 'N/A'}</td>
+            <td class:text-light={disabled} class='py-10 px-20'>{media.expand?.trs?.find(({ isBest }) => isBest)?.releaseGroup ?? ''}</td>
+            <td class:text-light={disabled} class='py-10 px-20'>{media.expand?.trs?.find(({ isBest }) => !isBest)?.releaseGroup ?? ''}</td>
           </tr>
         {/each}
       {/if}

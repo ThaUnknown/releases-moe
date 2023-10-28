@@ -18,20 +18,20 @@
   const format = media.format as keyof typeof formatMap
 </script>
 
-<div class='d-flex position-relative w-full'>
-  <div class='w-full d-flex flex-column h-full content-visibility-auto'>
+<div class='d-flex position-relative w-100'>
+  <div class='w-100 d-flex flex-column h-100 content-visibility-auto'>
     <img loading='lazy' src={media.coverImage.extraLarge || ''} alt='cover' class='rounded' style:--color={media.coverImage.color || '#1890ff'} />
-    <h2 class='text-white font-weight-bold pt-15 title overflow-hidden my-0'>
+    <h2 class='text-white font-weight-bold pt-2 title overflow-hidden my-0'>
       {media.title.userPreferred}
     </h2>
-    <div class='d-flex flex-row mt-auto pt-10 justify-content-between w-full text-muted font-size-18'>
+    <div class='d-flex flex-row mt-auto pt-2 justify-content-between w-100 text-muted font-size-18'>
       <div class='d-flex align-items-center' style='margin-left: -3px'>
-        <span class='material-symbols-outlined font-size-24 pr-10'>calendar_month</span>
+        <span class='material-symbols-outlined font-size-24 pe-2'>calendar_month</span>
         {media.seasonYear || 'N/A'}
       </div>
       <div class='d-flex align-items-center'>
         {formatMap[format]}
-        <span class='material-symbols-outlined font-size-24 pl-10'>monitor</span>
+        <span class='material-symbols-outlined font-size-24 ps-2'>monitor</span>
       </div>
     </div>
   </div>
