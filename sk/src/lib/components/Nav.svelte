@@ -4,8 +4,6 @@
   import { authModel, client, providerLogin, logout } from '../pocketbase/index.js'
   import { toast } from 'svelte-sonner'
 
-  window.t = toast
-
   export const authCollection = 'users'
 
   const coll = client.collection(authCollection)

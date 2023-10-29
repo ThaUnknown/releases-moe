@@ -6,6 +6,7 @@ import { readable, type Readable, type Subscriber } from 'svelte/store'
 import { browser } from '$app/environment'
 import { base } from '$app/paths'
 import type { UsersResponse } from './generated-types'
+import { toast } from 'svelte-sonner'
 
 export const client = new PocketBase(
   browser ? window.location.origin + '/' + base : undefined
@@ -29,14 +30,19 @@ export function logout () {
  * FormData if needed.
  */
 export async function save (collection: string, record: any, create = false) {
-  // convert obj to FormData in case one of the fields is instanceof FileList
-  const data = object2formdata(record)
-  if (record.id && !create) {
-    // "create" flag overrides update
-    return await client.collection(collection).update(record.id, data)
-  } else {
-    return await client.collection(collection).create(data)
+  try {
+    const data = object2formdata(record)
+    if (record.id && !create) {
+      // "create" flag overrides update
+      return await client.collection(collection).update(record.id, data)
+    } else {
+      return await client.collection(collection).create(data)
+    }
+  } catch (error) {
+    toast.error(error?.message)
+    throw error
   }
+  // convert obj to FormData in case one of the fields is instanceof FileList
 }
 
 // convert obj to FormData in case one of the fields is instanceof FileList
