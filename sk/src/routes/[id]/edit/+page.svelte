@@ -80,7 +80,9 @@
   }
 
   async function parseTorrentFiles ({ target }: Event) {
-    const files = [...(target as HTMLInputElement).files as FileList]
+    const _target = (target as HTMLInputElement)
+    const files = [..._target.files as FileList]
+    _target.value = ''
 
     torrents = [...torrents, ...await Promise.all(files.map(file => processSingleTorrent(file)))]
   }

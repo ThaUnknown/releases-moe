@@ -3,13 +3,13 @@
   --normal-border: none !important;
   --normal-text: var(--dm-base-text-color) !important;
 
-  /* --success-bg: var(--success-color) !important; */
+  --success-bg: var(--bs-success) !important;
   --success-border: none !important;
-  /* --success-text: var(--lm-base-text-color) !important; */
+  --success-text: var(--bs-success-foreground) !important;
 
-  /* --error-bg: hsl(358, 76%, 10%); */
+  --error-bg: var(--bs-danger) !important;
   --error-border: none !important;
-  /* --error-text: hsl(358, 100%, 81%); */
+  --error-text: var(--bs-danger-foreground) !important;
 }
 [data-sonner-toaster][data-theme='dark'] li {
   backdrop-filter: blur(8px);

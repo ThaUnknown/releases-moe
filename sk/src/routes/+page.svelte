@@ -62,7 +62,15 @@
     }
   }
 
+  let textInput: HTMLInputElement
+
+  function checkSearchFocus ({ code }: KeyboardEvent) {
+    if (code === 'Slash') setTimeout(() => textInput.focus())
+  }
+
 </script>
+
+<svelte:document on:keydown={checkSearchFocus} />
 
 <div class='input-group'>
   {#if $authModel?.canEdit}
@@ -70,7 +78,10 @@
       <input type='checkbox' class='form-check-input mt-0' bind:checked={isEditing} aria-label='Checkbox for following input' />
     </div>
   {/if}
-  <input type='text' class='form-control' placeholder='Search anime title' aria-label='Input with checkbox' bind:value={title} />
+  <input type='text' class='form-control' placeholder='Search anime title' aria-label='Input with checkbox' bind:value={title} bind:this={textInput} />
+</div>
+<div class='mt-1'>
+  <small>Press <kbd class='text-body' style='font-size: 10px; background-color: hsla(var(--bs-emphasis-color-hsl), 0.1)'>/</kbd> to focus</small>
 </div>
 
 <table class='table table-hover font-size-14 position-relative overflow-x-auto w-100 mt-4'>
