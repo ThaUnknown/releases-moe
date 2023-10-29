@@ -22,7 +22,7 @@ function tinyRest (url, options = {}) {
   return (path = './', data = {}) => {
     const requestURL = new URL(path, baseURL)
 
-    for (const [key, value] of (data[Symbol.iterator]?.() || Object.entries(data))) requestURL.searchParams.append(key, value)
+    for (const [key, value] of Object.entries(data)) requestURL.searchParams.append(key, value)
 
     requestURL.searchParams.sort() // sort to always have the same order, nicer for caching
     return fetch(requestURL, options)
@@ -72,14 +72,11 @@ function getInfoHashItemList () {
   })
 }
 
-async function main () {
-  if (window.location.href.match('view')) {
-    setViewBlue()
-  } else {
-    setSearchBlue()
-  }
-}
 // dark theme "support" (thanks olli)
 document.head.insertAdjacentHTML('beforeend', '<style id="css_blue" type="text/css">body.dark .torrent-list > tbody > tr.info > td {color: inherit; background-color: rgba(0, 172, 255, 0.12);} body.dark .torrent-list > tbody > tr.info:hover > td {background-color: rgba(0, 172, 255, 0.18);} body.dark div.panel-info, body.dark div.panel-info > .panel-heading {border-color: #2c414b;} body.dark div.panel-info > .panel-heading {background-color: #2a3f4a;}</style>')
 
-main()
+if (window.location.href.match('view')) {
+  setViewBlue()
+} else {
+  setSearchBlue()
+}

@@ -10,14 +10,13 @@
   import { metadata } from '$lib/app/stores'
   import { search, type media } from '$lib/anilist'
   import { goto } from '$app/navigation'
+  import { debounce } from '$lib/util'
 
   $metadata.title = 'Home'
 
   let title = ''
 
   let isEditing = false
-
-  $: items = searchAndMap(title)
 
   type Texpand = {
     trs: TorrentsResponse<any>[],
@@ -27,6 +26,8 @@
   type WithMedia = {
     dbid: number
   } & media & EntriesResponse<Texpand>
+
+  let items: Promise<WithMedia[]> = Promise.resolve([])
 
   async function searchAndMap (title: string): Promise<WithMedia[]> {
     const data = await search(title)
@@ -46,6 +47,12 @@
 
     return Object.values(foundIDs)
   }
+
+  const debouncedSearch = debounce(title => {
+    items = searchAndMap(title)
+  }, 300)
+
+  $: debouncedSearch(title)
 
   function rowClick (media: any) {
     if (isEditing) {

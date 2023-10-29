@@ -38,8 +38,8 @@
     <ul class='navbar-nav me-auto'>
       {#each links as [path, label]}
         {@const active = $page.url.pathname === path}
-        <li class='nav-item' class:active>
-          <a href={`${base}${path}`} class='nav-link'>{label}</a>
+        <li class='nav-item'>
+          <a href={`${base}${path}`} class:active class='nav-link'>{label}</a>
         </li>
       {/each}
     </ul>

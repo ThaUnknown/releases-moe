@@ -1,9 +1,9 @@
 <script lang='ts' context='module'>
   import parseTorrent from 'parse-torrent'
-  import anitomyscript, { type AnitomyResult } from 'anitomyscript'
   import { TorrentsTrackerOptions, type TorrentsResponse, type EntriesRecord, type TorrentsRecord } from '$lib/pocketbase/generated-types'
 
-  function getTrackerByComment (comment: string): { tracker: TorrentsTrackerOptions, url: string } {
+  function getTrackerByComment (comment?: string): { tracker: TorrentsTrackerOptions, url: string } {
+    if (!comment) return { tracker: TorrentsTrackerOptions.Nyaa, url: '' }
     if (comment.startsWith('https://nyaa.si/view/')) return { tracker: TorrentsTrackerOptions.Nyaa, url: comment }
     if (comment.includes('AniDex')) {
       const match = comment.match(/\[AniDex Torrent #(\d+)]/)
@@ -27,7 +27,7 @@
 
   import { client, save } from '$lib/pocketbase/index.js'
   import MediaDetails from '$lib/components/MediaDetails.svelte'
-  import { sanitiseTerms, since } from '$lib/util'
+  import { anitomyscript, sanitiseTerms, since } from '$lib/util'
   import { getToshotTorrentsForID, type TorrentEntry } from '$lib/tosho'
 
   export let data: PageData
@@ -50,7 +50,7 @@
     }
 
     const { tracker, url } = getTrackerByComment(torrent.comment)
-    const parseObject: AnitomyResult = await anitomyscript(torrent.name)
+    const parseObject = await anitomyscript(torrent.name)
     return {
       infoHash: addTorrentsAsPrivate ? '<redacted>' : torrent.infoHash,
       dualAudio: !!isDualAudio(parseObject.audio_term),
@@ -111,7 +111,7 @@
     document.body.classList.toggle('modal-open', showModal)
   }
 
-  async function filter ({ target }: InputEvent) {
+  async function filter ({ target }: Event) {
     const searchText = (target as HTMLInputElement).value
 
     filtered = (await toshoTorrents).filter(({ title }: any) => title.toLowerCase().includes(searchText.toLowerCase()))
@@ -200,7 +200,7 @@
       <button class='btn btn-success mt-3 px-3' type='button' on:click={findTorrents}>Find Torrents</button>
       <div class='my-3'>
         <label for='torrents' class='form-label'>Add torrent file(s)</label>
-        <input class='form-control' type='file' id='torrents' accept='.torrent' multiple on:change={parseTorrentFiles} />
+        <input class='form-control' type='file' id='torrents' accept='.torrent' multiple on:input={parseTorrentFiles} />
       </div>
       <div class='form-check'>
         <input class='form-check-input' type='checkbox' bind:checked={addTorrentsAsPrivate} id='addTorrentsAsPrivate' />
@@ -213,7 +213,7 @@
         <textarea class='form-control' id='notes' placeholder='Entry notes' bind:value={entry.notes} />
       </div>
       <div class='mb-2'>
-        <label for='comparison' class='form-label'>Email</label>
+        <label for='comparison' class='form-label'>Comparisons</label>
         <input type='text' class='form-control' id='comparison' placeholder='Comma Separated Links' bind:value={entry.comparison} />
       </div>
       <div class='form-check'>
@@ -221,7 +221,7 @@
         <label class='form-check-label' for='incomplete'>Is Incomplete</label>
       </div>
 
-      {#each torrents || [] as torrent, i (torrent.infoHash)}
+      {#each torrents || [] as torrent, i (i)}
         <hr />
         <div class='mb-2'>
           <label for={'infohash' + i} class='form-label'>InfoHash</label>

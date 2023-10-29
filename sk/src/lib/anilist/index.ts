@@ -6,7 +6,8 @@ export type media = {
     userPreferred: string
   },
   coverImage: {
-    extraLarge: string
+    extraLarge: string,
+    color: string
   }
   season?: number,
   seasonYear?: number,
@@ -45,7 +46,8 @@ export async function search (search: string, fetch = window.fetch, id?: string)
               userPreferred
             },
             coverImage{
-              extraLarge
+              extraLarge,
+              color
             }
             season,
             seasonYear,

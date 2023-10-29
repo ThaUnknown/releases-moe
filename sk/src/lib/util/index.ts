@@ -1,4 +1,4 @@
-import type { AnitomyResult } from 'anitomyscript'
+import _as, { type AnitomyResult } from 'anitomyscript'
 
 const formatter = new Intl.RelativeTimeFormat('en')
 const ranges = {
@@ -71,3 +71,22 @@ export function sanitiseTerms ({ video_term: videoTerm, audio_term: audioTerm, v
 
   return terms
 }
+
+// normalizes anitomyscript for TS typings
+export async function anitomyscript (input: string) {
+  const res = await _as(input)
+  if (Array.isArray(res)) return res[0]
+  return res
+}
+
+export function debounce (fn: (...args: any[]) => any, time: number) {
+  let timeout: any
+  return (...args: any[]) => {
+    const later = () => {
+      timeout = null
+      fn(...args)
+    }
+    clearTimeout(timeout)
+    timeout = setTimeout(later, time)
+  }
+};

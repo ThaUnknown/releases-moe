@@ -55,6 +55,8 @@
                 {/if}
                 {#if isBest}
                   <div class='badge text-bg-primary'>Best</div>
+                {:else}
+                  <div class='badge text-bg-primary'>Alt</div>
                 {/if}
               </div>
             </div>
