@@ -22,7 +22,7 @@
   <div class='w-100 d-flex flex-column h-100 content-visibility-auto'>
     <img loading='lazy' src={media.coverImage.extraLarge || ''} alt='cover' class='rounded' style:--color={media.coverImage.color || '#1890ff'} />
     <h2 class='text-white font-weight-bold pt-2 title overflow-hidden my-0'>
-      {media.title.userPreferred}
+      {media.title.english || media.title.userPreferred}
     </h2>
     <div class='d-flex flex-row mt-auto pt-2 justify-content-between w-100 text-muted font-size-18'>
       <div class='d-flex align-items-center' style='margin-left: -3px'>

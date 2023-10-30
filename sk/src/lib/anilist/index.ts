@@ -3,7 +3,8 @@ import { toast } from 'svelte-sonner'
 export type media = {
   id: number,
   title: {
-    userPreferred: string
+    userPreferred: string,
+    english: string
   },
   coverImage: {
     extraLarge: string,
@@ -43,7 +44,8 @@ export async function search (search: string, fetch = window.fetch, id?: string)
           media(id: $id, type: ANIME, search: $search, sort: SEARCH_MATCH, format_not: MUSIC) {
             id,
             title {
-              userPreferred
+              userPreferred,
+              english
             },
             coverImage{
               extraLarge,

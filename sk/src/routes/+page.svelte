@@ -107,7 +107,7 @@
             class:editing={isEditing}
             class:disabled>
             <td class:text-light={disabled} class='py-10 pl-20 pr-0'>{i + 1}</td>
-            <td class:text-light={disabled} class='py-10 px-20 text-nowrap'>{media.title.userPreferred}</td>
+            <td class:text-light={disabled} class='py-10 px-20 text-nowrap'>{media.title.english || media.title.userPreferred}</td>
             <td class:text-light={disabled} class='py-10 px-20'>{media.seasonYear ?? 'N/A'}</td>
             <td class:text-light={disabled} class='py-10 px-20'>{media.episodes ?? 'N/A'}</td>
             <td class:text-light={disabled} class='py-10 px-20'>{media.expand?.trs?.find(({ isBest }) => isBest)?.releaseGroup ?? ''}</td>

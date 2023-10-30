@@ -96,9 +96,9 @@
 
   async function findTorrents () {
     toast.promise(toshoTorrents, {
-      loading: `Looking for torrents for ${media.title.userPreferred}...`,
-      success: `Found torrents for ${media.title.userPreferred}.`,
-      error: (err: any) => `Couldn't find torrents for ${media.title.userPreferred}\n${err.message}`
+      loading: `Looking for torrents for ${media.title.english || media.title.userPreferred}...`,
+      success: `Found torrents for ${media.title.english || media.title.userPreferred}.`,
+      error: (err: any) => `Couldn't find torrents for ${media.title.english || media.title.userPreferred}\n${err.message}`
     })
     filtered = await toshoTorrents
     showModal = true
