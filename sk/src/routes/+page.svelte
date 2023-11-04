@@ -102,7 +102,7 @@
       {#if mediaList}
         {#each mediaList as media, i}
           {@const disabled = !isEditing && !media.dbid}
-          <tr on:click={() => { if (!disabled) rowClick(media) }}
+          <a class='table-row' href={!disabled ? (isEditing ? `/${media.id}/edit` : '/' + media.id) : ''}
             class:pointer={!isEditing && media.dbid}
             class:editing={isEditing}
             class:disabled>
@@ -112,9 +112,19 @@
             <td class:text-light={disabled} class='py-10 px-20'>{media.episodes ?? 'N/A'}</td>
             <td class:text-light={disabled} class='py-10 px-20'>{media.expand?.trs?.find(({ isBest }) => isBest)?.releaseGroup ?? ''}</td>
             <td class:text-light={disabled} class='py-10 px-20'>{media.expand?.trs?.find(({ isBest }) => !isBest)?.releaseGroup ?? ''}</td>
-          </tr>
+          </a>
         {/each}
       {/if}
     {/await}
   </tbody>
 </table>
+
+<style>
+  a.table-row {
+    display: table-row;
+    vertical-align: inherit;
+    border-color: inherit;
+    color: inherit;
+    text-decoration: none;
+  }
+</style>

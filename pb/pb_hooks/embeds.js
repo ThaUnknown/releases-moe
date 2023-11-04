@@ -41,7 +41,8 @@ module.exports = {
     if (best) fields.push({ name: 'Best', value: this.wrap(best.get('releaseGroup')), inline: true })
     const alt = trs.find(record => record && !record.get('isBest'))
     if (alt) fields.push({ name: 'Alt', value: this.wrap(alt.get('releaseGroup')), inline: true })
-    fields.push({ name: 'Notes', value: this.wrap(record.get('notes')) })
+    const notes = record.get('notes')
+    if (notes) fields.push({ name: 'Notes', value: this.wrap(notes) })
 
     return this.embed(user, fields, 'New Entry')
   },
