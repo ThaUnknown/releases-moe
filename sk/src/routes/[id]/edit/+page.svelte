@@ -10,7 +10,7 @@
 <script lang='ts'>
   import { toast } from 'svelte-sonner'
 
-  import { goto } from '$app/navigation'
+  import { goto, invalidateAll } from '$app/navigation'
   import type { PageData } from './$types'
   import TorrentEditorForm from '$lib/components/TorrentEditorForm.svelte'
   import { createTorrentFromData } from '$lib/torrent'
@@ -75,6 +75,7 @@
 
       await save('entries', newEntry)
       toast.success('Entry Created')
+      await invalidateAll()
       goto('..')
     } catch (error) {
       toast.error('Failed To Save Entry' + error)
