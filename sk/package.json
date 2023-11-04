@@ -48,6 +48,6 @@
     "parse-torrent": "^11.0.12",
     "path-esm": "^1.0.0",
     "pocketbase": "^0.18.3",
-    "svelte-sonner": "^0.1.2"
+    "svelte-sonner": "^0.3.0"
   }
 }

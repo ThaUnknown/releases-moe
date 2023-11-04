@@ -17,6 +17,10 @@
     if (Array.isArray(audioTerm)) return audioTerm.some(check)
     return check(audioTerm)
   }
+
+  const VIDEO_EXTENSIONS = ['3g2', '3gp', 'asf', 'avi', 'dv', 'flv', 'gxf', 'm2ts', 'm4a', 'm4b', 'm4p', 'm4r', 'm4v', 'mkv', 'mov', 'mp4', 'mpd', 'mpeg', 'mpg', 'mxf', 'nut', 'ogm', 'ogv', 'swf', 'ts', 'vob', 'webm', 'wmv', 'wtv']
+  const VIDEO_RX = new RegExp(`.(${VIDEO_EXTENSIONS.join('|')})$`, 'i')
+  const TYPE_EXCLUSIONS = ['ED', 'ENDING', 'NCED', 'NCOP', 'OP', 'OPENING', 'PREVIEW', 'PV']
 </script>
 
 <script lang='ts'>
@@ -27,7 +31,7 @@
 
   import { client, save } from '$lib/pocketbase/index.js'
   import MediaDetails from '$lib/components/MediaDetails.svelte'
-  import { anitomyscript, sanitiseTerms, since } from '$lib/util'
+  import { anitomyscript, anitomyscriptarray, sanitiseTerms, since } from '$lib/util'
   import { getToshotTorrentsForID, type TorrentEntry } from '$lib/tosho'
 
   export let data: PageData
@@ -39,8 +43,24 @@
 
   let addTorrentsAsPrivate = false
 
+  async function checkTorrentFiles ({ files }: any) {
+    if (!media.episodes) return
+    const videoFiles = await anitomyscriptarray(files.filter(({ name }: any) => VIDEO_RX.test(name)).map(({ name }: any) => name))
+
+    const episodes = videoFiles.filter(file => !TYPE_EXCLUSIONS.includes(file.anime_type?.toUpperCase()))
+
+    if (media.episodes === episodes.length) return
+
+    if (media.episodes < episodes.length) {
+      toast.error('Detected added torrent has more video files than media has episodes. Check if the torrent doesn\'t include multiple seasons, OVAs or ONAs and add them to other AniList entries.')
+    } else {
+      toast.error('Detected added torrent has less video files than media has episodes. Check if the torrent doesn\'t include multiple seasons, OVAs or ONAs and add them to other AniList entries.')
+    }
+  }
+
   async function processSingleTorrent (file: Blob): Promise<TorrentData> {
     const torrent = await parseTorrent(new Uint8Array(await file.arrayBuffer()))
+    checkTorrentFiles(torrent)
     if (!addTorrentsAsPrivate) {
       try {
         return await client
@@ -126,6 +146,24 @@
     const file = new File([torrentData], row.title || '')
     torrents = [...torrents, await processSingleTorrent(file)]
   }
+
+  let torrentIdInputValue = ''
+
+  async function addTorrentById () {
+    let torrent
+    try {
+      torrent = await client.collection('torrents').getOne(torrentIdInputValue) as TorrentsResponse
+    } catch (e) {
+      toast.error('Torrent Not Found: ' + e)
+    }
+    if (!torrent) return
+    checkTorrentFiles(torrent)
+    if (addTorrentsAsPrivate && torrent.infoHash !== '<redacted>') {
+      torrent.id = ''
+      torrent.infoHash = '<redacted>'
+    }
+    torrents = [...torrents, torrent]
+  }
 </script>
 {#if showModal}
   <div class='modal-backdrop fade show' />
@@ -198,11 +236,17 @@
   <div class='row justify-content-center'>
     <div class='col-lg-3 col-12 mb-3'>
       <MediaDetails {media} />
+      <div class='text-muted pt-2'>Episodes: {media.episodes || 'N/A'}</div>
       <input class='btn btn-primary mt-3 px-3 me-1' value='Save' type='submit' />
       <button class='btn btn-success mt-3 px-3' type='button' on:click={findTorrents}>Find Torrents</button>
       <div class='my-3'>
         <label for='torrents' class='form-label'>Add torrent file(s)</label>
         <input class='form-control' type='file' id='torrents' accept='.torrent' multiple on:input={parseTorrentFiles} />
+      </div>
+      <div class='input-group mb-3'>
+        <label class='input-group-text' for='addByTorrentId'>Add By ID</label>
+        <input type='text' class='form-control' placeholder='Torrent ID' id='addByTorrentId' bind:value={torrentIdInputValue} />
+        <button type='button' class='btn btn-primary' on:click={addTorrentById}>Add</button>
       </div>
       <div class='form-check'>
         <input class='form-check-input' type='checkbox' bind:checked={addTorrentsAsPrivate} id='addTorrentsAsPrivate' />
@@ -253,7 +297,16 @@
           <input type='checkbox' id={'isBest' + i} class='form-check-input' bind:checked={torrent.isBest} />
           <label for={'isBest' + i} class='form-check-label'>Is Best</label>
         </div>
+        <h5>Video Files</h5>
+        <ul>
+          {#each torrent.files.filter(({ name }) => VIDEO_RX.test(name)) as file}
+            <li>{file.name}</li>
+          {/each}
+        </ul>
         <button class='btn btn-danger' type='button' on:click={() => remove(torrent)}>Delete Torrent</button>
+        {#if torrent.id}
+          <button class='btn btn-primary' type='button' on:click={() => navigator.clipboard.writeText(torrent.id)}>Copy Torrent ID</button>
+        {/if}
       {/each}
     </div>
   </div>

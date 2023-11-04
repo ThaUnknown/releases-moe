@@ -78,6 +78,11 @@ export async function anitomyscript (input: string) {
   if (Array.isArray(res)) return res[0]
   return res
 }
+export async function anitomyscriptarray (input: string[]) {
+  const res = await _as(input)
+  if (!Array.isArray(res)) return [res]
+  return res
+}
 
 export function debounce (fn: (...args: any[]) => any, time: number) {
   let timeout: any

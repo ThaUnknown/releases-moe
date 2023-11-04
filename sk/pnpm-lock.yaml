@@ -24,8 +24,8 @@ dependencies:
     specifier: ^0.18.3
     version: 0.18.3
   svelte-sonner:
-    specifier: ^0.1.2
-    version: 0.1.2(svelte@4.0.5)
+    specifier: ^0.3.0
+    version: 0.3.0(svelte@4.0.5)
 
 devDependencies:
   '@sveltejs/adapter-auto':
@@ -3321,10 +3321,10 @@ packages:
       typescript: 5.1.6
     dev: true
 
-  /svelte-sonner@0.1.2(svelte@4.0.5):
-    resolution: {integrity: sha512-0x4uGRpb2wn+cdipu2VRBA2HOUxGPqeKuPQ5PukY5gYGdJ0WNNuVWidk/l7/Vzddx0DGRSlAFnecCW/cfTimPg==}
+  /svelte-sonner@0.3.0(svelte@4.0.5):
+    resolution: {integrity: sha512-AbRxxqQJb0cc2wEbluc+HVbHukYcnXUZtfSCAcxCHjV3JxB7qrBK4s4XUDSBsVT4Lboqk/0Qv7THIghkEl665A==}
     peerDependencies:
-      svelte: ^4.0.0
+      svelte: '>=3 <5'
     dependencies:
       svelte: 4.0.5
     dev: false
