@@ -16,7 +16,7 @@ export function since (date: Date) {
   for (const [key, value] of Object.entries(ranges)) {
     if (value < Math.abs(secondsElapsed)) {
       const delta = secondsElapsed / value
-      return formatter.format(Math.round(delta), key)
+      return formatter.format(Math.round(delta), key as any)
     }
   }
 }
@@ -95,3 +95,7 @@ export function debounce (fn: (...args: any[]) => any, time: number) {
     timeout = setTimeout(later, time)
   }
 };
+
+export const VIDEO_EXTENSIONS = ['3g2', '3gp', 'asf', 'avi', 'dv', 'flv', 'gxf', 'm2ts', 'm4a', 'm4b', 'm4p', 'm4r', 'm4v', 'mkv', 'mov', 'mp4', 'mpd', 'mpeg', 'mpg', 'mxf', 'nut', 'ogm', 'ogv', 'swf', 'ts', 'vob', 'webm', 'wmv', 'wtv']
+export const VIDEO_RX = new RegExp(`.(${VIDEO_EXTENSIONS.join('|')})$`, 'i')
+export const TYPE_EXCLUSIONS = ['ED', 'ENDING', 'NCED', 'NCOP', 'OP', 'OPENING', 'PREVIEW', 'PV']
