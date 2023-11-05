@@ -1,11 +1,11 @@
 // ==UserScript==
-// @name        nyaablue
-// @namespace   seadex scripts
+// @name        NyaaBlue
+// @description Tags the best releases on Nyaa according to https://releases.moe/
+// @namespace   ThaUnknown
 // @match       https://nyaa.si/*
-// @grant       GM.xmlHttpRequest
 // @version     1.0.0
 // @author      ThaUnknown
-// @description brings blue to nyaav2 with seadex api
+// @icon        https://nyaa.si/static/favicon.png
 // @downloadURL https://beta.releases.moe/nyaablue.user.js
 // @connect     releases.moe
 // @license     MIT

@@ -42,7 +42,7 @@ const entriesList = await entriesResponse.json()`
   <h3 class='font-weight-bold'>Are there any extensions/scripts?</h3>
   <ul>
     <li><a href={`${origin}/nyaablue.user.js`} target='_blank'>NyaaBlue</a></li>
-    <li>AB Releases Marking [WIP]</li>
+    <li><a href={`${origin}/animebytesmark.user.js`} target='_blank'>AB Releases Marking</a></li>
   </ul>
   <h3 class='font-weight-bold'>Who are the editors?</h3>
 
