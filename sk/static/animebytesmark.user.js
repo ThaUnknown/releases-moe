@@ -15,7 +15,7 @@
 
 const TORRENT_ID_REGEX = /&torrentid=(\d+)/i
 
-const seadexEndpoint = tinyRest('https://beta.releases.moe/api/collections/torrents/records')
+const seadexEndpoint = tinyRest('https://beta.releases.moe/api/collections/entries/records')
 
 // import tinyRest from 'tiny-rest'
 function tinyRest (url, options = {}) {
