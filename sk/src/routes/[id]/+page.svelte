@@ -42,7 +42,7 @@
     <h2 class='font-weight-bold text-white'>Torrents</h2>
     <div class='row w-100'>
       {#if torrents}
-        {#each torrents as { dualAudio, infoHash, tracker, url, releaseGroup, isBest }}
+        {#each torrents.sort((a, b) => Number(b.isBest) - Number(a.isBest)) as { dualAudio, infoHash, tracker, url, releaseGroup, isBest }}
           <a href={url} class='col-4 text-decoration-none' target='_blank' title={infoHash}>
             <div class='card px-5 py-4'>
               <h4 class='card-title mb-15 text-white'>
