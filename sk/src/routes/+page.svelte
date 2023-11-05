@@ -9,7 +9,6 @@
 <script lang='ts'>
   import { metadata } from '$lib/app/stores'
   import { search, type media } from '$lib/anilist'
-  import { goto } from '$app/navigation'
   import { debounce } from '$lib/util'
 
   $metadata.title = 'Home'
@@ -53,14 +52,6 @@
   }, 300)
 
   $: debouncedSearch(title)
-
-  function rowClick (media: any) {
-    if (isEditing) {
-      goto(`/${media.id}/edit`)
-    } else {
-      goto(`/${media.id}`)
-    }
-  }
 
   let textInput: HTMLInputElement
 

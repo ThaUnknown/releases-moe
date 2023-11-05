@@ -59,7 +59,7 @@ function object2formdata (obj: {}) {
       for (const file of val) {
         fd.append(key, file)
       }
-    } else if (typeof val === 'object') {
+    } else if (typeof val === 'object' && !(val instanceof File)) {
       fd.append(key, JSON.stringify(val))
     } else {
       fd.append(key, val as any)
