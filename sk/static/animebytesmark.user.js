@@ -35,7 +35,7 @@ async function fetchSeadex (ids) {
   const query = ids.map(({ torrentId }) => {
     return 'trs.url?~\'%torrentid=' + torrentId + '%\''
   }).join('||')
-  const res = await seadexEndpoint('https://beta.releases.moe', { filter: `(trs.url?~'%animebytes%' && (${query}))`, expand: 'trs', fields: '*,expand.trs.url' })
+  const res = await seadexEndpoint('https://beta.releases.moe', { filter: `(trs.url?~'%animebytes%' && (${query}))`, expand: 'trs', fields: '*,expand.trs.url', skipTotal: true })
   const { items } = await res.json()
   const linkMap = {}
   for (const { alID, notes, comparison, expand } of items) {

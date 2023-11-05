@@ -18,8 +18,7 @@
   let isEditing = false
 
   type Texpand = {
-    trs: TorrentsResponse<any>[],
-    best: TorrentsResponse<any>
+    trs: TorrentsResponse<any>[]
   }
 
   type WithMedia = {
@@ -37,7 +36,8 @@
     }
     const res: ListResult<EntriesResponse<Texpand>> = await client.collection('entries').getList(1, 50, {
       filter: Object.keys(foundIDs).map((id: string) => 'alID=' + id).join('||'),
-      expand: 'best,trs'
+      expand: 'trs',
+      skipTotal: true
     })
 
     for (const item of res.items) {

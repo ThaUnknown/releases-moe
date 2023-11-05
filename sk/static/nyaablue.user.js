@@ -46,9 +46,7 @@ async function setViewBlue () {
 async function setSearchBlue () {
   const infoHashList = getInfoHashItemList()
 
-  const torrentsResponse = await seadexEndpoint('', {
-    filter: infoHashList.map(({ infoHash }) => 'infoHash="' + infoHash + '"').join('||')
-  })
+  const torrentsResponse = await seadexEndpoint('', { filter: infoHashList.map(({ infoHash }) => 'infoHash="' + infoHash + '"').join('||'), skipTotal: true })
 
   const { items } = await torrentsResponse.json()
 

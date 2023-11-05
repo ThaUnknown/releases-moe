@@ -63,19 +63,10 @@ export enum HooksEventOptions {
 	"update" = "update",
 	"delete" = "delete",
 }
-
-export enum HooksActionTypeOptions {
-	"command" = "command",
-	"post" = "post",
-}
 export type HooksRecord = {
 	collection: string
 	event: HooksEventOptions
-	action_type: HooksActionTypeOptions
-	action: string
 	action_params?: string
-	expands?: string
-	disabled?: boolean
 }
 
 export enum TorrentsTrackerOptions {
