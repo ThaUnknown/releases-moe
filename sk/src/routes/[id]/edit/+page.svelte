@@ -159,6 +159,10 @@
         <label for='comparison' class='form-label'>Comparisons</label>
         <input type='text' class='form-control' id='comparison' placeholder='Comma Separated Links' bind:value={entry.comparison} />
       </div>
+      <div class='mb-2'>
+        <label for='theoreticalBest' class='form-label'>Theoretical Best</label>
+        <input type='text' class='form-control' id='theoreticalBest' placeholder='Potential Unmuxed Combination' bind:value={entry.theoreticalBest} />
+      </div>
       <div class='form-check'>
         <input class='form-check-input' type='checkbox' id='incomplete' bind:checked={entry.incomplete} />
         <label class='form-check-label' for='incomplete'>Is Incomplete</label>

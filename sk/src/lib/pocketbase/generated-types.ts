@@ -56,6 +56,7 @@ export type EntriesRecord = {
 	notes?: string
 	incomplete?: boolean
 	comparison?: string
+	theoreticalBest?: string
 }
 
 export enum HooksEventOptions {

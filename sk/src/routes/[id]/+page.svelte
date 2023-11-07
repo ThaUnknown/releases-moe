@@ -41,9 +41,22 @@
     {/if}
     <h2 class='font-weight-bold text-white'>Torrents</h2>
     <div class='row w-100'>
+      {#if entry.theoreticalBest}
+        <div class='col-4 mb-2'>
+          <div class='card px-5 py-4'>
+            <h4 class='card-title mb-15 text-white'>
+              {entry.theoreticalBest}
+            </h4>
+            <div class='mt-2'>
+              <div class='badge text-bg-warning'>Unmuxed</div>
+              <div class='badge text-bg-success'>Best</div>
+            </div>
+          </div>
+        </div>
+      {/if}
       {#if torrents}
         {#each torrents.sort((a, b) => Number(b.isBest) - Number(a.isBest)) as { dualAudio, infoHash, tracker, url, releaseGroup, isBest }}
-          <a href={url} class='col-4 text-decoration-none' target='_blank' title={infoHash}>
+          <a href={url} class='col-4 text-decoration-none mb-2' target='_blank' title={infoHash}>
             <div class='card px-5 py-4'>
               <h4 class='card-title mb-15 text-white'>
                 {releaseGroup}
@@ -54,7 +67,7 @@
                   <div class='badge text-bg-primary mr-2'>DualAudio</div>
                 {/if}
                 {#if isBest}
-                  <div class='badge text-bg-primary'>Best</div>
+                  <div class='badge text-bg-success'>Best</div>
                 {:else}
                   <div class='badge text-bg-primary'>Alt</div>
                 {/if}
