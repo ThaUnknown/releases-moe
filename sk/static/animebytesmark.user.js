@@ -5,6 +5,7 @@
 // @match       *://animebytes.tv/*
 // @version     1.0.0
 // @author      ThaUnknown
+// @grant       GM_xmlhttpRequest
 // @icon        http://animebytes.tv/favicon.ico
 // @downloadURL https://beta.releases.moe/animebytesmark.user.js
 // @connect     releases.moe
@@ -17,7 +18,28 @@ const TORRENT_ID_REGEX = /&torrentid=(\d+)/i
 
 const seadexEndpoint = tinyRest('https://beta.releases.moe/api/collections/entries/records')
 
+function gmFetchJson (url, opts = {}, timeout = 10000) {
+  return new Promise((resolve, reject) => {
+    GM_xmlhttpRequest({
+      method: 'GET',
+      timeout,
+      ...opts,
+      url: url.toString(),
+      ontimeout: function () {
+        reject(new Error(`Request timed out after ${timeout}ms`))
+      },
+      onerror: function (err) {
+        reject(err || new Error('Failed to fetch'))
+      },
+      onload: function (response) {
+        resolve(JSON.parse(response.responseText))
+      }
+    })
+  })
+}
+
 // import tinyRest from 'tiny-rest'
+// modified for userscripts
 function tinyRest (url, options = {}) {
   const baseURL = new URL(url)
 
@@ -27,7 +49,7 @@ function tinyRest (url, options = {}) {
     for (const [key, value] of Object.entries(data)) requestURL.searchParams.append(key, value)
 
     requestURL.searchParams.sort() // sort to always have the same order, nicer for caching
-    return fetch(requestURL, options)
+    return gmFetchJson(requestURL, options)
   }
 }
 
@@ -35,17 +57,12 @@ async function fetchSeadex (ids) {
   const query = ids.map(({ torrentId }) => {
     return 'trs.url?~\'%torrentid=' + torrentId + '%\''
   }).join('||')
-  const res = await seadexEndpoint('https://beta.releases.moe', { filter: `(trs.url?~'%animebytes%' && (${query}))`, expand: 'trs', fields: '*,expand.trs.url', skipTotal: true })
-  const { items } = await res.json()
+  const { items } = await seadexEndpoint('https://beta.releases.moe', { filter: `(trs.url?~'%animebytes%' && (${query}))`, expand: 'trs', fields: '*,expand.trs.url', skipTotal: true })
   const linkMap = {}
   for (const { alID, notes, comparison, expand } of items) {
     for (const { url } of expand.trs) {
       const torrentId = url.match(TORRENT_ID_REGEX)?.[1]
-      if (torrentId) {
-        linkMap[torrentId] = {
-          alID, notes, comparison: comparison.split(',')
-        }
-      }
+      if (torrentId) linkMap[torrentId] = { alID, notes, comparison: comparison.split(',') }
     }
   }
   return linkMap
