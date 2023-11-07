@@ -113,7 +113,7 @@ function insertTorrentTab (torrentId, tabName, tabId, content) {
 
     for (const torrentLink of torrents) {
       const entry = linkMap[torrentLink.torrentId]
-      if (!entry) return
+      if (!entry) continue
 
       // Insert tag
       torrentLink.a.append(torrentLink.seperator)
