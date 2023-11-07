@@ -10,7 +10,8 @@ function getTrackerByComment (comment?: string): { tracker: TorrentsTrackerOptio
     const match = comment.match(/\[AniDex Torrent #(\d+)]/)
     if (match?.[1]) return { tracker: TorrentsTrackerOptions.AniDex, url: 'https://anidex.info/torrent/' + match[1] }
   }
-  return { url: '', tracker: TorrentsTrackerOptions.AnimeBytes }
+  if (comment.startsWith('https://animebytes.tv')) return { url: comment, tracker: TorrentsTrackerOptions.AnimeBytes }
+  return { url: '', tracker: TorrentsTrackerOptions.RuTracker }
 }
 
 function isDualAudio (audioTerm?: string | string[]) {
