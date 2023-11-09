@@ -57,7 +57,7 @@ async function fetchSeadex (ids) {
   const query = ids.map(({ torrentId }) => {
     return 'trs.url?~\'%torrentid=' + torrentId + '%\''
   }).join('||')
-  const { items } = await seadexEndpoint('https://beta.releases.moe', { filter: `(trs.url?~'%animebytes%' && (${query}))`, expand: 'trs', fields: '*,expand.trs.url', skipTotal: true })
+  const { items } = await seadexEndpoint('', { filter: `(trs.url?~'%animebytes%' && (${query}))`, expand: 'trs', fields: '*,expand.trs.url', skipTotal: true })
   const linkMap = {}
   for (const { alID, notes, comparison, expand } of items) {
     for (const { url } of expand.trs) {
@@ -128,7 +128,7 @@ function insertTorrentTab (torrentId, tabName, tabId, content) {
       }
 
       const img = document.createElement('img')
-      img.src = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAAMCAgICAgMCAgIDAwMDBAYEBAQEBAgGBgUGCQgKCgkICQkKDA8MCgsOCwkJDRENDg8QEBEQCgwSExIQEw8QEBD/2wBDAQMDAwQDBAgEBAgQCwkLEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBD/wAARCAAJACQDASIAAhEBAxEB/8QAGAAAAwEBAAAAAAAAAAAAAAAAAAYHCAX/xAAlEAABBAEEAgEFAAAAAAAAAAABAgMEBQYABxESCBNBFSEyQmH/xAAVAQEBAAAAAAAAAAAAAAAAAAAEBf/EACURAAECBQQBBQAAAAAAAAAAAAIBAwARITFBBAVhkSNxobHB0f/aAAwDAQACEQMRAD8Am1TtX47zaWgfl4lhcJhYpjLdkPxy893fiokDu3YqUnsFurPaMnqgKB6KAOuDiG3Pj1Y485ZUFBh1zYO/U1x4V1OTHLK0yK9PpeV7WUqKA5NKFJUEqTx9kkFpGEdGoSbM6iL5yvz+/cQ02h1JzfK889Xn7pGw4GB7ByJDq4dfjUoIu5DePCTZKZTayAwSuLLPQFqMl3gJd6tdgfxbClGJJtttuNoMmk21/n+4LdA1jUyTLuaZtk9pMMLSlpuC4CfYS4ShXISQFJ4HyYro0sNA42JIjq1zlO53+a8QwdE4IkKOlWVcp3NK+l+KQ4br5tUZ/mcm+x/FIOO1aWmocKBFRx0jsoCGy4f2c6gcn+AfHOjSfo09sBaBAGyQ1tsWgQBslI//2Q=='
+      img.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACIAAAAJCAYAAABXLP43AAAAAXNSR0IArs4c6QAAAMJJREFUOE9jZBgkgFE1TWwaAwNDJhb3TCdOnHE+K8u/vN9/GLug6qffnvUqC8lcMB+bf5HVgBzyP6skH0PdtJ6JDMSIg9QxMDDOZ2D4nwhSD+EzgD0B49+e9YoR3QKYI2Bq4A6BGoCiHslgnOIINaiOQXMUSD8o1FFCC1kN0SGCy6ewEMUmj2QxONTxqcGaRmCaqB0iWMyFpx+iQwQWN+hph9g0gp4mYKEFM5fiXPP/z//5bBwMROUafDkJIzUPVLECALBqyRj71YzpAAAAAElFTkSuQmCC'
       img.title = 'This release is seadex approved!' + (entry.notes ? ` Seadex Notes:\n${entry.notes}` : '')
       img.alt = 'Seadex Choice!'
       img.dataset.seadex = ''
@@ -137,6 +137,7 @@ function insertTorrentTab (torrentId, tabName, tabId, content) {
         e.stopImmediatePropagation()
         window.open(`https://beta.releases.moe/${entry.alID}`, '_blank').focus()
       }
+      parent.append(img)
 
       // seadex tab
       const tab = $('<div></div>')
