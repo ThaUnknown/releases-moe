@@ -13,11 +13,11 @@
   import { goto, invalidateAll } from '$app/navigation'
   import type { PageData } from './$types'
   import TorrentEditorForm from '$lib/components/TorrentEditorForm.svelte'
-  import { createTorrentFromData } from '$lib/torrent'
+  import { createTorrentFromData, fromTorrentList } from '$lib/torrent'
 
   export let data: PageData
 
-  type TorrentData = { id?: string } & (TorrentsRecord|TorrentsResponse)
+  type TorrentData = { id?: string } & (TorrentsRecord<any[]>|TorrentsResponse<any[]>)
 
   const { entry, media } = data
   let torrents: TorrentData[] = entry?.expand?.trs || []
@@ -48,9 +48,11 @@
     // find
     try {
       if (torrent.infoHash === '<redacted>') {
-        return (await client.collection('torrents').getFirstListItem(
+        const id = (await client.collection('torrents').getFirstListItem(
           `infoHash='<redacted>' && tracker='${torrent.tracker}' && url='${torrent.url}' && dualAudio=${torrent.dualAudio} && releaseGroup='${torrent.releaseGroup}' && isBest=${torrent.isBest}`
         )).id
+        torrent.id = id
+        return (await save('torrents', torrent)).id
       } else {
         return (await client.collection('torrents').getFirstListItem(`infoHash='${torrent.infoHash}'`)).id
       }
@@ -121,13 +123,19 @@
   async function addTorrentById () {
     let torrent
     try {
-      torrent = await client.collection('torrents').getOne(torrentIdInputValue) as TorrentsResponse
+      torrent = await client.collection('torrents').getOne(torrentIdInputValue) as TorrentsResponse<any[]>
     } catch (e) {
       toast.error('Torrent Not Found: ' + e)
     }
     if (!torrent) return
     checkTorrentVideoFiles(torrent)
     torrent.id = ''
+    torrents = [...torrents, torrent]
+  }
+
+  async function createABFromFileList () {
+    const torrent = await fromTorrentList()
+    if (!torrent) return
     torrents = [...torrents, torrent]
   }
 </script>
@@ -140,6 +148,7 @@
       <div class='text-muted pt-2'>Episodes: {media.episodes || 'N/A'}</div>
       <input class='btn btn-primary mt-3 px-3 me-1' value='Save' type='submit' />
       <button class='btn btn-success mt-3 px-3' type='button' on:click={findTorrentsOnline}>Find Torrents</button>
+      <button class='btn btn-success mt-3 px-3' type='button' on:click={createABFromFileList}>Create From FileList</button>
       <div class='my-3'>
         <label for='torrents' class='form-label'>Add torrent file(s)</label>
         <input class='form-control' type='file' id='torrents' accept='.torrent' multiple on:input={parseTorrentFileInput} />

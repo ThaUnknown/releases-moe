@@ -35,9 +35,29 @@ export async function createTorrentFromData (data: ArrayBuffer) {
     infoHash: torrent.infoHash,
     dualAudio: !!isDualAudio(parseObject.audio_term),
     isBest: false,
-    files: torrent.files?.map(({ length, name }: any) => ({ length, name })),
+    files: torrent.files?.map(({ length, name }: any) => ({ length, name })) || null,
     releaseGroup: parseObject.release_group || '',
     tracker,
     url
+  }
+}
+
+export async function fromTorrentList () {
+  const files = JSON.parse(await navigator.clipboard.readText())
+  for (const { size, filename } of files) {
+    if (!Number.isInteger(size)) return
+    if (typeof filename !== 'string' || !filename.length) return
+  }
+
+  const parseObject = await anitomyscript(files[0].filename || '')
+
+  return {
+    infoHash: '<redacted>',
+    dualAudio: !!isDualAudio(parseObject.audio_term),
+    isBest: false,
+    files: files.map(({ size, filename }) => ({ length: size, name: filename })),
+    releaseGroup: parseObject.release_group || '',
+    tracker: TorrentsTrackerOptions.AnimeBytes,
+    url: ''
   }
 }

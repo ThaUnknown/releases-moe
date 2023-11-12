@@ -1,13 +1,18 @@
 <script lang='ts'>
   import { TorrentsTrackerOptions, type TorrentsRecord, type TorrentsResponse } from '$lib/pocketbase/generated-types'
-  import { VIDEO_RX } from '$lib/util'
 
-  type TorrentData = { id?: string } & (TorrentsRecord|TorrentsResponse)
+  type TorrentData = { id?: string } & (TorrentsRecord<any[]>|TorrentsResponse<any[]>)
 
   export let torrent: TorrentData
   export let i: number
   export let removeSingleTorrent: Function
   export let duplicateTorrent: Function
+
+  function removeTorrentFile (i: number) {
+    if (!torrent.files) return
+    torrent.files.splice(i, 1)
+    torrent = torrent
+  }
 </script>
 
 <div class='row'>
@@ -66,8 +71,13 @@
     <div class='accordion-collapse'>
       <div class='accordion-body'>
         <ul>
-          {#each torrent.files.filter(({ name }) => VIDEO_RX.test(name)) as file}
-            <li>{file.name}</li>
+          {#each torrent.files as file, i}
+            <li class='mb-1 d-flex'>
+              {file.name}
+              {#if torrent.tracker === TorrentsTrackerOptions.AnimeBytes}
+                <button class='btn btn-sm btn-danger ms-auto' type='button' on:click={() => removeTorrentFile(i)}>Remove</button>
+              {/if}
+            </li>
           {/each}
         </ul>
       </div>
