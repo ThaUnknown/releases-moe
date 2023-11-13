@@ -85,7 +85,7 @@
   }
 
   function duplicateTorrent (original: TorrentData) {
-    const torrent = { ...original }
+    const torrent = structuredClone(original)
     torrent.id = ''
     torrents = [...torrents, torrent]
   }
