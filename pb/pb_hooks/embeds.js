@@ -1,10 +1,10 @@
 /// <reference path="../pb_data/types.d.ts" />
 
 module.exports = {
-  embed (user, fields, title) {
+  embed (user, fields, title, id) {
     const DOMAIN = 'https://beta.releases.moe'
 
-    return {
+    const obj = {
       username: user.get('username'),
       avatar_url: `${DOMAIN}/api/files/${user.collection().id}/${user.id}/${user.get('avatar')}`,
       embeds: [
@@ -21,6 +21,8 @@ module.exports = {
         }
       ]
     }
+    if (id) obj.embeds[0].url = `${DOMAIN}/${id}`
+    return obj
   },
   wrap (text) {
     return '```' + text + '```'
@@ -29,9 +31,12 @@ module.exports = {
    * @param {models.Record} record
    * @param {models.Record} user
    */
-  entries (record, user) {
+  entries (record, user, util) {
     const fields = []
-    fields.push({ name: 'Anilist ID', value: this.wrap(record.get('alID')) })
+
+    const id = record.get('alID')
+
+    fields.push({ name: 'Title', value: this.wrap(util.anilistTitle(id)) })
 
     $app.dao()?.expandRecord(record, ['trs'])
 
@@ -43,8 +48,10 @@ module.exports = {
     if (alt) fields.push({ name: 'Alt', value: this.wrap(alt.get('releaseGroup')), inline: true })
     const notes = record.get('notes')
     if (notes) fields.push({ name: 'Notes', value: this.wrap(notes) })
+    const unmuxed = record.get('theoreticalBest')
+    if (unmuxed) fields.push({ name: 'Unmuxed Best', value: this.wrap(unmuxed) })
 
-    return this.embed(user, fields, 'New Entry')
+    return this.embed(user, fields, 'New Entry', id)
   },
   torrents (record, user) {
     const fields = []
