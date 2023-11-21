@@ -27,46 +27,14 @@ export type alResponse = {
   media: media[]
 }
 
-export async function search (search: string, fetch = window.fetch, id?: string): Promise<alResponse> {
+async function alQuery (body: string, fetch = window.fetch) {
   const opts = {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       Accept: 'application/json'
     },
-    body: JSON.stringify({
-      query: /* js */` 
-      query($search: String, $id: Int) {
-        Page(page: 1, perPage: 50) {
-          pageInfo {
-            hasNextPage
-          },
-          media(id: $id, type: ANIME, search: $search, sort: SEARCH_MATCH, format_not: MUSIC) {
-            id,
-            title {
-              userPreferred,
-              english
-            },
-            coverImage{
-              extraLarge,
-              color
-            }
-            season,
-            seasonYear,
-            format,
-            status,
-            episodes,
-            duration,
-            averageScore,
-            genres
-          }
-        }
-      }`.replace(/\s/g, ''),
-      variables: {
-        search: search || undefined,
-        id
-      }
-    })
+    body
   }
   const res = await fetch('https://graphql.anilist.co', opts)
   if (!res.ok && res.status === 429) {
@@ -87,5 +55,81 @@ export async function search (search: string, fetch = window.fetch, id?: string)
       toast.error(res.statusText)
     }
   }
-  return json.data.Page
+  return json
+}
+
+export async function idList (ids: number[]) {
+  const query = await alQuery(JSON.stringify({
+    query: /* js */` 
+    query($search: String, $ids: [Int]) {
+      Page(page: 1, perPage: 50) {
+        pageInfo {
+          hasNextPage
+        },
+        media(id_in: $ids, type: ANIME, search: $search, sort: SEARCH_MATCH, format_not: MUSIC) {
+          id,
+          title {
+            userPreferred,
+            english
+          },
+          coverImage{
+            extraLarge,
+            color
+          }
+          season,
+          seasonYear,
+          format,
+          status,
+          episodes,
+          duration,
+          averageScore,
+          genres
+        }
+      }
+    }`.replace(/\s/g, ''),
+    variables: {
+      search: search || undefined,
+      ids
+    }
+  }))
+
+  return query.data.Page
+}
+
+export async function search (search: string, fetch = window.fetch, id?: string): Promise<alResponse> {
+  const query = await alQuery(JSON.stringify({
+    query: /* js */` 
+    query($search: String, $id: Int) {
+      Page(page: 1, perPage: 50) {
+        pageInfo {
+          hasNextPage
+        },
+        media(id: $id, type: ANIME, search: $search, sort: SEARCH_MATCH, format_not: MUSIC) {
+          id,
+          title {
+            userPreferred,
+            english
+          },
+          coverImage{
+            extraLarge,
+            color
+          }
+          season,
+          seasonYear,
+          format,
+          status,
+          episodes,
+          duration,
+          averageScore,
+          genres
+        }
+      }
+    }`.replace(/\s/g, ''),
+    variables: {
+      search: search || undefined,
+      id
+    }
+  }))
+
+  return query.data.Page
 }

@@ -8,7 +8,7 @@
 
 <script lang='ts'>
   import { metadata } from '$lib/app/stores'
-  import { search, type media } from '$lib/anilist'
+  import { search, type media, idList } from '$lib/anilist'
   import { debounce } from '$lib/util'
 
   $metadata.title = 'Home'
@@ -25,7 +25,25 @@
     dbid: number
   } & media & EntriesResponse<Texpand>
 
-  let items: Promise<WithMedia[]> = Promise.resolve([])
+  let items: Promise<WithMedia[]> = initialLoad()
+
+  async function initialLoad (): Promise<WithMedia[]> {
+    const res: ListResult<EntriesResponse<Texpand>> = await client.collection('entries').getList(1, 50, {
+      skipTotal: true,
+      expand: 'trs'
+    })
+    const alResponse = await idList(res.items.map(({ alID }) => alID))
+    const foundIDs: any = {}
+    for (const media of alResponse.media as any) {
+      foundIDs[media.id] = media
+    }
+
+    for (const item of res.items) {
+      foundIDs[item.alID] = { ...item, ...foundIDs[item.alID], dbid: item.id }
+    }
+
+    return Object.values(foundIDs)
+  }
 
   async function searchAndMap (title: string): Promise<WithMedia[]> {
     const data = await search(title)
@@ -51,7 +69,7 @@
     items = searchAndMap(title)
   }, 300)
 
-  $: debouncedSearch(title)
+  $: if (title) debouncedSearch(title)
 
   let textInput: HTMLInputElement
 
