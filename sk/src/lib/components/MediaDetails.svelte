@@ -20,7 +20,9 @@
 
 <div class='d-flex position-relative w-100'>
   <div class='w-100 d-flex flex-column h-100 content-visibility-auto'>
-    <img loading='lazy' src={media.coverImage.extraLarge || ''} alt='cover' class='rounded' style:--color={media.coverImage.color || '#1890ff'} />
+    <div class='w-full d-flex justify-content-center pb-3'>
+      <img loading='lazy' src={media.coverImage.extraLarge || ''} alt='cover' class='rounded h-100 mw-100' style:--color={media.coverImage.color || '#1890ff'} />
+    </div>
     <h2 class='text-white font-weight-bold pt-2 title overflow-hidden my-0'>
       {media.title.english || media.title.userPreferred}
     </h2>
@@ -44,8 +46,8 @@
     -webkit-box-orient: vertical;
   }
   img {
-    aspect-ratio: 7/10;
-    object-fit: cover;
+    object-fit: contain;
     background-color: var(--color) !important;
+    max-height: 75vh;
   }
 </style>

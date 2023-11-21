@@ -38,7 +38,7 @@
     {/if}
     <MediaDetails {media} />
     {#if $authModel?.canEdit}
-      <button class='btn btn-primary mt-3 px-3' type='button' on:click={() => goto('./edit')}>Edit</button>
+      <button class='btn btn-primary my-3 px-3' type='button' on:click={() => goto('./edit')}>Edit</button>
     {/if}
     {#if entry.comparison}
       <hr class='mt-3 mb-2 bg-light' />
@@ -54,20 +54,20 @@
   </div>
   <div class='col'>
     {#if entry.notes}
-      <h2 class='font-weight-bold text-white'>Notes</h2>
+      <h2 class='font-weight-bold my-4 text-white'>Notes</h2>
       <div class='mb-3' style='white-space: pre-wrap;'>
         {entry.notes}
       </div>
     {/if}
-    <h2 class='font-weight-bold text-white'>Torrents</h2>
-    <div class='row w-100'>
+    <h2 class='font-weight-bold text-white my-4'>Torrents</h2>
+    <div class='w-100 d-flex gap-3 flex-wrap'>
       {#if entry.theoreticalBest}
-        <div class='col-4 mb-2'>
-          <div class='card px-5 py-4'>
+        <div class='specific-w-300 mw-100'>
+          <div class='card px-5 py-4 h-100'>
             <h4 class='card-title mb-15 text-white'>
               {entry.theoreticalBest}
             </h4>
-            <div class='mt-2'>
+            <div class='mt-auto pt-2'>
               <div class='badge text-bg-warning'>Unmuxed</div>
               <div class='badge text-bg-success'>Best</div>
             </div>
@@ -76,13 +76,13 @@
       {/if}
       {#if torrents}
         {#each sortTorrents(torrents) as { dualAudio, infoHash, tracker, url, releaseGroup, isBest }}
-          <a href={url} class='col-4 text-decoration-none mb-2' target='_blank' title={infoHash}>
-            <div class='card px-5 py-4'>
+          <a href={url} class='text-decoration-none specific-w-300 mw-100' target='_blank' title={infoHash}>
+            <div class='card px-5 py-4 h-100'>
               <h4 class='card-title mb-15 text-white'>
                 {releaseGroup}
               </h4>
               <div>Tracker: {tracker}</div>
-              <div class='mt-2'>
+              <div class='mt-auto pt-2'>
                 {#if dualAudio}
                   <div class='badge text-bg-primary mr-2'>DualAudio</div>
                 {/if}
