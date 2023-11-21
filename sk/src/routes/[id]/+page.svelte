@@ -4,11 +4,31 @@
   import { goto } from '$app/navigation'
   import { authModel } from '$lib/pocketbase'
   import type { PageData } from './$types'
+  import type { TorrentsResponse } from '$lib/pocketbase/generated-types'
   export let data: PageData
 
   const { entry, media } = data
 
   const torrents = entry.expand?.trs
+
+  function multiCriteriaSort <T> (...criteria: ((arg0: T, arg1: T) => number)[]) {
+    return (a: T, b: T): number => {
+      for (let i = 0; i < criteria.length; i++) {
+        const curCriteriaComparatorValue = criteria[i](a, b)
+        if (curCriteriaComparatorValue !== 0) {
+          return curCriteriaComparatorValue
+        }
+      }
+      return 0
+    }
+  }
+  function sortTorrents (torrents: TorrentsResponse<any>[]) {
+    return torrents.sort(multiCriteriaSort(
+      (a, b) => Number(b.isBest) - Number(a.isBest),
+      (a, b) => Number(b.dualAudio) - Number(a.dualAudio),
+      (a, b) => a.releaseGroup.localeCompare(b.releaseGroup)
+    ))
+  }
 </script>
 
 <div class='row justify-content-center'>
@@ -55,7 +75,7 @@
         </div>
       {/if}
       {#if torrents}
-        {#each torrents.sort((a, b) => Number(b.isBest) - Number(a.isBest)) as { dualAudio, infoHash, tracker, url, releaseGroup, isBest }}
+        {#each sortTorrents(torrents) as { dualAudio, infoHash, tracker, url, releaseGroup, isBest }}
           <a href={url} class='col-4 text-decoration-none mb-2' target='_blank' title={infoHash}>
             <div class='card px-5 py-4'>
               <h4 class='card-title mb-15 text-white'>
