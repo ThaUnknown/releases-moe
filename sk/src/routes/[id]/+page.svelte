@@ -69,7 +69,7 @@
                 {#if isBest}
                   <div class='badge text-bg-success'>Best</div>
                 {:else}
-                  <div class='badge text-bg-primary'>Alt</div>
+                  <div class='badge text-bg-danger'>Alt</div>
                 {/if}
               </div>
             </div>
