@@ -2,10 +2,7 @@ module pocketbase
 
 go 1.20
 
-require (
-	github.com/labstack/echo/v5 v5.0.0-20230722203903-ec5b858dab61
-	github.com/pocketbase/pocketbase v0.19.2
-)
+require github.com/pocketbase/pocketbase v0.19.2
 
 require (
 	github.com/AlecAivazis/survey/v2 v2.3.7 // indirect
@@ -53,6 +50,7 @@ require (
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51 // indirect
+	github.com/labstack/echo/v5 v5.0.0-20230722203903-ec5b858dab61 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mattn/go-sqlite3 v1.14.17 // indirect
