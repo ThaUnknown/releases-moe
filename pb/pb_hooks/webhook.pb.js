@@ -36,7 +36,8 @@ onRecordAfterCreateRequest(e => {
     const hooks = $app.dao()?.findRecordsByFilter('hooks', 'event = \'insert\'')
     if (!hooks || !record) return
 
-    const data = embeds[record.collection()?.name || ''](record, user)
+    const util = require(`${__hooks}/util.js`)
+    const data = embeds[record.collection()?.name || ''](record, user, util)
 
     for (const hook of hooks || []) {
       if (!hook || hook.get('collection') !== record.collection()?.name) continue

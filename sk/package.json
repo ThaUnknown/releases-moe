@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "vite dev",
     "dev:backend": "cd ../pb && modd",
-    "backend": "cd ../pb/ && pocketbase serve --publicDir=../sk/build --http=127.0.0.1:59991",
+    "backend": "cd ../pb/ && pocketbase serve --debug --publicDir=../sk/build --http=127.0.0.1:59991",
     "build": "vite build",
     "build:backend": "cd ../pb && go build",
     "typegen": "pocketbase-typegen --db ../pb/pb_data/data.db --out ./src/lib/pocketbase/generated-types.ts",
@@ -48,7 +48,7 @@
     "highlight.js": "^11.9.0",
     "parse-torrent": "^11.0.12",
     "path-esm": "^1.0.0",
-    "pocketbase": "^0.18.3",
+    "pocketbase": "^0.19.0",
     "svelte-sonner": "^0.3.0"
   }
 }
