@@ -22,7 +22,7 @@
   }
 
   type WithMedia = {
-    dbid: number
+    dbid: string
   } & media & EntriesResponse<Texpand>
 
   let items: Promise<WithMedia[]> = initialLoad()
@@ -46,9 +46,11 @@
   }
 
   async function searchAndMap (title: string): Promise<WithMedia[]> {
+    if (!title) return initialLoad()
+
     const data = await search(title)
     if (!data.media.length) return []
-    const foundIDs: any = {}
+    const foundIDs: Record<string, WithMedia> = {}
     for (const media of data.media as any) {
       foundIDs[media.id] = media
     }
@@ -62,14 +64,14 @@
       foundIDs[item.alID] = { ...item, ...foundIDs[item.alID], dbid: item.id }
     }
 
-    return Object.values(foundIDs)
+    return Object.values(foundIDs).sort((a, b) => Number(!!b.dbid) - Number(!!a.dbid))
   }
 
   const debouncedSearch = debounce(title => {
     items = searchAndMap(title)
   }, 300)
 
-  $: if (title) debouncedSearch(title)
+  $: debouncedSearch(title)
 
   let textInput: HTMLInputElement
 
