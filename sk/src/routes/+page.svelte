@@ -9,7 +9,7 @@
 <script lang='ts'>
   import { metadata } from '$lib/app/stores'
   import { search, type media, idList } from '$lib/anilist'
-  import { debounce } from '$lib/util'
+  import { debounce, sortTorrents } from '$lib/util'
 
   $metadata.title = 'Home'
 
@@ -113,6 +113,7 @@
       {#if mediaList}
         {#each mediaList as media, i}
           {@const disabled = !isEditing && !media.dbid}
+          {@const torrents = sortTorrents(media.expand?.trs)}
           <a class='table-row' href={!disabled ? (isEditing ? `/${media.id}/edit` : '/' + media.id) : ''}
             class:pointer={!isEditing && media.dbid}
             class:editing={isEditing}
@@ -121,8 +122,8 @@
             <td class:text-light={disabled} class='py-10 px-20 text-nowrap'>{media.title.english || media.title.userPreferred}</td>
             <td class:text-light={disabled} class='py-10 px-20'>{media.seasonYear ?? 'N/A'}</td>
             <td class:text-light={disabled} class='py-10 px-20'>{media.episodes ?? 'N/A'}</td>
-            <td class:text-light={disabled} class='py-10 px-20'>{media.expand?.trs?.find(({ isBest }) => isBest)?.releaseGroup ?? ''}</td>
-            <td class:text-light={disabled} class='py-10 px-20'>{media.expand?.trs?.find(({ isBest }) => !isBest)?.releaseGroup ?? ''}</td>
+            <td class:text-light={disabled} class='py-10 px-20'>{torrents.find(({ isBest }) => isBest)?.releaseGroup ?? ''}</td>
+            <td class:text-light={disabled} class='py-10 px-20'>{torrents.find(({ isBest }) => !isBest)?.releaseGroup ?? ''}</td>
           </a>
         {/each}
       {/if}

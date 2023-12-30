@@ -1,3 +1,4 @@
+import type { TorrentsResponse } from '$lib/pocketbase/generated-types'
 import _as, { type AnitomyResult } from 'anitomyscript'
 
 const formatter = new Intl.RelativeTimeFormat('en')
@@ -94,7 +95,28 @@ export function debounce (fn: (...args: any[]) => any, time: number) {
     clearTimeout(timeout)
     timeout = setTimeout(later, time)
   }
-};
+}
+
+function multiCriteriaSort <T> (...criteria: ((arg0: T, arg1: T) => number)[]) {
+  return (a: T, b: T): number => {
+    for (let i = 0; i < criteria.length; i++) {
+      const curCriteriaComparatorValue = criteria[i](a, b)
+      if (curCriteriaComparatorValue !== 0) {
+        return curCriteriaComparatorValue
+      }
+    }
+    return 0
+  }
+}
+
+export function sortTorrents (torrents: TorrentsResponse<any>[] | undefined) {
+  if (!torrents) return []
+  return torrents.sort(multiCriteriaSort(
+    (a, b) => Number(b.isBest) - Number(a.isBest),
+    (a, b) => Number(b.dualAudio) - Number(a.dualAudio),
+    (a, b) => a.releaseGroup.localeCompare(b.releaseGroup)
+  ))
+}
 
 export const VIDEO_EXTENSIONS = ['3g2', '3gp', 'asf', 'avi', 'dv', 'flv', 'gxf', 'm2ts', 'm4a', 'm4b', 'm4p', 'm4r', 'm4v', 'mkv', 'mov', 'mp4', 'mpd', 'mpeg', 'mpg', 'mxf', 'nut', 'ogm', 'ogv', 'swf', 'ts', 'vob', 'webm', 'wmv', 'wtv']
 export const VIDEO_RX = new RegExp(`.(${VIDEO_EXTENSIONS.join('|')})$`, 'i')

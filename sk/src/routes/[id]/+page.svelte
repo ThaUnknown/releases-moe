@@ -4,31 +4,12 @@
   import { goto } from '$app/navigation'
   import { authModel } from '$lib/pocketbase'
   import type { PageData } from './$types'
-  import type { TorrentsResponse } from '$lib/pocketbase/generated-types'
+  import { sortTorrents } from '$lib/util'
   export let data: PageData
 
   const { entry, media } = data
 
   const torrents = entry.expand?.trs
-
-  function multiCriteriaSort <T> (...criteria: ((arg0: T, arg1: T) => number)[]) {
-    return (a: T, b: T): number => {
-      for (let i = 0; i < criteria.length; i++) {
-        const curCriteriaComparatorValue = criteria[i](a, b)
-        if (curCriteriaComparatorValue !== 0) {
-          return curCriteriaComparatorValue
-        }
-      }
-      return 0
-    }
-  }
-  function sortTorrents (torrents: TorrentsResponse<any>[]) {
-    return torrents.sort(multiCriteriaSort(
-      (a, b) => Number(b.isBest) - Number(a.isBest),
-      (a, b) => Number(b.dualAudio) - Number(a.dualAudio),
-      (a, b) => a.releaseGroup.localeCompare(b.releaseGroup)
-    ))
-  }
 </script>
 
 <div class='row justify-content-center'>
