@@ -21,6 +21,8 @@ export const authModel = readable<UsersResponse | null>(
   }
 )
 
+client.collection('users').authRefresh()
+
 export function logout () {
   client.authStore.clear()
 }
