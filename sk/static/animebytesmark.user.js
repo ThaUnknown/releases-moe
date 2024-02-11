@@ -72,7 +72,7 @@ async function fetchSeadex (ids) {
 // for the handy selectors
 function torrentsOnPage () {
   const torrentPageTorrents = [...document.querySelectorAll(
-    '#anime_table .group_torrent>td>a[href*="&torrentid="]'
+    (window.location.href.includes('torrents.php') ? "" : "#anime_table ") + '.group_torrent>td>a[href*="&torrentid="]'
   )].map(a => ({
     a,
     torrentId: a.href.match(TORRENT_ID_REGEX)[1],
