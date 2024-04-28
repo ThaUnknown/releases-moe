@@ -20,7 +20,6 @@
   }, false)
 
   const links = [
-    ['/', 'Home'],
     ['/about/', 'About'],
     ['https://discord.com/invite/jPeeZewWRn', 'Discord']
   ]
@@ -43,9 +42,9 @@
     </ul>
     {#if $authModel}
       <div class='navbar-brand me-2'>
-        <img src={client.files.getUrl($authModel, $authModel.avatar)} alt='profile pic' />
+        <img src={client.files.getUrl($authModel, $authModel.avatar)} alt='profile pic' class='rounded' />
       </div>
-      <div class='font-size-14 me-4 text-info-emphasis'>
+      <div class='font-size-14 me-4 text-info-emphasis d-none d-sm-block'>
         {$authModel.username}
       </div>
       <button class='btn btn-secondary' on:pointerdown={logout}>
