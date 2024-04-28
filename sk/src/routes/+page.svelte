@@ -27,11 +27,14 @@
 
   let items: Promise<WithMedia[]> = initialLoad()
 
+  let total = 0
+
   async function initialLoad (): Promise<WithMedia[]> {
     const res: ListResult<EntriesResponse<Texpand>> = await client.collection('entries').getList(1, 50, {
-      skipTotal: true,
       expand: 'trs'
     })
+
+    total = res.totalItems
     const alResponse = await idList(res.items.map(({ alID }) => alID))
     const foundIDs: any = {}
     for (const media of alResponse.media as any) {
@@ -56,9 +59,9 @@
     }
     const res: ListResult<EntriesResponse<Texpand>> = await client.collection('entries').getList(1, 50, {
       filter: Object.keys(foundIDs).map((id: string) => 'alID=' + id).join('||'),
-      expand: 'trs',
-      skipTotal: true
+      expand: 'trs'
     })
+    total = res.totalItems
 
     for (const item of res.items) {
       foundIDs[item.alID] = { ...item, ...foundIDs[item.alID], dbid: item.id }
@@ -91,39 +94,48 @@
   {/if}
   <input type='text' class='form-control' placeholder='Search anime title' aria-label='Input with checkbox' bind:value={title} bind:this={textInput} />
 </div>
-<div class='mt-1'>
+<div class='mt-1 ms-1'>
   <small>Press <kbd class='text-body' style='font-size: 10px; background-color: hsla(var(--bs-emphasis-color-hsl), 0.1)'>/</kbd> to focus</small>
 </div>
+<div class='mt-4 ms-1'>
+  <small>
+    {#await items}
+      Loaded ? of ? results
+    {:then mediaList}
+      Loaded {mediaList.filter(({ dbid }) => dbid).length} of {total} results
+    {/await}
+  </small>
+</div>
 
-<table class='table table-hover font-size-14 position-relative overflow-x-auto w-100 mt-4'>
+<table class='table table-hover font-size-14 position-relative overflow-x-auto w-100 mt-1'>
   <thead class='table-secondary'>
     <tr>
-      <th>#</th>
       <th>Name</th>
-      <th>Year</th>
-      <th>Episodes</th>
-      <th>Best</th>
-      <th>Alt</th>
+      <th class='specific-w-75 text-center d-none d-md-table-cell'>Year</th>
+      <th class='specific-w-75 text-center d-none d-md-table-cell'>Episodes</th>
+      <th class='specific-w-100 specific-w-lg-150 text-center'>Best</th>
+      <th class='specific-w-100 specific-w-lg-150 text-center'>Alt</th>
     </tr>
   </thead>
   <tbody>
     {#await items}
-      Loading...
+      <tr><td colspan='5'>Loading...</td></tr>
     {:then mediaList}
       {#if mediaList}
-        {#each mediaList as media, i}
+        {#each mediaList as media}
           {@const disabled = !isEditing && !media.dbid}
           {@const torrents = sortTorrents(media.expand?.trs)}
+          {@const best = torrents.find(({ isBest }) => isBest)?.releaseGroup ?? ''}
+          {@const alt = torrents.find(({ isBest }) => !isBest)?.releaseGroup ?? ''}
           <a class='table-row' href={!disabled ? (isEditing ? `/${media.id}/edit` : '/' + media.id) : ''}
             class:pointer={!isEditing && media.dbid}
             class:editing={isEditing}
             class:disabled>
-            <td class:text-light={disabled} class='py-10 pl-20 pr-0'>{i + 1}</td>
-            <td class:text-light={disabled} class='py-10 px-20 text-nowrap'>{media.title.english || media.title.userPreferred}</td>
-            <td class:text-light={disabled} class='py-10 px-20'>{media.seasonYear ?? 'N/A'}</td>
-            <td class:text-light={disabled} class='py-10 px-20'>{media.episodes ?? 'N/A'}</td>
-            <td class:text-light={disabled} class='py-10 px-20'>{torrents.find(({ isBest }) => isBest)?.releaseGroup ?? ''}</td>
-            <td class:text-light={disabled} class='py-10 px-20'>{torrents.find(({ isBest }) => !isBest)?.releaseGroup ?? ''}</td>
+            <td class:text-light={disabled} class='py-10 px-20 text-truncate'>{media.title.english || media.title.userPreferred}</td>
+            <td class:text-light={disabled} class='py-10 px-20 text-center d-none d-md-table-cell'>{media.seasonYear ?? 'N/A'}</td>
+            <td class:text-light={disabled} class='py-10 px-20 text-center d-none d-md-table-cell'>{media.episodes ?? 'N/A'}</td>
+            <td class:text-light={disabled} title={best} class='py-10 px-20 text-truncate text-center'>{best}</td>
+            <td class:text-light={disabled} title={alt} class='py-10 px-20 text-truncate text-center'>{alt}</td>
           </a>
         {/each}
       {/if}
@@ -138,5 +150,9 @@
     border-color: inherit;
     color: inherit;
     text-decoration: none;
+  }
+
+  .table {
+    table-layout: fixed;
   }
 </style>

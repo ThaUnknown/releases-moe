@@ -1,19 +1,7 @@
 <script lang='ts'>
-  import type { media as _media } from '$lib/anilist'
+  import { type media as _media, formatMap } from '$lib/anilist'
 
   export let media: _media
-
-  const formatMap = {
-    TV: 'TV Series',
-    TV_SHORT: 'TV Short',
-    MOVIE: 'Movie',
-    SPECIAL: 'Special',
-    OVA: 'OVA',
-    ONA: 'ONA',
-    MUSIC: 'Music',
-    undefined: 'N/A',
-    null: 'N/A'
-  }
 
   const format = media.format as keyof typeof formatMap
 </script>

@@ -16,12 +16,12 @@ export const authModel = readable<UsersResponse | null>(
   null,
   function (set) {
     client.authStore.onChange((token, model) => {
-      set(model)
+      set(model as UsersResponse)
     }, true)
   }
 )
 
-client.collection('users').authRefresh()
+if (browser) client.collection('users').authRefresh()
 
 export function logout () {
   client.authStore.clear()
@@ -41,8 +41,9 @@ export async function save (collection: string, record: any, create = false) {
       return await client.collection(collection).create(data)
     }
   } catch (error) {
-    toast.error(error?.message)
-    throw error
+    const err = error as Error
+    toast.error(err?.message)
+    throw err
   }
   // convert obj to FormData in case one of the fields is instanceof FileList
 }
@@ -129,7 +130,7 @@ export function watch<T> (
   async function setPage (newpage: number) {
     const { page, totalPages, perPage } = result
     if (page > 0 && page <= totalPages) {
-      set((result = await collection.getList(newpage, perPage, queryParams)))
+      set((result = await collection.getList<T>(newpage, perPage, queryParams)))
     }
   }
   return {

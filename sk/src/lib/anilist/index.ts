@@ -12,12 +12,18 @@ export type media = {
   }
   season?: number,
   seasonYear?: number,
+  type: string,
   format?: string,
   status: string,
   episodes?: number,
   duration?: number,
   averageScore?: number,
-  genres?: string[]
+  genres?: string[],
+  relations?: {
+    edges: {
+      node: media
+    }[]
+  }
 }
 
 export type alResponse = {
@@ -25,6 +31,18 @@ export type alResponse = {
     hasNextPage: boolean
   },
   media: media[]
+}
+
+export const formatMap = {
+  TV: 'TV Series',
+  TV_SHORT: 'TV Short',
+  MOVIE: 'Movie',
+  SPECIAL: 'Special',
+  OVA: 'OVA',
+  ONA: 'ONA',
+  MUSIC: 'Music',
+  undefined: 'N/A',
+  null: 'N/A'
 }
 
 async function alQuery (body: string, fetch = window.fetch) {
@@ -121,7 +139,27 @@ export async function search (search: string, fetch = window.fetch, id?: string)
           episodes,
           duration,
           averageScore,
-          genres
+          genres,
+          relations {
+            edges {
+              node {
+                id,
+                title {
+                  userPreferred,
+                  english
+                },
+                coverImage{
+                  extraLarge,
+                  color
+                }
+                seasonYear,
+                format,
+                status,
+                type,
+                episodes
+              }
+            }
+          }
         }
       }
     }`.replace(/\s/g, ''),

@@ -14,6 +14,7 @@
   import type { PageData } from './$types'
   import TorrentEditorForm from '$lib/components/TorrentEditorForm.svelte'
   import { createTorrentFromData, fromTorrentList } from '$lib/torrent'
+  import MediaRelations from '$lib/components/MediaRelations.svelte'
 
   export let data: PageData
 
@@ -181,6 +182,7 @@
         <hr />
         <TorrentEditorForm bind:torrent {i} {removeSingleTorrent} {duplicateTorrent} />
       {/each}
+      <MediaRelations relations={media.relations} />
     </div>
   </div>
 </form>

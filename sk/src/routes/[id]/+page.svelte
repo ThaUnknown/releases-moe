@@ -5,6 +5,7 @@
   import { authModel } from '$lib/pocketbase'
   import type { PageData } from './$types'
   import { sortTorrents } from '$lib/util'
+  import MediaRelations from '$lib/components/MediaRelations.svelte'
   export let data: PageData
 
   const { entry, media } = data
@@ -33,7 +34,7 @@
       </div>
     {/if}
   </div>
-  <div class='col'>
+  <div class='col-lg-9 col-12'>
     {#if entry.notes}
       <h2 class='font-weight-bold my-4 text-white'>Notes</h2>
       <div class='mb-3' style='white-space: pre-wrap;'>
@@ -78,5 +79,6 @@
         {/each}
       {/if}
     </div>
+    <MediaRelations relations={media.relations} />
   </div>
 </div>
