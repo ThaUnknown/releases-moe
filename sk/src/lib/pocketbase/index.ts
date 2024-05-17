@@ -149,7 +149,8 @@ export async function providerLogin (provider: AuthProviderInfo, authCollection:
   const authResponse = await authCollection.authWithOAuth2({
     provider: provider.name,
     createData: {
-      emailVisibility: false
+      emailVisibility: false,
+      canEdit: false
     }
   })
   // update user "record" if "meta" has info it doesn't have
