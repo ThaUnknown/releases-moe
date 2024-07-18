@@ -77,7 +77,7 @@ async function alQuery (body: string, fetch = window.fetch) {
   return json
 }
 
-export async function idList ({ ids, pageIndex = 0, perPage = 10, sort = 'SEARCH_MATCH', search, format }: { ids: number[], pageIndex: number, perPage: number, sort?: string, search?: string, format?: string[] }): Promise<alResponse> {
+export async function idList ({ ids, pageIndex = 0, perPage = 10, sort = 'SEARCH_MATCH', search, format }: { ids?: number[], pageIndex: number, perPage: number, sort?: string, search?: string, format?: string[] }): Promise<alResponse> {
   const query = await alQuery(JSON.stringify({
     query: /* js */` 
     query($search: String, $ids: [Int], $sort: [MediaSort], $format: [MediaFormat], $page: Int, $perPage: Int) {
@@ -85,7 +85,7 @@ export async function idList ({ ids, pageIndex = 0, perPage = 10, sort = 'SEARCH
         pageInfo {
           total
         },
-        media(id_in: $ids, type: ANIME, search: $search, sort: $sort, format_not: MUSIC, format_in: $format) {
+        media(id_in: $ids, type: ANIME, search: $search, sort: $sort, format_not: MUSIC, format_in: $format, status_not_in: [NOT_YET_RELEASED, CANCELLED] ) {
           id,
           title {
             userPreferred,

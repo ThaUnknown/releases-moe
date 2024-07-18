@@ -21,7 +21,7 @@ const SORT_ID_MAP: { [key: string]: string } = {
   format: 'FORMAT'
 }
 
-export async function query (pageIndex: number, perPage: number, filterValues: Record<string, unknown>, sortKeys: SortKey[], ids: number[]) {
+export async function query (pageIndex: number, perPage: number, filterValues: Record<string, unknown>, sortKeys: SortKey[], ids?: number[]) {
   data.value = []
   let sort = SORT_ID_MAP[sortKeys[0]?.id] || undefined
 
@@ -50,6 +50,7 @@ export async function query (pageIndex: number, perPage: number, filterValues: R
     } as Entry
     entries.push(obj)
   }
+  console.log({ entries })
   data.value = entries
   serverItemCount.value = alRes.pageInfo.total
 }

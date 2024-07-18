@@ -10,9 +10,12 @@
   import type { TorrentsResponse, TorrentsTrackerOptions } from '$lib/pocketbase/generated-types.js'
   export let data
 
-  const { entry, media } = data
+  let { entry, media } = data
 
-  const groupped = Object.groupBy(entry.expand?.trs || [], ({ releaseGroup }) => releaseGroup) as Record<string, TorrentsResponse[]>
+  $: entry = data.entry
+  $: media = data.media
+
+  $: groupped = Object.groupBy(entry.expand?.trs || [], ({ releaseGroup }) => releaseGroup) as Record<string, TorrentsResponse[]>
 
   function hasDualBest (torrents: TorrentsResponse[]) {
     let isBest = false
@@ -116,6 +119,8 @@
       </div>
       <Separator class='my-10' />
     {/if}
-    <MediaRelations edges={media.relations?.edges.filter(({ node }) => data.ids.includes(node.id))} />
+    {#key media}
+      <MediaRelations edges={media.relations?.edges.filter(({ node }) => data.ids.includes(node.id))} />
+    {/key}
   </div>
 </div>

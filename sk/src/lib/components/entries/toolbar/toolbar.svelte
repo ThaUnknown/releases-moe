@@ -7,8 +7,13 @@
   import { FacetedFilter, ViewOptions } from '../index.js'
   import { Button } from '$lib/components/ui/button'
   import { Input } from '$lib/components/ui/input'
+  import { Checkbox } from '$lib/components/ui/checkbox'
+  import { Label } from '$lib/components/ui/label'
+  import { authModel } from '$lib/pocketbase/index.js'
 
   export let tableModel: TableViewModel<Entry>
+
+  export let isEditing = false
 
   const { pluginStates } = tableModel
 
@@ -37,6 +42,10 @@
       title='Format'
       options={formats}
     />
+    {#if $authModel?.canEdit}
+      <Checkbox bind:checked={isEditing} class='border border-input' id='asEditor' />
+      <Label for='asEditor'>Edit mode</Label>
+    {/if}
     {#if showReset}
       <Button
         on:click={() => {

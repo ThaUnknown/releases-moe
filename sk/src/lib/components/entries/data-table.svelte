@@ -17,15 +17,17 @@
 
   export let ids: number[]
 
-  const debouncedQuery = debounce((pageIndex: number, pageSize: number, filterValues: Record<string, unknown>, $sortKeys: SortKey[], ids: number[]) => {
+  const debouncedQuery = debounce((pageIndex: number, pageSize: number, filterValues: Record<string, unknown>, $sortKeys: SortKey[], ids?: number[]) => {
     query(pageIndex, pageSize, filterValues, $sortKeys, ids)
   }, 300)
 
-  $: debouncedQuery($pageIndex, $pageSize, $filterValues, $sortKeys, ids)
+  let isEditing = false
+
+  $: debouncedQuery($pageIndex, $pageSize, $filterValues, $sortKeys, isEditing ? undefined : ids)
 </script>
 
 <div class='space-y-4'>
-  <Toolbar {tableModel} />
+  <Toolbar {tableModel} bind:isEditing />
   <div class='rounded-md border'>
     <Table.Root {...$tableAttrs}>
       <Table.Header>
@@ -59,7 +61,7 @@
       </Table.Header>
       <Table.Body {...$tableBodyAttrs}>
         {#if $pageRows.length}
-          {#each $pageRows as row (row.original.dbid)}
+          {#each $pageRows as row (row.original.id)}
             <Subscribe rowAttrs={row.attrs()} let:rowAttrs>
               <Table.Row {...rowAttrs} class='cursor-pointer' href='./{row.original.id}'>
                 {#each row.cells as cell (cell.id)}

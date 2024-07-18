@@ -13,7 +13,8 @@ const table = createTable(data, {
   sort: addSortBy({
     toggleOrder: ['asc', 'desc'],
     serverSide: true,
-    disableMultiSort: true
+    disableMultiSort: true,
+    initialSortKeys: [{ id: 'seasonYear', order: 'desc' }]
   }),
   page: addPagination({
     serverSide: true,
