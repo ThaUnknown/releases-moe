@@ -1,118 +1,101 @@
 <script lang='ts'>
-  import { TorrentsTrackerOptions, type TorrentsRecord, type TorrentsResponse } from '$lib/pocketbase/generated-types'
+  import { TorrentsTrackerOptions, type TorrentsRecord } from '$lib/pocketbase/generated-types'
+  import { Checkbox } from '$lib/components/ui/checkbox'
+  import { Input } from '$lib/components/ui/input'
+  import { Label } from '$lib/components/ui/label'
+  import * as Select from '$lib/components/ui/select'
+  import * as Accordion from '$lib/components/ui/accordion'
+  import { Button } from './ui/button'
 
-  type TorrentData = { id?: string } & (TorrentsRecord<any[]>|TorrentsResponse<any[]>)
+  type TorrentData = { id?: string } & TorrentsRecord<{ length: number, name: string }[]>
 
   export let torrent: TorrentData
   export let i: number
-  export let removeSingleTorrent: Function
-  export let duplicateTorrent: Function
+  export let removeSingleTorrent: (torrent: TorrentData) => void
+  export let duplicateTorrent: (torrent: TorrentData) => void
 
   function removeTorrentFile (i: number) {
     if (!torrent.files) return
     torrent.files.splice(i, 1)
     torrent = torrent
   }
+  function selectTracker (obj: { value: TorrentsTrackerOptions } | undefined) {
+    if (obj) torrent.tracker = obj.value
+  }
+  $: selectedTracker = torrent.tracker
+    ? { label: torrent.tracker, value: torrent.tracker }
+    : undefined
 </script>
 
-<div class='row'>
-  <div class='col-6'>
+<div class='grid grid-cols-2 gap-3'>
+  <div>
     <div class='mb-2'>
-      <label for={'infohash' + i} class='form-label'>InfoHash</label>
+      <Label for={'infohash' + i}>InfoHash</Label>
       {#if torrent.tracker === TorrentsTrackerOptions.AnimeBytes}
-        <input type='text' class='form-control disabled' required disabled id={'infohash' + i} value='<redacted>' />
+        <Input type='text' class='form-control disabled' required disabled id={'infohash' + i} value='<redacted>' />
       {:else}
-        <input type='text' class='form-control disabled' required disabled id={'infohash' + i} bind:value={torrent.infoHash} />
+        <Input type='text' class='form-control disabled' required disabled id={'infohash' + i} bind:value={torrent.infoHash} />
       {/if}
     </div>
   </div>
-  <div class='col-6'>
+  <div>
     <div class='mb-2'>
-      <label for={'releaseGroup' + i} class='form-label'>Release Group</label>
-      <input type='text' class='form-control' required id={'releaseGroup' + i} bind:value={torrent.releaseGroup} />
+      <Label for={'releaseGroup' + i}>Release Group</Label>
+      <Input type='text' class='form-control' required id={'releaseGroup' + i} bind:value={torrent.releaseGroup} />
     </div>
   </div>
 </div>
-<div class='row'>
-  <div class='col-6'>
+<div class='grid grid-cols-2 gap-3'>
+  <div>
     <div class='mb-2'>
-      <label for={'tracker' + i} class='form-label'>Tracker</label>
-      <select class='form-select' required id={'tracker' + i} bind:value={torrent.tracker}>
-        {#each Object.keys(TorrentsTrackerOptions) as tracker}
-          <option>{tracker}</option>
-        {/each}
-      </select>
+      <Label>Tracker</Label>
+      <Select.Root required selected={selectedTracker} onSelectedChange={selectTracker}>
+        <Select.Trigger>
+          <Select.Value placeholder='Select a tracker' />
+        </Select.Trigger>
+        <Select.Content>
+          {#each Object.keys(TorrentsTrackerOptions) as tracker}
+            <Select.Item value={tracker} />
+          {/each}
+        </Select.Content>
+      </Select.Root>
     </div>
   </div>
-  <div class='col-6'>
+  <div>
     <div class='mb-2'>
-      <label for={'url' + i} class='form-label'>URL</label>
-      <input type='text' class='form-control' required id={'url' + i} bind:value={torrent.url} />
+      <Label for={'url' + i}>URL</Label>
+      <Input type='text' class='form-control' required id={'url' + i} bind:value={torrent.url} />
     </div>
   </div>
 </div>
-<div class='d-flex mb-2'>
+<div class='flex mb-2'>
   <div class='form-check me-3'>
-    <input type='checkbox' id={'isBest' + i} class='form-check-input' bind:checked={torrent.isBest} />
-    <label for={'isBest' + i} class='form-check-label'>Is Best</label>
+    <Checkbox id={'isBest' + i} bind:checked={torrent.isBest} />
+    <Label for={'isBest' + i}>Is Best</Label>
   </div>
   <div class='form-check'>
-    <input type='checkbox' id={'dualAudio' + i} class='form-check-input' bind:checked={torrent.dualAudio} />
-    <label for={'dualAudio' + i} class='form-check-label'>Dual Audio</label>
+    <Checkbox id={'dualAudio' + i} bind:checked={torrent.dualAudio} />
+    <Label for={'dualAudio' + i}>Dual Audio</Label>
   </div>
 </div>
-<div class='accordion mb-2'>
-  <details class='accordion-item'>
-    <summary class='accordion-header d-block'>
-      <div class='accordion-button collapsed'>
-        Video Files
-      </div>
-    </summary>
-    <div class='accordion-collapse'>
-      <div class='accordion-body'>
-        <ul>
-          {#each torrent.files as file, i}
-            <li class='mb-1 d-flex'>
-              {file.name}
-              {#if torrent.tracker === TorrentsTrackerOptions.AnimeBytes}
-                <button class='btn btn-sm btn-danger ms-auto' type='button' on:click={() => removeTorrentFile(i)}>Remove</button>
-              {/if}
-            </li>
-          {/each}
-        </ul>
-      </div>
-    </div>
-  </details>
-</div>
+<Accordion.Root class='mb-2'>
+  <Accordion.Item value='item-1' class='border rounded-md'>
+    <Accordion.Trigger class='px-3 py-2'>Video Files</Accordion.Trigger>
+    <Accordion.Content class='px-3 pt-2'>
+      {#each torrent.files || [] as file, i}
+        <li class='mb-1 flex'>
+          {file.name}
+          {#if torrent.tracker === TorrentsTrackerOptions.AnimeBytes}
+            <Button class='ms-auto' size='sm' variant='destructive' on:click={() => removeTorrentFile(i)}>Remove</Button>
+          {/if}
+        </li>
+      {/each}
+    </Accordion.Content>
+  </Accordion.Item>
+</Accordion.Root>
 
-<button class='btn btn-danger' type='button' on:click={() => removeSingleTorrent(torrent)}>Delete</button>
-<button class='btn btn-primary' type='button' on:click={() => duplicateTorrent(torrent)}>Duplicate</button>
+<Button variant='destructive' size='sm' on:click={() => removeSingleTorrent(torrent)}>Delete</Button>
+<Button variant='secondary' size='sm' on:click={() => duplicateTorrent(torrent)}>Duplicate</Button>
 {#if torrent.id}
-  <button class='btn btn-secondary' type='button' on:click={() => navigator.clipboard.writeText(torrent.id || '')}>Copy ID</button>
+  <Button variant='secondary' size='sm' on:click={() => navigator.clipboard.writeText(torrent.id || '')}>Copy ID</Button>
 {/if}
-
-<style>
-  details[open] .accordion-button {
-    color: var(--bs-accordion-active-color);
-    background-color: var(--bs-accordion-active-bg);
-    box-shadow: inset 0 calc(-1*var(--bs-accordion-border-width))0 var(--bs-accordion-border-color)
-  }
-
-  details[open] .accordion-button::after {
-    background-image: var(--bs-accordion-btn-active-icon);
-    transform: var(--bs-accordion-btn-icon-transform);
-  }
-
-  details {
-    overflow: hidden; /* Keep this line to prevent an odd blue outline around the element in Safari. */
-  }
-  details {
-    max-height: 50px;
-    height: auto;
-    overflow: hidden;
-    transition: max-height 3.5s linear;
-  }
-  details[open] {
-    max-height: 999rem;
-  }
-</style>

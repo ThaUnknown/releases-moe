@@ -1,4 +1,5 @@
 import { sveltekit } from '@sveltejs/kit/vite'
+import { enhancedImages } from '@sveltejs/enhanced-img'
 import type { UserConfig } from 'vite'
 import fs from 'fs'
 
@@ -8,7 +9,10 @@ const pocketbaseUrl = fs.existsSync('/.dockerenv')
   : 'http://127.0.0.1:59991' // localhost-to-localhost
 
 const config: UserConfig = {
-  plugins: [sveltekit()],
+  plugins: [
+    enhancedImages(),
+    sveltekit()
+  ],
   server: {
     proxy: {
       // proxy "/api" and "/_" to pocketbase_url

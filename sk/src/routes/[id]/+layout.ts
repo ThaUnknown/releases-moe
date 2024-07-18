@@ -5,11 +5,11 @@ import { error } from '@sveltejs/kit'
 import type { EntriesResponse, TorrentsResponse } from '$lib/pocketbase/generated-types'
 
 type Texpand = {
-  trs: TorrentsResponse<any>[]
+  trs: TorrentsResponse[]
 }
 
-export const load: LayoutLoad = async function ({ fetch, url, params: { id } }) {
-  let entry: EntriesResponse<Texpand> = {} as any
+export const load: LayoutLoad = async function ({ url, params: { id } }) {
+  let entry: EntriesResponse<Texpand>
   try {
     entry = await client
       .collection('entries')
@@ -18,7 +18,7 @@ export const load: LayoutLoad = async function ({ fetch, url, params: { id } }) 
     if (!url.pathname.includes('edit')) throw error(404, 'Index Entry Not Found')
   }
 
-  const res = await search('', fetch, id)
+  const res = await search('', id)
 
   const media = res.media[0]
 

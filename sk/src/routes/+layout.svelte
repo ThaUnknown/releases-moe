@@ -2,9 +2,7 @@
   import { metadata } from '$lib/app/stores'
   import Nav from '$lib/components/Nav.svelte'
   import { site } from '$lib/config'
-  import '../app.css'
-  import 'halfmoon/css/cores/halfmoon.modern.css'
-  import 'halfmoon/css/halfmoon.min.css'
+  import '../app.pcss'
   import { Toaster } from 'svelte-sonner'
 </script>
 
@@ -22,6 +20,7 @@
 
 <Nav />
 <Toaster visibleToasts={3} position='top-right' theme='dark' richColors duration={10000} />
-<div class='container py-4'>
+
+<div class='container mx-auto py-5'>
   <slot />
 </div>

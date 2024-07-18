@@ -1,27 +1,28 @@
 <script lang='ts'>
   import { type media as _media, formatMap } from '$lib/anilist'
+  import { Monitor, Calendar } from 'lucide-svelte'
 
   export let media: _media
 
   const format = media.format as keyof typeof formatMap
 </script>
 
-<div class='d-flex position-relative w-100'>
-  <div class='w-100 d-flex flex-column h-100 content-visibility-auto'>
-    <div class='w-full d-flex justify-content-center pb-3'>
-      <img loading='lazy' src={media.coverImage.extraLarge || ''} alt='cover' class='rounded h-100 mw-100' style:--color={media.coverImage.color || '#1890ff'} />
+<div class='flex position-relative w-full'>
+  <div class='w-full flex flex-col h-full content-visibility-auto'>
+    <div class='w-full flex justify-center pb-3'>
+      <img loading='lazy' src={media.coverImage.extraLarge || ''} alt='cover' class='rounded h-full mw-full' style:--color={media.coverImage.color || '#1890ff'} />
     </div>
-    <h2 class='text-white font-weight-bold pt-2 title overflow-hidden my-0'>
+    <h2 class='text-white font-bold pt-2 title overflow-hidden my-0 text-2xl'>
       {media.title.english || media.title.userPreferred}
     </h2>
-    <div class='d-flex flex-row mt-auto pt-2 justify-content-between w-100 text-muted font-size-18'>
-      <div class='d-flex align-items-center' style='margin-left: -3px'>
-        <span class='material-symbols-outlined font-size-24 pe-2'>calendar_month</span>
+    <div class='flex flex-row mt-auto pt-2 justify-between w-full font-size-18'>
+      <div class='flex align-items-center' style='margin-left: -3px'>
+        <Calendar class='pe-2' />
         {media.seasonYear || 'N/A'}
       </div>
-      <div class='d-flex align-items-center'>
+      <div class='flex align-items-center'>
         {formatMap[format]}
-        <span class='material-symbols-outlined font-size-24 ps-2'>monitor</span>
+        <Monitor class='ps-2' />
       </div>
     </div>
   </div>

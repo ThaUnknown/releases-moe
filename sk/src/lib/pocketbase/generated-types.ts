@@ -2,11 +2,15 @@
 * This file was @generated using pocketbase-typegen
 */
 
+import type PocketBase from 'pocketbase'
+import type { RecordService } from 'pocketbase'
+
 export enum Collections {
 	Auditlog = "auditlog",
 	Editors = "editors",
 	Entries = "entries",
 	Hooks = "hooks",
+	ListID = "listID",
 	Torrents = "torrents",
 	Users = "users",
 }
@@ -36,27 +40,27 @@ export type AuthSystemFields<T = never> = {
 // Record types for each collection
 
 export type AuditlogRecord<Tdata = unknown, Toriginal = unknown> = {
-	collection: string
-	record: string
-	event: string
-	user?: RecordIdString
 	admin?: string
+	collection: string
 	data?: null | Tdata
+	event: string
 	original?: null | Toriginal
+	record: string
+	user?: RecordIdString
 }
 
 export type EditorsRecord = {
-	username?: string
 	avatar?: string
+	username?: string
 }
 
 export type EntriesRecord = {
-	trs: RecordIdString[]
 	alID: number
-	notes?: string
-	incomplete?: boolean
 	comparison?: string
+	incomplete?: boolean
+	notes?: string
 	theoreticalBest?: string
+	trs: RecordIdString[]
 }
 
 export enum HooksEventOptions {
@@ -65,9 +69,13 @@ export enum HooksEventOptions {
 	"delete" = "delete",
 }
 export type HooksRecord = {
+	action_params?: string
 	collection: string
 	event: HooksEventOptions
-	action_params?: string
+}
+
+export type ListIDRecord = {
+	alID: number
 }
 
 export enum TorrentsTrackerOptions {
@@ -77,20 +85,20 @@ export enum TorrentsTrackerOptions {
 	"RuTracker" = "RuTracker",
 	"AnimeTosho" = "AnimeTosho",
 }
-export type TorrentsRecord<Tfiles = unknown> = {
+export type TorrentsRecord<Tfiles = { length: number, name: string }[]> = {
+	dualAudio?: boolean
+	files: null | Tfiles
 	infoHash: string
+	isBest?: boolean
+	releaseGroup: string
 	tracker: TorrentsTrackerOptions
 	url: string
-	files: null | Tfiles
-	dualAudio?: boolean
-	releaseGroup: string
-	isBest?: boolean
 }
 
 export type UsersRecord = {
-	name?: string
 	avatar?: string
 	canEdit?: boolean
+	name?: string
 }
 
 // Response types include system fields and match responses from the PocketBase API
@@ -98,7 +106,8 @@ export type AuditlogResponse<Tdata = unknown, Toriginal = unknown, Texpand = unk
 export type EditorsResponse<Texpand = unknown> = Required<EditorsRecord> & BaseSystemFields<Texpand>
 export type EntriesResponse<Texpand = unknown> = Required<EntriesRecord> & BaseSystemFields<Texpand>
 export type HooksResponse<Texpand = unknown> = Required<HooksRecord> & BaseSystemFields<Texpand>
-export type TorrentsResponse<Tfiles = unknown, Texpand = unknown> = Required<TorrentsRecord<Tfiles>> & BaseSystemFields<Texpand>
+export type ListIDResponse<Texpand = unknown> = Required<ListIDRecord> & BaseSystemFields<Texpand>
+export type TorrentsResponse<Tfiles = { length: number, name: string }[], Texpand = unknown> = Required<TorrentsRecord<Tfiles>> & BaseSystemFields<Texpand>
 export type UsersResponse<Texpand = unknown> = Required<UsersRecord> & AuthSystemFields<Texpand>
 
 // Types containing all Records and Responses, useful for creating typing helper functions
@@ -108,6 +117,7 @@ export type CollectionRecords = {
 	editors: EditorsRecord
 	entries: EntriesRecord
 	hooks: HooksRecord
+	listID: ListIDRecord
 	torrents: TorrentsRecord
 	users: UsersRecord
 }
@@ -117,6 +127,20 @@ export type CollectionResponses = {
 	editors: EditorsResponse
 	entries: EntriesResponse
 	hooks: HooksResponse
+	listID: ListIDResponse
 	torrents: TorrentsResponse
 	users: UsersResponse
+}
+
+// Type for usage with type asserted PocketBase instance
+// https://github.com/pocketbase/js-sdk#specify-typescript-definitions
+
+export type TypedPocketBase = PocketBase & {
+	collection(idOrName: 'auditlog'): RecordService<AuditlogResponse>
+	collection(idOrName: 'editors'): RecordService<EditorsResponse>
+	collection(idOrName: 'entries'): RecordService<EntriesResponse>
+	collection(idOrName: 'hooks'): RecordService<HooksResponse>
+	collection(idOrName: 'listID'): RecordService<ListIDResponse>
+	collection(idOrName: 'torrents'): RecordService<TorrentsResponse>
+	collection(idOrName: 'users'): RecordService<UsersResponse>
 }

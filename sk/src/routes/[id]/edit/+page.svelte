@@ -1,5 +1,5 @@
 <script lang='ts' context='module'>
-  import { TorrentsTrackerOptions, type TorrentsResponse, type EntriesRecord, type TorrentsRecord } from '$lib/pocketbase/generated-types'
+  import { TorrentsTrackerOptions, type EntriesRecord, type TorrentsRecord } from '$lib/pocketbase/generated-types'
   import TorrentModal from '$lib/components/TorrentModal.svelte'
   import MediaDetails from '$lib/components/MediaDetails.svelte'
   import { TYPE_EXCLUSIONS, VIDEO_RX, anitomyscriptarray } from '$lib/util'
@@ -8,6 +8,7 @@
 </script>
 
 <script lang='ts'>
+  import { metadata } from '$lib/app/stores'
   import { toast } from 'svelte-sonner'
 
   import { goto, invalidateAll } from '$app/navigation'
@@ -15,17 +16,26 @@
   import TorrentEditorForm from '$lib/components/TorrentEditorForm.svelte'
   import { createTorrentFromData, fromTorrentList } from '$lib/torrent'
   import MediaRelations from '$lib/components/MediaRelations.svelte'
+  import { Button } from '$lib/components/ui/button'
+  import { Input } from '$lib/components/ui/input'
+  import { Label } from '$lib/components/ui/label'
+  import { Textarea } from '$lib/components/ui/textarea'
+  import { Checkbox } from '$lib/components/ui/checkbox'
+  import { Separator } from '$lib/components/ui/separator'
 
   export let data: PageData
 
-  type TorrentData = { id?: string } & (TorrentsRecord<any[]>|TorrentsResponse<any[]>)
+  type TorrentData = { id?: string } & TorrentsRecord
 
   const { entry, media } = data
+
+  $metadata.title = 'Editing ' + media.title.userPreferred
+
   let torrents: TorrentData[] = entry?.expand?.trs || []
 
-  async function checkTorrentVideoFiles ({ files }: any) {
+  async function checkTorrentVideoFiles ({ files }: TorrentData) {
     if (!media.episodes) return
-    const videoFiles = await anitomyscriptarray(files.filter(({ name }: any) => VIDEO_RX.test(name)).map(({ name }: any) => name))
+    const videoFiles = await anitomyscriptarray(files?.filter(({ name }) => VIDEO_RX.test(name)).map(({ name }) => name) || [])
 
     const episodes = videoFiles.filter(file => !TYPE_EXCLUSIONS.includes(file.anime_type?.toUpperCase() || ''))
 
@@ -63,7 +73,7 @@
     }
   }
 
-  async function submit (e: Event) {
+  async function submit () {
     if (!torrents?.length) return toast.error('No Torrent Files Provided')
     try {
       const savedTorrents = []
@@ -112,7 +122,7 @@
     toast.promise(toshoTorrents, {
       loading: `Looking for torrents for ${media.title.english || media.title.userPreferred}...`,
       success: `Found torrents for ${media.title.english || media.title.userPreferred}.`,
-      error: (err: any) => `Couldn't find torrents for ${media.title.english || media.title.userPreferred}\n${err.message}`
+      error: (err: unknown) => `Couldn't find torrents for ${media.title.english || media.title.userPreferred}\n${(err as Error).message}`
     })
     modalContent = await toshoTorrents
   }
@@ -124,7 +134,7 @@
   async function addTorrentById () {
     let torrent
     try {
-      torrent = await client.collection('torrents').getOne(torrentIdInputValue) as TorrentsResponse<any[]>
+      torrent = await client.collection<TorrentData>('torrents').getOne(torrentIdInputValue)
     } catch (e) {
       toast.error('Torrent Not Found: ' + e)
     }
@@ -143,46 +153,48 @@
 <TorrentModal bind:modalContent {addTorrentFile} />
 
 <form on:submit|preventDefault={submit}>
-  <div class='row justify-content-center'>
-    <div class='col-lg-3 col-12 mb-3'>
+  <div class='flex h-full lg:flex-row flex-col justify-content-center'>
+    <div class='mb-3 min-w-0'>
       <MediaDetails {media} />
-      <div class='text-muted pt-2'>Episodes: {media.episodes || 'N/A'}</div>
-      <input class='btn btn-primary mt-3 px-3 me-1' value='Save' type='submit' />
-      <button class='btn btn-success mt-3 px-3' type='button' on:click={findTorrentsOnline}>Find Torrents</button>
-      <button class='btn btn-success mt-3 px-3' type='button' on:click={createABFromFileList}>Create From FileList</button>
+      <div class='pt-2'>Episodes: {media.episodes || 'N/A'}</div>
+      <Separator class='my-10' />
+      <Button type='submit' class='me-1 px-3 mt-3'>Save</Button>
+      <Button variant='secondary' class='me-1 px-3 mt-3' on:click={findTorrentsOnline}>Find Torrents</Button>
+      <Button variant='secondary' class='me-1 px-3 mt-3' on:click={createABFromFileList}>Create From FileList</Button>
       <div class='my-3'>
-        <label for='torrents' class='form-label'>Add torrent file(s)</label>
-        <input class='form-control' type='file' id='torrents' accept='.torrent' multiple on:input={parseTorrentFileInput} />
+        <Label for='torrents'>Add torrent file(s)</Label>
+        <Input class='cursor-pointer' type='file' id='torrents' accept='.torrent' multiple on:input={parseTorrentFileInput} />
       </div>
-      <div class='input-group mb-3'>
-        <label class='input-group-text' for='addByTorrentId'>Add By ID</label>
-        <input type='text' class='form-control' placeholder='Torrent ID' id='addByTorrentId' bind:value={torrentIdInputValue} />
-        <button type='button' class='btn btn-primary' on:click={addTorrentById}>Add</button>
+      <Label for='addByTorrentId'>Add By ID</Label>
+      <div class='flex w-full items-center gap-2'>
+        <Input type='text' placeholder='Torrent ID' id='addByTorrentId' bind:value={torrentIdInputValue} />
+        <Button variant='secondary' on:click={addTorrentById}>Add</Button>
       </div>
     </div>
-    <div class='col'>
+    <Separator orientation='vertical' class='mx-10 h-auto' />
+    <div class='w-full'>
       <div class='mb-2'>
-        <label for='notes' class='form-label'>Notes</label>
-        <textarea class='form-control' id='notes' placeholder='Entry notes' bind:value={entry.notes} />
+        <Label for='notes'>Notes</Label>
+        <Textarea id='notes' placeholder='Entry notes' class='min-h-32' bind:value={entry.notes} />
       </div>
       <div class='mb-2'>
-        <label for='comparison' class='form-label'>Comparisons</label>
-        <input type='text' class='form-control' id='comparison' placeholder='Comma Separated Links' bind:value={entry.comparison} />
+        <Label for='comparison'>Comparisons</Label>
+        <Input type='text' id='comparison' placeholder='Comma Separated Links' bind:value={entry.comparison} />
       </div>
       <div class='mb-2'>
-        <label for='theoreticalBest' class='form-label'>Theoretical Best</label>
-        <input type='text' class='form-control' id='theoreticalBest' placeholder='Potential Unmuxed Combination' bind:value={entry.theoreticalBest} />
+        <Label for='theoreticalBest'>Theoretical Best</Label>
+        <Input type='text' id='theoreticalBest' placeholder='Potential Unmuxed Combination' bind:value={entry.theoreticalBest} />
       </div>
       <div class='form-check'>
-        <input class='form-check-input' type='checkbox' id='incomplete' bind:checked={entry.incomplete} />
-        <label class='form-check-label' for='incomplete'>Is Incomplete</label>
+        <Checkbox id='incomplete' bind:checked={entry.incomplete} />
+        <Label for='incomplete'>Is Incomplete</Label>
       </div>
 
       {#each torrents || [] as torrent, i (i)}
-        <hr />
+        <Separator class='my-5' />
         <TorrentEditorForm bind:torrent {i} {removeSingleTorrent} {duplicateTorrent} />
       {/each}
-      <MediaRelations relations={media.relations} />
+      <MediaRelations edges={media.relations?.edges} edit={true} />
     </div>
   </div>
 </form>

@@ -1,5 +1,6 @@
 <script lang='ts'>
-  import { client } from '$lib/pocketbase/index.js'
+  import * as Avatar from '$lib/components/ui/avatar'
+  import { client } from '$lib/pocketbase'
   import hljs from 'highlight.js/lib/core'
   import js from 'highlight.js/lib/languages/javascript'
   import 'highlight.js/styles/github-dark.min.css'
@@ -28,70 +29,70 @@ const entriesList = await entriesResponse.json()`
   const editors = client.collection('editors').getList(1, 50)
 </script>
 
-<div class='d-flex flex-column pb-20'>
-  <h3 class='font-weight-bold'>What is this?</h3>
+<div>
+  <h3 class='font-bold text-2xl pb-4'>What is this?</h3>
   <p>
     Anime index for tracking the best releases of anime torrents across many trackers.<br />
     This site only provides names and metadata, there are no actual torrents here!
   </p>
-  <h3 class='font-weight-bold'>Why was this made?</h3>
+  <h3 class='font-bold text-2xl py-4'>Why was this made?</h3>
   <p>
     Automation enjoyings! Metadata provided is great for automation.<br />
     Old index was also annoying for linking to people, and difficult to find the desired anime/OVA.
   </p>
-  <h3 class='font-weight-bold'>Are there any extensions/scripts?</h3>
-  <ul>
-    <li><a href={`${origin}/nyaablue.user.js`} target='_blank'>NyaaBlue</a></li>
-    <li><a href={`${origin}/animebytesmark.user.js`} target='_blank'>AB Releases Marking</a></li>
+  <h3 class='font-bold text-2xl py-4'>Are there any extensions/scripts?</h3>
+  <ul class='list-disc list-inside'>
+    <li><a href={`${origin}/nyaablue.user.js`} target='_blank' class='text-blue-600 dark:text-blue-500 hover:underline'>NyaaBlue</a></li>
+    <li><a href={`${origin}/animebytesmark.user.js`} target='_blank' class='text-blue-600 dark:text-blue-500 hover:underline'>AB Releases Marking</a></li>
   </ul>
-  <h3 class='font-weight-bold'>Who are the editors?</h3>
+  <h3 class='font-bold text-2xl py-4'>Who are the editors?</h3>
 
   {#await editors}
     Loading...
   {:then { items }}
-    <div class='py-10'>
+    <div>
       {#each items || [] as { avatar, username, id }}
-        <div class='d-inline-flex align-items-center'>
+        <div class='inline-flex items-center'>
           {#if avatar}
-            <img src={client.files.getUrl({ id, collectionName: 'users' }, avatar)} alt='avatar' class='avatar rounded me-3' />
+            <Avatar.Root class='h-8 w-8'>
+              <Avatar.Image src={client.files.getUrl({ id, collectionName: 'users' }, avatar)} alt={username} />
+              <Avatar.Fallback>{username}</Avatar.Fallback>
+            </Avatar.Root>
           {/if}
-          <div class='me-5'>
+          <span class='me-8 ms-4'>
             {username}
-          </div>
+          </span>
         </div>
       {/each}
     </div>
   {/await}
 
-  <h3 class='font-weight-bold'>How to programmatically access the data?</h3>
+  <h3 class='font-bold text-2xl py-4'>How to programmatically access the data?</h3>
   <p>
-    We provide a REST API under <a href={`${origin}/api/collections`}>{origin}/api/collections</a>.<br />
+    We provide a REST API under <a href={`${origin}/api/collections`} class='text-blue-600 dark:text-blue-500 hover:underline'>{origin}/api/collections</a>.<br />
     Publicly available endpoints are:
   </p>
-  <ul>
-    <li><a href={`${origin}/api/collections/entries/records`}>/entries/records</a></li>
-    <li><a href={`${origin}/api/collections/torrents/records`}>/torrents/records</a></li>
+  <ul class='list-disc list-inside py-4'>
+    <li><a href={`${origin}/api/collections/entries/records`} class='text-blue-600 dark:text-blue-500 hover:underline'>/entries/records</a></li>
+    <li><a href={`${origin}/api/collections/torrents/records`} class='text-blue-600 dark:text-blue-500 hover:underline'>/torrents/records</a></li>
   </ul>
   <p>
     For details on how to use the query parameters visit the <a href='https://pocketbase.io/docs/api-records/#listsearch-records'>PocketBase documentation</a>.
   </p>
 
-  <h3 class='font-weight-bold'>API usage examples:</h3>
+  <h3 class='font-bold text-2xl py-4'>API usage examples:</h3>
   <p>Using the official pocketbase library:</p>
-  <code class='bg-dark py-2 px-3 mb-2 border rounded' style='white-space: pre;'>
-    <!-- eslint-disable-next-line svelte/no-at-html-tags -->
-    {@html pocketBaseCode}
-  </code>
+  <div class='py-2 px-3 mb-3 mt-2  border rounded'>
+    <code class='whitespace-pre'>
+      <!-- eslint-disable-next-line svelte/no-at-html-tags -->
+      {@html pocketBaseCode}
+    </code>
+  </div>
   <p>Or if you want to use a smaller library:</p>
-  <code class='bg-dark py-2 px-3 border rounded' style='white-space: pre;'>
-    <!-- eslint-disable-next-line svelte/no-at-html-tags -->
-    {@html tinyRestCode}
-  </code>
+  <div class='py-2 px-3 mb-3 mt-2 border rounded'>
+    <code class='whitespace-pre'>
+      <!-- eslint-disable-next-line svelte/no-at-html-tags -->
+      {@html tinyRestCode}
+    </code>
+  </div>
 </div>
-
-<style>
-  .avatar {
-    height: 2rem;
-    width: 2rem;
-  }
-</style>

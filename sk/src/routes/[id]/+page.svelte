@@ -1,84 +1,121 @@
 <script lang='ts'>
-  // import { page } from '$app/stores'
+  import { metadata } from '$lib/app/stores'
   import MediaDetails from '$lib/components/MediaDetails.svelte'
-  import { goto } from '$app/navigation'
   import { authModel } from '$lib/pocketbase'
-  import type { PageData } from './$types'
-  import { sortTorrents } from '$lib/util'
+  import { fastPrettyBytes } from '$lib/util'
   import MediaRelations from '$lib/components/MediaRelations.svelte'
-  export let data: PageData
+  import { Button } from '$lib/components/ui/button'
+  import * as Card from '$lib/components/ui/card'
+  import { Separator } from '$lib/components/ui/separator'
+  import type { TorrentsResponse, TorrentsTrackerOptions } from '$lib/pocketbase/generated-types.js'
+  export let data
 
   const { entry, media } = data
 
-  const torrents = entry.expand?.trs
+  const groupped = Object.groupBy(entry.expand?.trs || [], ({ releaseGroup }) => releaseGroup) as Record<string, TorrentsResponse[]>
+
+  function hasDualBest (torrents: TorrentsResponse[]) {
+    let isBest = false
+    let isDual = false
+    const sizes: string[] = []
+    for (const torrent of torrents) {
+      if (torrent.isBest) isBest = true
+      if (torrent.dualAudio) isDual = true
+      const size = torrent.files && fastPrettyBytes(torrent.files.reduce((acc, { length }) => acc + length, 0))
+      if (size && !sizes.includes(size)) sizes.push(size)
+    }
+    return { isBest, isDual, sizes }
+  }
+
+  const icons: Record<TorrentsTrackerOptions, string> = {
+    AnimeBytes: '/ab.ico',
+    AniDex: '/anidex.ico',
+    AnimeTosho: '/tosho.ico',
+    Nyaa: '/cat.png',
+    RuTracker: '/rutracker.ico'
+  }
+
+  $metadata.title = media.title.userPreferred
 </script>
 
-<div class='row justify-content-center'>
-  <div class='col-lg-3 col-12'>
+<div class='flex h-full lg:flex-row flex-col justify-content-center'>
+  <div class='mb-3 min-w-0'>
     {#if entry.incomplete}
-      <div class='font-weight-bold text-danger font-size-20 mb-3'>This Entry Is Incomplete</div>
+      <div class='font-medium text-red-600 text-xl mb-3'>This Entry Is Incomplete</div>
     {/if}
     <MediaDetails {media} />
     {#if $authModel?.canEdit}
-      <button class='btn btn-primary my-3 px-3' type='button' on:click={() => goto('./edit')}>Edit</button>
+      <Button class='my-3 px-5 h-8' href='./edit'>Edit</Button>
     {/if}
     {#if entry.comparison}
-      <hr class='mt-3 mb-2 bg-light' />
-      <h4 class='font-weight-bold text-white'>Comparisons</h4>
-      <div class='d-flex flex-column mb-20 pb-20'>
+      <hr class='mt-3 mb-2' />
+      <h4 class='font-bold text-2xl'>Comparisons</h4>
+      <div class='flex flex-col mb-5 pb-5'>
         {#each entry.comparison.split(',') as comp}
           {#if comp}
-            <a href={comp} class='font-weight-bold'>{comp}</a>
+            <a href={comp} class='text-blue-600 dark:text-blue-500 hover:underline'>{comp}</a>
           {/if}
         {/each}
       </div>
     {/if}
   </div>
-  <div class='col-lg-9 col-12'>
+  <Separator orientation='vertical' class='mx-10 h-auto' />
+  <div class='w-full'>
+    <h2 class='font-bold my-4 text-2xl'>Torrents</h2>
+    <div class='w-full flex gap-3 flex-wrap'>
+      {#if entry.theoreticalBest}
+        <Card.Root class='min-w-48 max-w-full flex flex-col'>
+          <Card.Header>
+            <Card.Title>{entry.theoreticalBest}</Card.Title>
+          </Card.Header>
+          <Card.Footer class='mt-auto'>
+            <span class='bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300'>Unmuxed</span>
+            <span class='bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300'>Best</span>
+          </Card.Footer>
+        </Card.Root>
+      {/if}
+      {#each Object.entries(groupped) as [releaseGroup, torrents]}
+        {@const { isBest, isDual, sizes } = hasDualBest(torrents)}
+        <Card.Root class='min-w-48 max-w-full'>
+          <Card.Header class='pb-3'>
+            <Card.Title>{releaseGroup}</Card.Title>
+            <Card.Description>
+              {sizes.join(' | ')}
+            </Card.Description>
+          </Card.Header>
+          <Card.Content class='pb-3'>
+            {#if isDual}
+              <span class='bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300'>DualAudio</span>
+            {/if}
+            {#if isBest}
+              <span class='bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300'>Best</span>
+            {:else}
+              <span class='bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300'>Alt</span>
+            {/if}
+          </Card.Content>
+          <Card.Footer>
+            <div class='grid grid-cols-2 gap-4'>
+              {#each torrents as torrent}
+                <Button size='sm' variant='outline' class='px-4' href={torrent.url}>
+                  {#if icons[torrent.tracker]}
+                    <img src={icons[torrent.tracker]} alt={torrent.tracker} class='w-3 h-3 me-2' />
+                  {/if}
+                  {torrent.tracker}
+                </Button>
+              {/each}
+            </div>
+          </Card.Footer>
+        </Card.Root>
+      {/each}
+    </div>
+    <Separator class='my-10' />
     {#if entry.notes}
-      <h2 class='font-weight-bold my-4 text-white'>Notes</h2>
-      <div class='mb-3' style='white-space: pre-wrap;'>
+      <h2 class='font-bold my-4 text-2xl'>Notes</h2>
+      <div class='mb-3 whitespace-pre-wrap'>
         {entry.notes}
       </div>
+      <Separator class='my-10' />
     {/if}
-    <h2 class='font-weight-bold text-white my-4'>Torrents</h2>
-    <div class='w-100 d-flex gap-3 flex-wrap'>
-      {#if entry.theoreticalBest}
-        <div class='specific-w-300 mw-100'>
-          <div class='card px-5 py-4 h-100'>
-            <h4 class='card-title mb-15 text-white'>
-              {entry.theoreticalBest}
-            </h4>
-            <div class='mt-auto pt-2'>
-              <div class='badge text-bg-warning'>Unmuxed</div>
-              <div class='badge text-bg-success'>Best</div>
-            </div>
-          </div>
-        </div>
-      {/if}
-      {#if torrents}
-        {#each sortTorrents(torrents) as { dualAudio, infoHash, tracker, url, releaseGroup, isBest }}
-          <a href={url} class='text-decoration-none specific-w-300 mw-100' target='_blank' title={infoHash}>
-            <div class='card px-5 py-4 h-100'>
-              <h4 class='card-title mb-15 text-white'>
-                {releaseGroup}
-              </h4>
-              <div>Tracker: {tracker}</div>
-              <div class='mt-auto pt-2'>
-                {#if dualAudio}
-                  <div class='badge text-bg-primary mr-2'>DualAudio</div>
-                {/if}
-                {#if isBest}
-                  <div class='badge text-bg-success'>Best</div>
-                {:else}
-                  <div class='badge text-bg-danger'>Alt</div>
-                {/if}
-              </div>
-            </div>
-          </a>
-        {/each}
-      {/if}
-    </div>
-    <MediaRelations relations={media.relations} />
+    <MediaRelations edges={media.relations?.edges.filter(({ node }) => data.ids.includes(node.id))} />
   </div>
 </div>

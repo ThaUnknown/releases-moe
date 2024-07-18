@@ -1,4 +1,4 @@
-import type { LayoutLoad } from './$types'
+import { client } from '$lib/pocketbase/index.js'
 
 // turn off SSR - we're JAMstack here
 export const ssr = false
@@ -7,7 +7,8 @@ export const prerender = false
 // trailing slashes make relative paths much easier
 export const trailingSlash = 'always'
 
-export const load: LayoutLoad = async ({ fetch }) => {
+export const load = async () => {
+  return { ids: (await client.collection('listIDs').getFullList({ batch: 10000, fields: 'alID' })).map(({ alID }) => alID) }
   // const response = await fetch('/_/')
   // if (response.redirected) {
   //   alerts.add({

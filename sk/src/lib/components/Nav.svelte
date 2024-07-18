@@ -3,6 +3,13 @@
   import { page } from '$app/stores'
   import { authModel, client, providerLogin, logout } from '../pocketbase/index.js'
   import { toast } from 'svelte-sonner'
+  import Sun from 'svelte-radix/Sun.svelte'
+  import Moon from 'svelte-radix/Moon.svelte'
+  import { toggleMode, ModeWatcher } from 'mode-watcher'
+  import { Button } from '$lib/components/ui/button/index.js'
+
+  import * as DropdownMenu from '$lib/components/ui/dropdown-menu'
+  import * as Avatar from '$lib/components/ui/avatar'
 
   export const authCollection = 'users'
 
@@ -24,49 +31,59 @@
     ['https://discord.com/invite/jPeeZewWRn', 'Discord']
   ]
 </script>
-
-<nav class='navbar navbar-expand docs-navbar sticky-top'>
-  <div class='container-fluid'>
-    <a href={`${base}/`} class='navbar-brand'>
-      <img src={`${base}/favicon.png`} alt='logo' />
-      SeaDex
-    </a>
-
-    <ul class='navbar-nav me-auto'>
-      {#each links as [path, label]}
-        {@const active = $page.url.pathname === path}
-        <li class='nav-item'>
-          <a href={`${base}${path}`} class:active class='nav-link'>{label}</a>
-        </li>
-      {/each}
-    </ul>
-    {#if $authModel}
-      <div class='navbar-brand me-2'>
-        <img src={client.files.getUrl($authModel, $authModel.avatar)} alt='profile pic' class='rounded' />
-      </div>
-      <div class='font-size-14 me-4 text-info-emphasis d-none d-sm-block'>
-        {$authModel.username}
-      </div>
-      <button class='btn btn-secondary' on:pointerdown={logout}>
-        Sign Out
-      </button>
-    {:else}
-      {#await authMethods then methods}
-        {#each methods.authProviders as p}
-          <button class='btn btn-primary text-capitalize ms-3' on:pointerdown={() => providerLogin(p, coll)}>
-            Sign-In With {p.name}
-          </button>
+<header class='sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60'>
+  <div class='container flex h-14 max-w-screen-2xl items-center'>
+    <div class='mr-4 flex'>
+      <a href={`${base}/`} class='mr-6 flex items-center space-x-2'>
+        <img src={`${base}/favicon.png`} alt='logo' class='h-6 w-6' />
+        <span class='hidden font-bold sm:inline-block'>SeaDex</span>
+      </a>
+      <nav class='flex items-center gap-6 text-sm'>
+        {#each links as [path, label]}
+          {@const active = $page.url.pathname === path}
+          <a href={`${base}${path}`} class='transition-colors hover:text-foreground/80 {active ? 'text-foreground' : 'text-foreground/60'}'>{label}</a>
         {/each}
-      {:catch}
-        <!-- pocketbase not working -->
-      {/await}
-    {/if}
+      </nav>
+    </div>
+    <div class='ml-auto flex items-center space-x-4'>
+      {#if $authModel}
+        <DropdownMenu.Root>
+          <DropdownMenu.Trigger asChild let:builder>
+            <Button variant='ghost' builders={[builder]} class='relative h-6 w-6 rounded-full'>
+              <Avatar.Root class='h-6 w-6'>
+                <Avatar.Image src={client.files.getUrl($authModel, $authModel.avatar)} alt={$authModel.username} />
+                <Avatar.Fallback>{$authModel.username}</Avatar.Fallback>
+              </Avatar.Root>
+            </Button>
+          </DropdownMenu.Trigger>
+          <DropdownMenu.Content class='w-56' align='end'>
+            <DropdownMenu.Label class='font-normal'>
+              <div class='flex flex-col space-y-1'>
+                <p class='text-sm font-medium leading-none'>{$authModel.username}</p>
+                <p class='text-xs leading-none text-muted-foreground'>{$authModel.email}</p>
+              </div>
+            </DropdownMenu.Label>
+            <DropdownMenu.Separator />
+            <DropdownMenu.Item on:click={logout}>
+              Log out
+            </DropdownMenu.Item>
+          </DropdownMenu.Content>
+        </DropdownMenu.Root>
+      {:else}
+        {#await authMethods then methods}
+          {#each methods.authProviders as p}
+            <Button variant='ghost' class='capitalize' on:click={() => providerLogin(p, coll)}>Log in with {p.name}</Button>
+          {/each}
+        {:catch}
+          <!-- pocketbase not working -->
+        {/await}
+      {/if}
+      <ModeWatcher />
+      <Button on:click={toggleMode} variant='outline' size='icon'>
+        <Sun class='h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0' />
+        <Moon class='absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100' />
+        <span class='sr-only'>Toggle theme</span>
+      </Button>
+    </div>
   </div>
-</nav>
-
-<style>
-  .navbar-brand img {
-    width: 24px;
-    height: 24px;
-  }
-</style>
+</header>

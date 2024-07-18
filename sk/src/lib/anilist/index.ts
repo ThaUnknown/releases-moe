@@ -28,7 +28,8 @@ export type media = {
 
 export type alResponse = {
   pageInfo: {
-    hasNextPage: boolean
+    hasNextPage: boolean,
+    total: number
   },
   media: media[]
 }
@@ -61,8 +62,8 @@ async function alQuery (body: string, fetch = window.fetch) {
   let json = null
   try {
     json = await res.json()
-  } catch (error: any) {
-    if (res.ok) toast.error(error.message)
+  } catch (error: unknown) {
+    if (res.ok) toast.error((error as Error).message)
   }
   if (!res.ok) {
     if (json) {
@@ -76,15 +77,15 @@ async function alQuery (body: string, fetch = window.fetch) {
   return json
 }
 
-export async function idList (ids: number[]) {
+export async function idList ({ ids, pageIndex = 0, perPage = 10, sort = 'SEARCH_MATCH', search, format }: { ids: number[], pageIndex: number, perPage: number, sort?: string, search?: string, format?: string[] }): Promise<alResponse> {
   const query = await alQuery(JSON.stringify({
     query: /* js */` 
-    query($search: String, $ids: [Int]) {
-      Page(page: 1, perPage: 50) {
+    query($search: String, $ids: [Int], $sort: [MediaSort], $format: [MediaFormat], $page: Int, $perPage: Int) {
+      Page(page: $page, perPage: $perPage) {
         pageInfo {
-          hasNextPage
+          total
         },
-        media(id_in: $ids, type: ANIME, search: $search, sort: SEARCH_MATCH, format_not: MUSIC) {
+        media(id_in: $ids, type: ANIME, search: $search, sort: $sort, format_not: MUSIC, format_in: $format) {
           id,
           title {
             userPreferred,
@@ -106,15 +107,19 @@ export async function idList (ids: number[]) {
       }
     }`.replace(/\s/g, ''),
     variables: {
-      search: search || undefined,
-      ids
+      search,
+      ids,
+      sort,
+      page: pageIndex + 1,
+      perPage,
+      format
     }
   }))
 
   return query.data.Page
 }
 
-export async function search (search: string, fetch = window.fetch, id?: string): Promise<alResponse> {
+export async function search (search: string, id?: string): Promise<alResponse> {
   const query = await alQuery(JSON.stringify({
     query: /* js */` 
     query($search: String, $id: Int) {

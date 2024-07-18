@@ -1,5 +1,5 @@
 import { client } from '$lib/pocketbase'
-import { TorrentsTrackerOptions, type TorrentsResponse } from '$lib/pocketbase/generated-types'
+import { TorrentsTrackerOptions, type TorrentsRecord, type TorrentsResponse } from '$lib/pocketbase/generated-types'
 import { anitomyscript } from '$lib/util'
 import parseTorrent from 'parse-torrent'
 
@@ -26,7 +26,7 @@ export async function createTorrentFromData (data: ArrayBuffer) {
   try {
     return await client
       .collection('torrents')
-      .getFirstListItem<TorrentsResponse<any>>(`infoHash="${torrent.infoHash}"`)
+      .getFirstListItem<TorrentsResponse<{ length: number, name: string }[]>>(`infoHash="${torrent.infoHash}"`)
   } catch (e) {}
 
   const { tracker, url } = getTrackerByComment(torrent.comment)
@@ -35,15 +35,15 @@ export async function createTorrentFromData (data: ArrayBuffer) {
     infoHash: torrent.infoHash,
     dualAudio: !!isDualAudio(parseObject.audio_term),
     isBest: false,
-    files: torrent.files?.map(({ length, name }: any) => ({ length, name })) || null,
+    files: torrent.files?.map(({ length, name }: ({ length: number, name: string })) => ({ length, name })) || null,
     releaseGroup: parseObject.release_group || '',
     tracker,
     url
-  }
+  } as TorrentsRecord<{ length: number, name: string }[]>
 }
 
 export async function fromTorrentList () {
-  const files = JSON.parse(await navigator.clipboard.readText())
+  const files: { size: number, filename: string }[] = JSON.parse(await navigator.clipboard.readText())
   for (const { size, filename } of files) {
     if (!Number.isInteger(size)) return
     if (typeof filename !== 'string' || !filename.length) return

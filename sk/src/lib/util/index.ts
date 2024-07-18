@@ -17,7 +17,7 @@ export function since (date: Date) {
   for (const [key, value] of Object.entries(ranges)) {
     if (value < Math.abs(secondsElapsed)) {
       const delta = secondsElapsed / value
-      return formatter.format(Math.round(delta), key as any)
+      return formatter.format(Math.round(delta), key as Intl.RelativeTimeFormatUnit)
     }
   }
 }
@@ -30,7 +30,7 @@ export function fastPrettyBytes (num: number) {
   return Number((num / Math.pow(1000, exponent)).toFixed(2)) + units[exponent]
 }
 
-const termMapping:Record<any, {text: string, color: string}> = {}
+const termMapping:Record<string, {text: string, color: string}> = {}
 termMapping['5.1'] = { text: '5.1', color: '#f67255' }
 termMapping['5.1CH'] = termMapping[5.1]
 termMapping['TRUEHD5.1'] = { text: 'TrueHD 5.1', color: '#f67255' }
@@ -85,11 +85,10 @@ export async function anitomyscriptarray (input: string[]) {
   return res
 }
 
-export function debounce (fn: (...args: any[]) => any, time: number) {
-  let timeout: any
-  return (...args: any[]) => {
+export function debounce <T extends (...args: Parameters<T>) => ReturnType<T>> (fn: T, time: number) {
+  let timeout: ReturnType<typeof setTimeout>
+  return (...args: Parameters<typeof fn>) => {
     const later = () => {
-      timeout = null
       fn(...args)
     }
     clearTimeout(timeout)
@@ -109,7 +108,7 @@ function multiCriteriaSort <T> (...criteria: ((arg0: T, arg1: T) => number)[]) {
   }
 }
 
-export function sortTorrents (torrents: TorrentsResponse<any>[] | undefined) {
+export function sortTorrents (torrents: TorrentsResponse[] | undefined) {
   if (!torrents) return []
   return torrents.sort(multiCriteriaSort(
     (a, b) => Number(b.isBest) - Number(a.isBest),

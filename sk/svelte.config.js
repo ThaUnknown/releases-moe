@@ -7,7 +7,9 @@ const config = {
 
   kit: {
     alias: {
-      $lib: 'src/lib'
+      $lib: 'src/lib',
+      '@/*': './src/lib/*'
+
     },
     adapter: adapter({
       fallback: 'index.html' // enable SPA mode
