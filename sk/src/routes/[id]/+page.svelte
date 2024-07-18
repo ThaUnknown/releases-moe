@@ -53,10 +53,10 @@
     {#if entry.comparison}
       <hr class='mt-3 mb-2' />
       <h4 class='font-bold text-2xl'>Comparisons</h4>
-      <div class='flex flex-col mb-5 pb-5'>
+      <div class='flex flex-col my-4 pb-5'>
         {#each entry.comparison.split(',') as comp}
           {#if comp}
-            <a href={comp} class='text-blue-600 dark:text-blue-500 hover:underline'>{comp}</a>
+            <a href={comp} class='text-blue-600 dark:text-blue-500 hover:underline my-0.5'>{comp.replace(/https?:\/\//, '').replace(/\/$/, '')}</a>
           {/if}
         {/each}
       </div>
