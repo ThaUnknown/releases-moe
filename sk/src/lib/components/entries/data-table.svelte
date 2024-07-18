@@ -63,7 +63,7 @@
         {#if $pageRows.length}
           {#each $pageRows as row (row.original.id)}
             <Subscribe rowAttrs={row.attrs()} let:rowAttrs>
-              <Table.Row {...rowAttrs} class='cursor-pointer' href='./{row.original.id}'>
+              <Table.Row {...rowAttrs} class='cursor-pointer' href='./{row.original.id}/{isEditing ? 'edit' : ''}'>
                 {#each row.cells as cell (cell.id)}
                   <Subscribe attrs={cell.attrs()} let:attrs>
                     <Table.Cell {...attrs} class='px-5 w-[32px]'>

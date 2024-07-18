@@ -9,7 +9,7 @@ type Texpand = {
 }
 
 export const load: LayoutLoad = async function ({ url, params: { id } }) {
-  let entry: EntriesResponse<Texpand>
+  let entry: EntriesResponse<Texpand> = {}
   try {
     entry = await client
       .collection('entries')

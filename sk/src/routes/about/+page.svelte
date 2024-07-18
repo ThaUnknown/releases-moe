@@ -77,20 +77,20 @@ const entriesList = await entriesResponse.json()`
     <li><a href={`${origin}/api/collections/torrents/records`} class='text-blue-600 dark:text-blue-500 hover:underline'>/torrents/records</a></li>
   </ul>
   <p>
-    For details on how to use the query parameters visit the <a href='https://pocketbase.io/docs/api-records/#listsearch-records'>PocketBase documentation</a>.
+    For details on how to use the query parameters visit the <a class='text-blue-600 dark:text-blue-500 hover:underline' href='https://pocketbase.io/docs/api-records/#listsearch-records'>PocketBase documentation</a>.
   </p>
 
   <h3 class='font-bold text-2xl py-4'>API usage examples:</h3>
   <p>Using the official pocketbase library:</p>
-  <div class='py-2 px-3 mb-3 mt-2  border rounded'>
-    <code class='whitespace-pre'>
+  <div class='py-2 px-3 mb-3 mt-2 border rounded'>
+    <code class='whitespace-pre leading-none text-sm'>
       <!-- eslint-disable-next-line svelte/no-at-html-tags -->
       {@html pocketBaseCode}
     </code>
   </div>
   <p>Or if you want to use a smaller library:</p>
   <div class='py-2 px-3 mb-3 mt-2 border rounded'>
-    <code class='whitespace-pre'>
+    <code class='whitespace-pre leading-none text-sm'>
       <!-- eslint-disable-next-line svelte/no-at-html-tags -->
       {@html tinyRestCode}
     </code>

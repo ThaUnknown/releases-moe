@@ -49,7 +49,7 @@
       {#if $authModel}
         <DropdownMenu.Root>
           <DropdownMenu.Trigger asChild let:builder>
-            <Button variant='ghost' builders={[builder]} class='relative h-6 w-6 rounded-full'>
+            <Button variant='ghost' builders={[builder]} class='relative h-6 w-6 rounded-full p-0'>
               <Avatar.Root class='h-6 w-6'>
                 <Avatar.Image src={client.files.getUrl($authModel, $authModel.avatar)} alt={$authModel.username} />
                 <Avatar.Fallback>{$authModel.username}</Avatar.Fallback>
