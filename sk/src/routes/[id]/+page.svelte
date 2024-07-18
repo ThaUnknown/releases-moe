@@ -56,7 +56,9 @@
       <div class='flex flex-col my-4 pb-5'>
         {#each entry.comparison.split(',') as comp}
           {#if comp}
-            <a href={comp} class='text-blue-600 dark:text-blue-500 hover:underline my-0.5'>{comp.replace(/https?:\/\//, '').replace(/\/$/, '')}</a>
+            <Button href={comp} class='text-blue-600 dark:text-blue-500 hover:underline my-1 bg-blue-400/10 hover:bg-blue-400/15'>
+              {comp.replace(/https?:\/\//, '').replace(/\/$/, '')}
+            </Button>
           {/if}
         {/each}
       </div>
