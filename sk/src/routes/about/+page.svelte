@@ -101,7 +101,7 @@ const entriesList = await entriesResponse.json()`
     The <a href={`${origin}/api/collections/torrents/records`} class='text-blue-600 dark:text-blue-500 hover:underline'>torrents</a> endpoint is also available as <a href={`${origin}/rss`} target='_blank' class='text-blue-600 dark:text-blue-500 hover:underline'>an RSS feed</a> instead of a JSON feed. This allows you to use the data in your torrent client, or in a feed reader. The query parameters are the same as for the JSON torrent feed.
   </p>
   <p>
-    This once again enables some powerful queries for your torrent client such as <a href={`${origin}/rss?filter=(isBest=true%26%26infoHash!=%27<redacted>%27)&sort=-updated`} class='text-blue-600 dark:text-blue-500 hover:underline'>an RSS feed for all public torrents, which are marked as best, sorted by newest first.</a>
+    This once again enables some powerful queries for your torrent client such as <a href={`${origin}/rss?filter=(isBest=true%26%26infoHash!=%27<redacted>%27)&sort=-updated`} target='_blank' class='text-blue-600 dark:text-blue-500 hover:underline'>an RSS feed for all public torrents, which are marked as best, sorted by newest first.</a>
   </p>
 
   <h3 class='font-bold text-2xl py-4'>API usage examples using JavaScript:</h3>
