@@ -27,11 +27,16 @@
 
   type TorrentData = { id?: string } & TorrentsRecord
 
-  const { entry, media } = data
+  let { entry, media } = data
+
+  $: entry = data.entry
+  $: media = data.media
 
   $metadata.title = 'Editing ' + media.title.userPreferred
 
   let torrents: TorrentData[] = entry?.expand?.trs || []
+
+  $: torrents = entry.expand?.trs || []
 
   async function checkTorrentVideoFiles ({ files }: TorrentData) {
     if (!media.episodes) return
@@ -194,7 +199,9 @@
         <Separator class='my-5' />
         <TorrentEditorForm bind:torrent {i} {removeSingleTorrent} {duplicateTorrent} />
       {/each}
-      <MediaRelations edges={media.relations?.edges} edit={true} />
+      {#key media}
+        <MediaRelations edges={media.relations?.edges} edit={true} />
+      {/key}
     </div>
   </div>
 </form>
