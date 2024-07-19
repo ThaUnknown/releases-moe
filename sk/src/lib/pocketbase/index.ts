@@ -9,8 +9,7 @@ import type { CollectionRecords, UsersResponse } from './generated-types'
 import { toast } from 'svelte-sonner'
 
 export const client = new PocketBase(
-  // TODO: there's probably a better way of doing this, severside url shouldnt be hardcoded but loaded from config!
-  browser ? window.location.origin + '/' + base : 'http://127.0.0.1:59992'
+  browser ? window.location.origin + '/' + base : undefined
 )
 
 export const authModel = readable<UsersResponse | null>(

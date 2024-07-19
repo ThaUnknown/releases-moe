@@ -23,7 +23,7 @@ services:
     ports:
       - 59991:59991
     # sveltekit build
-    command: sh -c "npx pnpm install && npm run build && PORT=59991 node server.js"
+    command: sh -c "npx pnpm install && npm run build && PORT=59991 PROXY_TARGET=http://pb:59992 node server.js"
     volumes:
       - ./sk:/app/sk
     environment:

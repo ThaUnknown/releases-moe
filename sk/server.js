@@ -330,7 +330,5 @@ process.on('SIGINT', graceful_shutdown)
 
 server.use('/api', createProxyMiddleware({
   secure: false,
-  target: existsSync('/.dockerenv')
-    ? 'http://pb:59992/api' // docker-to-docker
-    : 'http://127.0.0.1:59992/api' // localhost-to-localhost
+  target: env('PROXY_TARGET', 'http://127.0.0.1:59992') + '/api'
 })).use(handler)

@@ -1,5 +1,8 @@
-import { client } from '$lib/pocketbase/index'
+import PocketBase from 'pocketbase'
 import { keyedTrimWhiteSpace } from '$lib/util'
+import { env } from '$env/dynamic/private'
+
+const client = new PocketBase(env.PROXY_TARGET || 'http://127.0.0.1:59992')
 
 const channel = keyedTrimWhiteSpace/* xml */`
 <rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:seadex="${'origin'}/xmlns/seadex" version="2.0">
