@@ -7,7 +7,7 @@
   import * as Accordion from '$lib/components/ui/accordion'
   import { Button } from './ui/button'
 
-  type TorrentData = { id?: string } & TorrentsRecord<{ length: number, name: string }[]>
+  type TorrentData = { id?: string } & TorrentsRecord
 
   export let torrent: TorrentData
   export let i: number
@@ -31,7 +31,7 @@
   <div>
     <div class='mb-2'>
       <Label for={'infohash' + i}>InfoHash</Label>
-      {#if torrent.tracker === TorrentsTrackerOptions.AnimeBytes}
+      {#if torrent.tracker === TorrentsTrackerOptions.AnimeBytes || torrent.tracker === TorrentsTrackerOptions.BeyondHD}
         <Input type='text' class='form-control disabled' required disabled id={'infohash' + i} value='<redacted>' />
       {:else}
         <Input type='text' class='form-control disabled' required disabled id={'infohash' + i} bind:value={torrent.infoHash} />

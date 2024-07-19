@@ -79,8 +79,32 @@ const entriesList = await entriesResponse.json()`
   <p>
     For details on how to use the query parameters visit the <a class='text-blue-600 dark:text-blue-500 hover:underline' href='https://pocketbase.io/docs/api-records/#listsearch-records'>PocketBase documentation</a>.
   </p>
+  <p>
+    This API enables some very powerful automation, as you can query the data in any way you want. For example, you can get the best releases for a specific anime, or the best releases for a specific group.
+  </p>
+  <p>
+    Some examples of what you can do with the API are:
+  </p>
+  <ul class='list-disc list-inside py-4'>
+    <li><a href={`${origin}/api/collections/entries/records?filter=theoreticalBest!=%27%27`} target='_blank' class='text-blue-600 dark:text-blue-500 hover:underline'>List all entries with theoretical releases which aren't yet muxed, to find what you could mux yourself</a></li>
+    <li><a href={`${origin}/api/collections/entries/records?filter=comparison!=%27%27`} target='_blank' class='text-blue-600 dark:text-blue-500 hover:underline'>List all entries without comparisons, so you can create some and contribute them</a></li>
+    <li><a href={`${origin}/api/collections/entries/records?filter=incomplete=false`} target='_blank' class='text-blue-600 dark:text-blue-500 hover:underline'>List all entries which aren't incomplete, to make sure you only get entries which are finished</a></li>
+    <li><a href={`${origin}/api/collections/entries/records?expand=trs&filter=trs.tracker=%27Nyaa%27`} target='_blank' class='text-blue-600 dark:text-blue-500 hover:underline'>List all entries which are only uploaded to Nyaa, and not any PTs, if you want to mirror public tracker entries to some PTs</a></li>
+    <li><a href={`${origin}/api/collections/entries/records?sort=@random&perPage=1`} target='_blank' class='text-blue-600 dark:text-blue-500 hover:underline'>Get a single random entry</a></li>
+    <li><a href={`${origin}/api/collections/entries/records?sort=@random&perPage=1`} target='_blank' class='text-blue-600 dark:text-blue-500 hover:underline'>Get an entry entry for a specific AniList ID</a></li>
+    <li><a href={`${origin}/api/collections/entries/records?expand=trs&filter=trs.files?~%27"name":"[OZR]%20Goblin%20Slayer%20-%20S01E04%20(BD%201080p%20HEVC%20FLAC)%20[Dual-Audio]%20[B2BDEAF3].mkv"%27&fields=alID`} target='_blank' class='text-blue-600 dark:text-blue-500 hover:underline'>Get the AniList ID using a torrent's file name</a></li>
+    <li><a href={`${origin}/api/collections/torrents/records?filter=files=%27[{%22length%22:9415031919,%22name%22:%22Jujutsu%20Kaisen%200%20(2021)%20[v2]%20[BD%201080p%20HEVC%20Dual-Audio]%20[Vodes].mkv%22}]%27`} target='_blank' class='text-blue-600 dark:text-blue-500 hover:underline'>List all torrents which contain a specific set of files, this allows you to find tracker links and infoHashes with a file's size and or name</a></li>
+    <li><a href={`${origin}/api/collections/torrents/records?filter=tracker=%27RuTracker%27&sort=-updated`} target='_blank' class='text-blue-600 dark:text-blue-500 hover:underline'>List all torrents from a specific tracker and sort them by newest first</a></li>
+    <li><a href={`${origin}/api/collections/torrents/records?filter=tracker=%27RuTracker%27&sort=-updated`} target='_blank' class='text-blue-600 dark:text-blue-500 hover:underline'>List all torrents from a specific release group, which are marked as best</a></li>
+  </ul>
+  <p>
+    The <a href={`${origin}/api/collections/torrents/records`} class='text-blue-600 dark:text-blue-500 hover:underline'>torrents</a> endpoint is also available as <a href={`${origin}/rss`} target='_blank' class='text-blue-600 dark:text-blue-500 hover:underline'>an RSS feed</a> instead of a JSON feed. This allows you to use the data in your torrent client, or in a feed reader. The query parameters are the same as for the JSON torrent feed.
+  </p>
+  <p>
+    This once again enables some powerful queries for your torrent client such as <a href={`${origin}/rss?filter=(isBest=true%26%26infoHash!=%27<redacted>%27)&sort=-updated`} class='text-blue-600 dark:text-blue-500 hover:underline'>an RSS feed for all public torrents, which are marked as best, sorted by newest first.</a>
+  </p>
 
-  <h3 class='font-bold text-2xl py-4'>API usage examples:</h3>
+  <h3 class='font-bold text-2xl py-4'>API usage examples using JavaScript:</h3>
   <p>Using the official pocketbase library:</p>
   <div class='py-2 px-3 mb-3 mt-2 border rounded'>
     <code class='whitespace-pre leading-none text-sm'>

@@ -4,11 +4,11 @@ services:
   pb:
     image: golang:1.21.5-alpine
     entrypoint: ./entrypoint.sh
-    command: "/app/pb/pocketbase serve --http 0.0.0.0:59991 --publicDir ../sk/build"
+    command: "/app/pb/pocketbase serve --http 0.0.0.0:59992"
     # command: tail -f /dev/null
     user: ${UID}:${GID}
     ports:
-      - 59991:59991
+      - 59992:59992
     working_dir: /app/pb
     environment:
       - HOME=/app/pb
@@ -20,8 +20,10 @@ services:
   sk:
     image: node:alpine
     user: ${UID}:${GID}
+    ports:
+      - 59991:59991
     # sveltekit build
-    command: sh -c "npx pnpm install && npm run build"
+    command: sh -c "npx pnpm install && npm run build && PORT=59991 node server.js"
     volumes:
       - ./sk:/app/sk
     environment:

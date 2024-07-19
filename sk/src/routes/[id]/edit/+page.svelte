@@ -78,7 +78,7 @@
     try {
       const savedTorrents = []
       for (const torrent of torrents) {
-        if (torrent.tracker === TorrentsTrackerOptions.AnimeBytes) {
+        if (torrent.tracker === TorrentsTrackerOptions.AnimeBytes || torrent.tracker === TorrentsTrackerOptions.BeyondHD) {
           torrent.infoHash = '<redacted>'
           torrent.id = ''
         }

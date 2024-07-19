@@ -120,3 +120,12 @@ export function sortTorrents (torrents: TorrentsResponse[] | undefined) {
 export const VIDEO_EXTENSIONS = ['3g2', '3gp', 'asf', 'avi', 'dv', 'flv', 'gxf', 'm2ts', 'm4a', 'm4b', 'm4p', 'm4r', 'm4v', 'mkv', 'mov', 'mp4', 'mpd', 'mpeg', 'mpg', 'mxf', 'nut', 'ogm', 'ogv', 'swf', 'ts', 'vob', 'webm', 'wmv', 'wtv']
 export const VIDEO_RX = new RegExp(`.(${VIDEO_EXTENSIONS.join('|')})$`, 'i')
 export const TYPE_EXCLUSIONS = ['ED', 'ENDING', 'NCED', 'NCOP', 'OP', 'OPENING', 'PREVIEW', 'PV']
+
+export function keyedTrimWhiteSpace (strings: TemplateStringsArray, ...keys: string[]) {
+  const noWhiteSpace = strings.map(str => str.replace(/ {2}|\n/g, ''))
+  return (dictionary: Record<string, string>) => {
+    return keys.reduce((acc, key, i) => {
+      return acc + dictionary[key] + noWhiteSpace[i + 1]
+    }, noWhiteSpace[0])
+  }
+}

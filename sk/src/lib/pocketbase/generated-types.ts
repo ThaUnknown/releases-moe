@@ -10,7 +10,7 @@ export enum Collections {
 	Editors = "editors",
 	Entries = "entries",
 	Hooks = "hooks",
-	ListID = "listID",
+	ListIDs = "listIDs",
 	Torrents = "torrents",
 	Users = "users",
 }
@@ -74,7 +74,7 @@ export type HooksRecord = {
 	event: HooksEventOptions
 }
 
-export type ListIDRecord = {
+export type ListIDsRecord = {
 	alID: number
 }
 
@@ -84,6 +84,8 @@ export enum TorrentsTrackerOptions {
 	"AniDex" = "AniDex",
 	"RuTracker" = "RuTracker",
 	"AnimeTosho" = "AnimeTosho",
+	"BeyondHD" = "BeyondHD",
+	"Other" = "Other",
 }
 export type TorrentsRecord<Tfiles = { length: number, name: string }[]> = {
 	dualAudio?: boolean
@@ -106,7 +108,7 @@ export type AuditlogResponse<Tdata = unknown, Toriginal = unknown, Texpand = unk
 export type EditorsResponse<Texpand = unknown> = Required<EditorsRecord> & BaseSystemFields<Texpand>
 export type EntriesResponse<Texpand = unknown> = Required<EntriesRecord> & BaseSystemFields<Texpand>
 export type HooksResponse<Texpand = unknown> = Required<HooksRecord> & BaseSystemFields<Texpand>
-export type ListIDResponse<Texpand = unknown> = Required<ListIDRecord> & BaseSystemFields<Texpand>
+export type ListIDsResponse<Texpand = unknown> = Required<ListIDsRecord> & BaseSystemFields<Texpand>
 export type TorrentsResponse<Tfiles = { length: number, name: string }[], Texpand = unknown> = Required<TorrentsRecord<Tfiles>> & BaseSystemFields<Texpand>
 export type UsersResponse<Texpand = unknown> = Required<UsersRecord> & AuthSystemFields<Texpand>
 
@@ -117,7 +119,7 @@ export type CollectionRecords = {
 	editors: EditorsRecord
 	entries: EntriesRecord
 	hooks: HooksRecord
-	listID: ListIDRecord
+	listIDs: ListIDsRecord
 	torrents: TorrentsRecord
 	users: UsersRecord
 }
@@ -127,7 +129,7 @@ export type CollectionResponses = {
 	editors: EditorsResponse
 	entries: EntriesResponse
 	hooks: HooksResponse
-	listID: ListIDResponse
+	listIDs: ListIDsResponse
 	torrents: TorrentsResponse
 	users: UsersResponse
 }
@@ -140,7 +142,7 @@ export type TypedPocketBase = PocketBase & {
 	collection(idOrName: 'editors'): RecordService<EditorsResponse>
 	collection(idOrName: 'entries'): RecordService<EntriesResponse>
 	collection(idOrName: 'hooks'): RecordService<HooksResponse>
-	collection(idOrName: 'listID'): RecordService<ListIDResponse>
+	collection(idOrName: 'listIDs'): RecordService<ListIDsResponse>
 	collection(idOrName: 'torrents'): RecordService<TorrentsResponse>
 	collection(idOrName: 'users'): RecordService<UsersResponse>
 }

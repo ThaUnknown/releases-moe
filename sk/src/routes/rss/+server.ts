@@ -1,36 +1,38 @@
-import { client } from '$lib/pocketbase'
+import { client } from '$lib/pocketbase/index'
+import { keyedTrimWhiteSpace } from '$lib/util'
 
-export async function GET ({ url, fetch }) {
-  const res = await fetch('/api/collections/torrents/records?page=1&perPage=50&sort=-updated')
-  // const items = (await client.collection('torrents').getList(1, 50, { sort: '-updated' })).items
-  const { items } = await res.json()
+const channel = keyedTrimWhiteSpace/* xml */`
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:seadex="${'origin'}/xmlns/seadex" version="2.0">
+  <channel>
+    <title>SeaDex</title>
+    <link>${'origin'}</link>
+    <description>RSS feed for latest changes</description>
+    <atom:link href="${'origin'}/rss" rel="self" type="application/rss+xml" />
+    ${'items'}
+  </channel>
+</rss>`
 
-  const headers = {
-    'Cache-Control': 'max-age=0, s-maxage=3600',
-    'Content-Type': 'application/xml'
-  }
-  return new Response(
-    `<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:seadex="${url.origin}/xmlns/seadex" version="2.0">
-      <channel>
-        <title>SeaDex</title>
-        <link>${url.origin}</link>
-        <description>RSS feed for latest changes</description>
-        <atom:link href="${url}" rel="self" type="application/rss+xml" />
-        ${items.filter(item => item.infoHash !== '<redacted>')
-          .map(item => `
-            <item>
-              <title>${item.id}</title>
-              <link>${item.infoHash}</link>
-              <guid isPermaLink="true">${item.url}</guid>
-              <pubDate>${new Date(item.updated)}</pubDate>
+const channelItems = keyedTrimWhiteSpace/* xml */`
+<item>
+  <title>${'id'}</title>
+  <link>${'hash'}</link>
+  <guid isPermaLink="true">${'url'}</guid>
+  <pubDate>${'date'}</pubDate>
+  <seadex:infoHash>${'hash'}</seadex:infoHash>
+</item>`
 
-              <seadex:infoHash>${item.infoHash}</seadex:infoHash>
-            </item>
-          `
-          )
-          .join('')}
-      </channel>
-    </rss>`,
-    { headers }
-  )
+export async function GET ({ url }) {
+  const search = Object.fromEntries(url.searchParams.entries())
+  const { items } = await client.collection('torrents').getList(1, Number(search.perPage) || 50, { sort: '-updated', ...search, skipTotal: true, fields: '*' })
+
+  const rssItems = items.map(({ id, infoHash, url, updated }) => channelItems({
+    id, hash: infoHash.replace(/[<>]/g, ''), url: url.replace('&', '&amp;'), date: '' + new Date(updated)
+  })).join('')
+
+  return new Response(channel({ origin: url.origin, items: rssItems }), {
+    headers: {
+      'Cache-Control': 'public, max-age=43200',
+      'Content-Type': 'application/xml'
+    }
+  })
 }
