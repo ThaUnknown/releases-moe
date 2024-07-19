@@ -4,7 +4,6 @@ import { createProxyMiddleware } from 'http-proxy-middleware'
 import { env } from './build/env.js'
 import http from 'http'
 import * as qs from 'querystring'
-import { existsSync } from 'fs'
 
 /**
  * @param {string|RegExp} input The route pattern

@@ -87,7 +87,7 @@ const entriesList = await entriesResponse.json()`
   </p>
   <ul class='list-disc list-inside py-4'>
     <li><a href={`${origin}/api/collections/entries/records?filter=theoreticalBest!=%27%27`} target='_blank' class='text-blue-600 dark:text-blue-500 hover:underline'>List all entries with theoretical releases which aren't yet muxed, to find what you could mux yourself</a></li>
-    <li><a href={`${origin}/api/collections/entries/records?filter=comparison!=%27%27`} target='_blank' class='text-blue-600 dark:text-blue-500 hover:underline'>List all entries without comparisons, so you can create some and contribute them</a></li>
+    <li><a href={`${origin}/api/collections/entries/records?filter=comparison=%27%27`} target='_blank' class='text-blue-600 dark:text-blue-500 hover:underline'>List all entries without comparisons, so you can create some and contribute them</a></li>
     <li><a href={`${origin}/api/collections/entries/records?filter=incomplete=false`} target='_blank' class='text-blue-600 dark:text-blue-500 hover:underline'>List all entries which aren't incomplete, to make sure you only get entries which are finished</a></li>
     <li><a href={`${origin}/api/collections/entries/records?expand=trs&filter=trs.tracker=%27Nyaa%27`} target='_blank' class='text-blue-600 dark:text-blue-500 hover:underline'>List all entries which are only uploaded to Nyaa, and not any PTs, if you want to mirror public tracker entries to some PTs</a></li>
     <li><a href={`${origin}/api/collections/entries/records?sort=@random&perPage=1`} target='_blank' class='text-blue-600 dark:text-blue-500 hover:underline'>Get a single random entry</a></li>
