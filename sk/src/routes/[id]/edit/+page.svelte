@@ -36,7 +36,7 @@
 
   let torrents: TorrentData[] = entry?.expand?.trs || []
 
-  $: torrents = entry.expand?.trs || []
+  $: if (entry.expand?.trs) torrents = entry.expand.trs
 
   async function checkTorrentVideoFiles ({ files }: TorrentData) {
     if (!media.episodes) return
