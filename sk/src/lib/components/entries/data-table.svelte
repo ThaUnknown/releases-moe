@@ -4,7 +4,7 @@
   import * as Table from '$lib/components/ui/table'
 
   import { ColumnHeader, Pagination, Toolbar } from './index'
-  import { query } from './query'
+  import { query, data } from './query'
   import { columns, tableModel } from './table'
   import { debounce } from '$lib/util'
   import type { SortKey } from 'svelte-headless-table/plugins'
@@ -23,6 +23,7 @@
 
   let isEditing = false
 
+  data.value = []
   $: debouncedQuery($pageIndex, $pageSize, $filterValues, $sortKeys, isEditing ? undefined : ids)
 </script>
 

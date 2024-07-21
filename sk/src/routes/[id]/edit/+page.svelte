@@ -36,7 +36,11 @@
 
   let torrents: TorrentData[] = entry?.expand?.trs || []
 
-  $: if (entry.expand?.trs) torrents = entry.expand.trs
+  $: if (entry.expand?.trs) updateTorrents(entry.expand.trs)
+
+  function updateTorrents (newTorrents: TorrentData[]) {
+    torrents = newTorrents
+  }
 
   async function checkTorrentVideoFiles ({ files }: TorrentData) {
     if (!media.episodes) return

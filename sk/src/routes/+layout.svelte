@@ -1,9 +1,11 @@
-<script context='module'>
+<script context='module' lang='ts'>
   import { metadata } from '$lib/app/stores'
+  import { ProgressBar } from '@prgm/sveltekit-progress-bar'
   import Nav from '$lib/components/Nav.svelte'
   import { site } from '$lib/config'
   import '../app.pcss'
   import { Toaster } from 'svelte-sonner'
+  import { progress } from '$lib/components/entries/query'
 </script>
 
 <script lang='ts'>
@@ -18,6 +20,7 @@
   <meta name='description' content={description} />
 </svelte:head>
 
+<ProgressBar zIndex={100} bind:this={$progress} />
 <Nav />
 <Toaster visibleToasts={3} position='top-right' theme='dark' richColors duration={10000} />
 

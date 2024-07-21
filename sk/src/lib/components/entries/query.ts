@@ -1,4 +1,5 @@
-import { writable } from 'simple-store-svelte'
+import { writable, type Writable } from 'simple-store-svelte'
+import { type ProgressBar } from '@prgm/sveltekit-progress-bar'
 import type { Entry } from './schemas'
 import type { SortKey } from 'svelte-headless-table/plugins'
 import { idList } from '$lib/anilist'
@@ -9,6 +10,8 @@ import type { EntriesResponse, TorrentsResponse } from '$lib/pocketbase/generate
 export const data = writable<Entry[]>([])
 
 export const serverItemCount = writable(0)
+
+export const progress: Writable<ProgressBar | null> = writable(null)
 
 type Texpand = {
   trs: TorrentsResponse[]
@@ -22,6 +25,7 @@ const SORT_ID_MAP: { [key: string]: string } = {
 }
 
 export async function query (pageIndex: number, perPage: number, filterValues: Record<string, unknown>, sortKeys: SortKey[], ids?: number[]) {
+  progress.value?.start()
   data.value = []
   let sort = SORT_ID_MAP[sortKeys[0]?.id] || undefined
 
@@ -31,6 +35,8 @@ export async function query (pageIndex: number, perPage: number, filterValues: R
 
   const search = filterValues.title as string || undefined
   const alRes = await idList({ ids, pageIndex, perPage, search, sort, format: (filterValues.format as string[])?.length ? filterValues.format as string[] : undefined })
+  progress.value?.setWidthRatio(0.7)
+  progress.value?.animate()
   const res: ListResult<EntriesResponse<Texpand>> = await client.collection('entries').getList(1, 50, {
     filter: alRes.media.map(({ id }) => 'alID=' + id).join('||'),
     skipTotal: true,
@@ -50,7 +56,7 @@ export async function query (pageIndex: number, perPage: number, filterValues: R
     } as Entry
     entries.push(obj)
   }
-  console.log({ entries })
   data.value = entries
   serverItemCount.value = alRes.pageInfo.total
+  progress.value?.complete()
 }

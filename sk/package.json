@@ -18,6 +18,7 @@
     "format": "eslint . --fix"
   },
   "devDependencies": {
+    "@prgm/sveltekit-progress-bar": "2.0.0",
     "@sveltejs/adapter-node": "^5.2.0",
     "@sveltejs/enhanced-img": "^0.3.0",
     "@sveltejs/kit": "^2.5.18",
