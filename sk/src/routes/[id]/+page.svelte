@@ -35,13 +35,15 @@
     AniDex: '/anidex.ico',
     AnimeTosho: '/tosho.ico',
     Nyaa: '/cat.png',
-    RuTracker: '/rutracker.ico'
+    RuTracker: '/rutracker.ico',
+    BeyondHD: '/bhd.ico',
+    Other: ''
   }
 
   $metadata.title = media.title.userPreferred
 </script>
 
-<div class='flex h-full lg:flex-row flex-col justify-content-center'>
+<div class='flex h-full md:flex-row flex-col justify-content-center'>
   <div class='mb-3 min-w-0'>
     {#if entry.incomplete}
       <div class='font-medium text-red-600 text-xl mb-3'>This Entry Is Incomplete</div>
@@ -69,23 +71,25 @@
     <h2 class='font-bold my-4 text-2xl'>Torrents</h2>
     <div class='w-full flex gap-3 flex-wrap'>
       {#if entry.theoreticalBest}
-        <Card.Root class='min-w-48 max-w-full flex flex-col'>
+        <Card.Root class='w-80 max-w-full flex flex-col'>
           <Card.Header>
             <Card.Title>{entry.theoreticalBest}</Card.Title>
           </Card.Header>
           <Card.Footer class='mt-auto'>
-            <span class='bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300'>Unmuxed</span>
+            <span class='bg-yellow-100 text-yellow-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-yellow-900 dark:text-yellow-300'>Unmuxed</span>
             <span class='bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300'>Best</span>
           </Card.Footer>
         </Card.Root>
       {/if}
       {#each Object.entries(groupped) as [releaseGroup, torrents]}
         {@const { isBest, isDual, sizes } = hasDualBest(torrents)}
-        <Card.Root class='min-w-48 max-w-full'>
+        <Card.Root class='w-80 max-w-full'>
           <Card.Header class='pb-3'>
             <Card.Title>{releaseGroup}</Card.Title>
             <Card.Description>
-              {sizes.join(' | ')}
+              {#each sizes as size}
+                <span class='size text-nowrap'>{size}</span>
+              {/each}
             </Card.Description>
           </Card.Header>
           <Card.Content class='pb-3'>
@@ -99,7 +103,7 @@
             {/if}
           </Card.Content>
           <Card.Footer>
-            <div class='grid grid-cols-2 gap-4'>
+            <div class='grid grid-cols-2 gap-4 w-full'>
               {#each torrents as torrent}
                 <Button size='sm' variant='outline' class='px-4' href={torrent.url}>
                   {#if icons[torrent.tracker]}
@@ -126,3 +130,10 @@
     {/key}
   </div>
 </div>
+
+<style>
+  .size + .size::before {
+    content: ' | ';
+    white-space: normal;
+  }
+</style>

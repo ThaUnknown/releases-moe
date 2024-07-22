@@ -9,6 +9,18 @@ import {
 } from 'svelte-headless-table/plugins'
 import { RowActions, FormatCell, BoolCell } from '.'
 
+const initialHiddenColumnIds = ['incomplete', 'theoreticalBest']
+
+const nextToHideBasedOnWidth = ['episodes', 'seasonYear', 'format']
+
+const widthTresholds = [1000, 920, 800]
+
+for (const [index, treshold] of widthTresholds.entries()) {
+  if (window.outerWidth < treshold) { // this could be innerWidth, but that excludes devtools, we want capabilities, not viewport
+    initialHiddenColumnIds.push(nextToHideBasedOnWidth[index])
+  }
+}
+
 const table = createTable(data, {
   sort: addSortBy({
     toggleOrder: ['asc', 'desc'],
@@ -25,7 +37,7 @@ const table = createTable(data, {
     serverSide: true
   }),
   hide: addHiddenColumns({
-    initialHiddenColumnIds: ['incomplete', 'theoreticalBest']
+    initialHiddenColumnIds
   })
 })
 

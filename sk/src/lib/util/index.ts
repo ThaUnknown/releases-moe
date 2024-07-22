@@ -22,15 +22,15 @@ export function since (date: Date) {
   }
 }
 
-const units = [' B', ' kB', ' MB', ' GB', ' TB']
+const units = [' B', ' KiB', ' MiB', ' GiB', ' TiB']
 export function fastPrettyBytes (num: number) {
   if (isNaN(num)) return '0 B'
   if (num < 1) return num + ' B'
-  const exponent = Math.min(Math.floor(Math.log(num) / Math.log(1000)), units.length - 1)
-  return Number((num / Math.pow(1000, exponent)).toFixed(2)) + units[exponent]
+  const exponent = Math.min(Math.floor(Math.log(num) / Math.log(1024)), units.length - 1)
+  return Number((num / Math.pow(1024, exponent)).toFixed(2)) + units[exponent]
 }
 
-const termMapping:Record<string, {text: string, color: string}> = {}
+const termMapping: Record<string, {text: string, color: string}> = {}
 termMapping['5.1'] = { text: '5.1', color: '#f67255' }
 termMapping['5.1CH'] = termMapping[5.1]
 termMapping['TRUEHD5.1'] = { text: 'TrueHD 5.1', color: '#f67255' }
