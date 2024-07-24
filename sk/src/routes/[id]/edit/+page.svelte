@@ -28,19 +28,13 @@
   type TorrentData = { id?: string } & TorrentsRecord
 
   let { entry, media } = data
+  let torrents: TorrentData[] = entry?.expand?.trs || []
 
   $: entry = data.entry
   $: media = data.media
+  $: torrents = entry.expand?.trs || []
 
   $metadata.title = 'Editing ' + media.title.userPreferred
-
-  let torrents: TorrentData[] = entry?.expand?.trs || []
-
-  $: if (entry.expand?.trs) updateTorrents(entry.expand.trs)
-
-  function updateTorrents (newTorrents: TorrentData[]) {
-    torrents = newTorrents
-  }
 
   async function checkTorrentVideoFiles ({ files }: TorrentData) {
     if (!media.episodes) return
@@ -60,16 +54,18 @@
   async function addTorrentFile (buffer: ArrayBuffer) {
     const torrent = await createTorrentFromData(new Uint8Array(buffer))
     checkTorrentVideoFiles(torrent)
-    torrents = [...torrents, torrent]
+    torrents.push(torrent)
+    torrents = torrents
   }
 
   async function findOrCreateTorrentEntry (torrent: TorrentData) {
+    // save creates or updates existing
     if (torrent.id) return (await save('torrents', torrent)).id
-    // find
     try {
+      // find existing for given torrent file
       if (torrent.infoHash === '<redacted>') {
         const id = (await client.collection('torrents').getFirstListItem(
-          `infoHash='<redacted>' && tracker='${torrent.tracker}' && url='${torrent.url}' && dualAudio=${torrent.dualAudio} && releaseGroup='${torrent.releaseGroup}' && isBest=${torrent.isBest}`
+          `infoHash='<redacted>' && tracker='${torrent.tracker}' && url='${torrent.url}'`
         )).id
         torrent.id = id
         return (await save('torrents', torrent)).id
@@ -77,7 +73,7 @@
         return (await client.collection('torrents').getFirstListItem(`infoHash='${torrent.infoHash}'`)).id
       }
     } catch (e) {
-      // create
+      // create new
       return (await save('torrents', torrent)).id
     }
   }
@@ -87,7 +83,8 @@
     try {
       const savedTorrents = []
       for (const torrent of torrents) {
-        if (torrent.tracker === TorrentsTrackerOptions.AnimeBytes || torrent.tracker === TorrentsTrackerOptions.BeyondHD) {
+        // we want to duplicate torrents on private trackers, so id is removed to not override existing entries on publics
+        if ((torrent.tracker === TorrentsTrackerOptions.AnimeBytes || torrent.tracker === TorrentsTrackerOptions.BeyondHD) && torrent.infoHash !== '<redacted>') {
           torrent.infoHash = '<redacted>'
           torrent.id = ''
         }
@@ -107,7 +104,8 @@
   function duplicateTorrent (original: TorrentData) {
     const torrent = structuredClone(original)
     torrent.id = ''
-    torrents = [...torrents, torrent]
+    torrents.push(torrent)
+    torrents = torrents
   }
 
   async function parseTorrentFileInput ({ target }: Event) {
@@ -150,13 +148,15 @@
     if (!torrent) return
     checkTorrentVideoFiles(torrent)
     torrent.id = ''
-    torrents = [...torrents, torrent]
+    torrents.push(torrent)
+    torrents = torrents
   }
 
   async function createABFromFileList () {
     const torrent = await fromTorrentList()
     if (!torrent) return
-    torrents = [...torrents, torrent]
+    torrents.push(torrent)
+    torrents = torrents
   }
 </script>
 <TorrentModal bind:modalContent {addTorrentFile} />
