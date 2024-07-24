@@ -32,7 +32,7 @@
 
   $: entry = data.entry
   $: media = data.media
-  $: torrents = entry.expand?.trs || []
+  $: torrents = entry.expand?.trs || torrents || []
 
   $metadata.title = 'Editing ' + media.title.userPreferred
 
