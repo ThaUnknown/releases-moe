@@ -330,4 +330,7 @@ process.on('SIGINT', graceful_shutdown)
 server.use('/api', createProxyMiddleware({
   secure: false,
   target: env('PROXY_TARGET', 'http://127.0.0.1:59992') + '/api'
+})).use('/_', createProxyMiddleware({
+  secure: false,
+  target: env('PROXY_TARGET', 'http://127.0.0.1:59992') + '/_'
 })).use(handler)
