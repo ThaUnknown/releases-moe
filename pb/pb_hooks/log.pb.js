@@ -1,1 +1,1 @@
-/// <reference path="..\pb_data\types.d.ts" />
+/// <reference path="../pb_data/types.d.ts" />

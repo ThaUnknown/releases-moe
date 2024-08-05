@@ -7,6 +7,7 @@ import type { RecordService } from 'pocketbase'
 
 export enum Collections {
 	Auditlog = "auditlog",
+	DeadData = "dead_data",
 	Editors = "editors",
 	Entries = "entries",
 	Hooks = "hooks",
@@ -47,6 +48,21 @@ export type AuditlogRecord<Tdata = unknown, Toriginal = unknown> = {
 	original?: null | Toriginal
 	record: string
 	user?: RecordIdString
+}
+
+export enum DeadDataTrackerOptions {
+	"Nyaa" = "Nyaa",
+	"AnimeBytes" = "AnimeBytes",
+	"AniDex" = "AniDex",
+	"RuTracker" = "RuTracker",
+	"AnimeTosho" = "AnimeTosho",
+	"BeyondHD" = "BeyondHD",
+	"Other" = "Other",
+}
+export type DeadDataRecord = {
+	infoHash: string
+	releaseGroup: string
+	tracker: DeadDataTrackerOptions
 }
 
 export type EditorsRecord = {
@@ -105,6 +121,7 @@ export type UsersRecord = {
 
 // Response types include system fields and match responses from the PocketBase API
 export type AuditlogResponse<Tdata = unknown, Toriginal = unknown, Texpand = unknown> = Required<AuditlogRecord<Tdata, Toriginal>> & BaseSystemFields<Texpand>
+export type DeadDataResponse<Texpand = unknown> = Required<DeadDataRecord> & BaseSystemFields<Texpand>
 export type EditorsResponse<Texpand = unknown> = Required<EditorsRecord> & BaseSystemFields<Texpand>
 export type EntriesResponse<Texpand = unknown> = Required<EntriesRecord> & BaseSystemFields<Texpand>
 export type HooksResponse<Texpand = unknown> = Required<HooksRecord> & BaseSystemFields<Texpand>
@@ -116,6 +133,7 @@ export type UsersResponse<Texpand = unknown> = Required<UsersRecord> & AuthSyste
 
 export type CollectionRecords = {
 	auditlog: AuditlogRecord
+	dead_data: DeadDataRecord
 	editors: EditorsRecord
 	entries: EntriesRecord
 	hooks: HooksRecord
@@ -126,6 +144,7 @@ export type CollectionRecords = {
 
 export type CollectionResponses = {
 	auditlog: AuditlogResponse
+	dead_data: DeadDataResponse
 	editors: EditorsResponse
 	entries: EntriesResponse
 	hooks: HooksResponse
@@ -139,6 +158,7 @@ export type CollectionResponses = {
 
 export type TypedPocketBase = PocketBase & {
 	collection(idOrName: 'auditlog'): RecordService<AuditlogResponse>
+	collection(idOrName: 'dead_data'): RecordService<DeadDataResponse>
 	collection(idOrName: 'editors'): RecordService<EditorsResponse>
 	collection(idOrName: 'entries'): RecordService<EntriesResponse>
 	collection(idOrName: 'hooks'): RecordService<HooksResponse>
