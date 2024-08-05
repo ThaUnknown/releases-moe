@@ -7,7 +7,7 @@
 // @author      ThaUnknown
 // @grant       GM_xmlhttpRequest
 // @icon        http://animebytes.tv/favicon.ico
-// @downloadURL https://beta.releases.moe/animebytesmark.user.js
+// @downloadURL https://releases.moe/animebytesmark.user.js
 // @connect     releases.moe
 // @license     MIT
 // ==/UserScript==
@@ -16,7 +16,7 @@
 
 const TORRENT_ID_REGEX = /&torrentid=(\d+)/i
 
-const seadexEndpoint = tinyRest('https://beta.releases.moe/api/collections/entries/records')
+const seadexEndpoint = tinyRest('https://releases.moe/api/collections/entries/records')
 
 function gmFetchJson (url, opts = {}, timeout = 10000) {
   return new Promise((resolve, reject) => {
@@ -137,13 +137,13 @@ function insertTorrentTab (torrentId, tabName, tabId, content) {
       img.onclick = e => {
         e.preventDefault()
         e.stopImmediatePropagation()
-        window.open(`https://beta.releases.moe/${entry.alID}`, '_blank').focus()
+        window.open(`https://releases.moe/${entry.alID}`, '_blank').focus()
       }
       parent.append(img)
 
       // seadex tab
       const tab = $('<div></div>')
-      tab.append(`<div style="margin-bottom: 16px;"><h2><a target="_blank" href="https://beta.releases.moe/${entry.alID}">Releases.moe Entry</a></h2><span>Click to open the entry on the website</span></div>`)
+      tab.append(`<div style="margin-bottom: 16px;"><h2><a target="_blank" href="https://releases.moe/${entry.alID}">Releases.moe Entry</a></h2><span>Click to open the entry on the website</span></div>`)
 
       if (entry.notes) {
         const span = $('<span style="white-space: pre-wrap;"></span>')

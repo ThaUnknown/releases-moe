@@ -2,7 +2,7 @@
 
 module.exports = {
   embed (user, fields, title, id) {
-    const DOMAIN = 'https://beta.releases.moe'
+    const DOMAIN = 'https://releases.moe'
 
     const obj = {
       username: user.get('username'),

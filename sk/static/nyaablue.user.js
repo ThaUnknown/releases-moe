@@ -6,14 +6,14 @@
 // @version     1.0.0
 // @author      ThaUnknown
 // @icon        https://nyaa.si/static/favicon.png
-// @downloadURL https://beta.releases.moe/nyaablue.user.js
+// @downloadURL https://releases.moe/nyaablue.user.js
 // @connect     releases.moe
 // @license     MIT
 // ==/UserScript==
 
 /* get best from seadex api, use api/search for the nyaa search value */
 
-const seadexEndpoint = tinyRest('https://beta.releases.moe/api/collections/torrents/records')
+const seadexEndpoint = tinyRest('https://releases.moe/api/collections/torrents/records')
 
 // import tinyRest from 'tiny-rest'
 function tinyRest (url, options = {}) {
