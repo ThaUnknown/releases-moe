@@ -9,7 +9,7 @@ export const load = async ({ fetch }) => {
   const res = await fetch('/api/listIDs')
   const text = await res.text()
 
-  return { ids: text.split(',') }
+  return { ids: text.split(',').map(Number) }
   // const response = await fetch('/_/')
   // if (response.redirected) {
   //   alerts.add({
