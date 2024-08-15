@@ -24,9 +24,9 @@ const SORT_ID_MAP: { [key: string]: string } = {
   format: 'FORMAT'
 }
 
-export async function query (pageIndex: number, perPage: number, filterValues: Record<string, unknown>, sortKeys: SortKey[], ids?: number[]) {
-  progress.value?.start()
-  data.value = []
+// these loads have race conditions, oh well
+
+async function load (pageIndex: number, perPage: number, filterValues: Record<string, unknown>, sortKeys: SortKey[], ids?: number[]) {
   let sort = SORT_ID_MAP[sortKeys[0]?.id] || undefined
 
   if (sort && sortKeys[0].order === 'desc') {
@@ -56,7 +56,29 @@ export async function query (pageIndex: number, perPage: number, filterValues: R
     } as Entry
     entries.push(obj)
   }
-  data.value = entries
-  serverItemCount.value = alRes.pageInfo.total
+  serverItemCount.value = Math.min(ids?.length || Infinity, alRes.pageInfo.total)
   progress.value?.complete()
+  return entries
+}
+
+export async function loadFromCache (pageIndex: number, perPage: number, ids: number[]) {
+  const cache = localStorage.getItem('entries')
+  if (cache) {
+    try {
+      const entries = JSON.parse(cache) as Entry[]
+      data.value = entries.filter(entry => ids.includes(entry.alID))
+      serverItemCount.value = entries.length
+    } catch (e) {
+      localStorage.removeItem('entries')
+    }
+  }
+  const res = await load(pageIndex, perPage, {}, [], ids)
+  data.value = res
+  localStorage.setItem('entries', JSON.stringify(res))
+}
+
+export async function query (pageIndex: number, perPage: number, filterValues: Record<string, unknown>, sortKeys: SortKey[], ids?: number[]) {
+  progress.value?.start()
+  data.value = []
+  data.value = await load(pageIndex, perPage, filterValues, sortKeys, ids)
 }

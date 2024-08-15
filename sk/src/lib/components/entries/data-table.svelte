@@ -4,7 +4,7 @@
   import * as Table from '$lib/components/ui/table'
 
   import { ColumnHeader, Pagination, Toolbar } from './index'
-  import { query, data } from './query'
+  import { query, loadFromCache } from './query'
   import { columns, tableModel } from './table'
   import { debounce } from '$lib/util'
   import type { SortKey } from 'svelte-headless-table/plugins'
@@ -18,13 +18,18 @@
   export let ids: number[]
 
   const debouncedQuery = debounce((pageIndex: number, pageSize: number, filterValues: Record<string, unknown>, $sortKeys: SortKey[], ids?: number[]) => {
+    if (firstLoad) {
+      firstLoad = false // this is hacky, ugly etc, don't care, RT wanted it
+      return
+    }
     query(pageIndex, pageSize, filterValues, $sortKeys, ids)
   }, 300)
 
   let isEditing = false
+  let firstLoad = true
 
-  data.value = []
   $: debouncedQuery($pageIndex, $pageSize, $filterValues, $sortKeys, isEditing ? undefined : ids)
+  loadFromCache($pageIndex, $pageSize, ids)
 </script>
 
 <div class='space-y-4'>

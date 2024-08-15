@@ -91,18 +91,9 @@ export async function idList ({ ids, pageIndex = 0, perPage = 10, sort = 'SEARCH
             userPreferred,
             english
           },
-          coverImage{
-            extraLarge,
-            color
-          }
-          season,
           seasonYear,
           format,
-          status,
-          episodes,
-          duration,
-          averageScore,
-          genres
+          episodes
         }
       }
     }`.replace(/\s/g, ''),
