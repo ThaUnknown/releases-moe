@@ -29,7 +29,7 @@
   let firstLoad = true
 
   $: debouncedQuery($pageIndex, $pageSize, $filterValues, $sortKeys, isEditing ? undefined : ids)
-  loadFromCache($pageIndex, $pageSize, ids)
+  loadFromCache($pageIndex, $pageSize, $filterValues, $sortKeys, ids)
 </script>
 
 <div class='space-y-4'>

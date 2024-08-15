@@ -61,7 +61,7 @@ async function load (pageIndex: number, perPage: number, filterValues: Record<st
   return entries
 }
 
-export async function loadFromCache (pageIndex: number, perPage: number, ids: number[]) {
+export async function loadFromCache (pageIndex: number, perPage: number, filterValues: Record<string, unknown>, sortKeys: SortKey[], ids: number[]) {
   const cache = localStorage.getItem('entries')
   if (cache) {
     try {
@@ -72,7 +72,7 @@ export async function loadFromCache (pageIndex: number, perPage: number, ids: nu
       localStorage.removeItem('entries')
     }
   }
-  const res = await load(pageIndex, perPage, {}, [], ids)
+  const res = await load(pageIndex, perPage, filterValues, sortKeys, ids)
   data.value = res
   localStorage.setItem('entries', JSON.stringify(res))
 }
