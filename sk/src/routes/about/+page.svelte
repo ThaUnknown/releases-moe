@@ -40,6 +40,11 @@ const entriesList = await entriesResponse.json()`
     Automation enjoyings! Metadata provided is great for automation.<br />
     Old index was also annoying for linking to people, and difficult to find the desired anime/OVA.
   </p>
+  <h3 class='font-bold text-2xl py-4'>Is there any difference between the releases listed on this and the sheet?</h3>
+  <p>
+    Ideally, there's no difference. If you find any discrepancies between this and the sheet, report them to the SeaDex discord.<br />
+    Sheet will be maintained alongside this. We have no plans to discontinue the sheet anytime soon.
+  </p>
   <h3 class='font-bold text-2xl py-4'>Are there any extensions/scripts?</h3>
   <ul class='list-disc list-inside'>
     <li><a href={`${origin}/nyaablue.user.js`} target='_blank' class='text-blue-600 dark:text-blue-500 hover:underline'>NyaaBlue</a></li>
