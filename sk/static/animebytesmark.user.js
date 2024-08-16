@@ -3,13 +3,14 @@
 // @description Tags the best releases on AnimeBytes according to https://releases.moe/
 // @namespace   ThaUnknown
 // @match       *://animebytes.tv/*
-// @version     1.0.1
+// @version     1.0.2
 // @author      ThaUnknown
 // @grant       GM_xmlhttpRequest
 // @icon        http://animebytes.tv/favicon.ico
 // @downloadURL https://releases.moe/animebytesmark.user.js
 // @connect     releases.moe
 // @license     MIT
+// @run-at      document-idle
 // ==/UserScript==
 
 /* global $ */
@@ -69,21 +70,21 @@ async function fetchSeadex (ids) {
 }
 
 // Thanks to https://github.com/momentary0/AB-Userscripts/blob/master/torrent-highlighter/src/tfm_torrent_highlighter.user.js#L470
-// for the handy selectors
+// for the handy selectors, slightly modified here to work together with the Mediainfo Improvements userscript
 function torrentsOnPage () {
   const torrentPageTorrents = [...document.querySelectorAll(
-    (window.location.href.includes('torrents.php') ? '' : '#anime_table ') + '.group_torrent>td>a[href*="&torrentid="]'
+    (window.location.href.includes('torrents.php') ? '' : '#anime_table ') + '.group_torrent>td:not(:has(+ td>a[href*="&torrentid="]))>a[href*="&torrentid="]'
   )].map(a => ({
     a,
     torrentId: a.href.match(TORRENT_ID_REGEX)[1],
-    seperator: a.href.includes('torrents.php') ? ' | ' : ' / '
+    separator: a.href.includes('torrents.php') && a.text.includes('|') ? ' | ' : ' / '
   }))
   const searchResultTorrents = [...document.querySelectorAll(
     '.torrent_properties>a[href*="&torrentid="]'
   )].map(a => ({
     a,
     torrentId: a.href.match(TORRENT_ID_REGEX)[1],
-    seperator: ' | '
+    separator: ' | '
   }))
   return [...torrentPageTorrents, ...searchResultTorrents]
 }
@@ -116,7 +117,7 @@ function insertTorrentTab (torrentId, tabName, tabId, content) {
       if (!entry) continue
 
       // Insert tag
-      torrentLink.a.append(torrentLink.seperator)
+      torrentLink.a.append(torrentLink.separator)
       let parent = torrentLink.a
       if (torrentLink.a.classList.contains('userscript-highlight')) {
         // highlight already ran
