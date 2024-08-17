@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "vite dev",
     "dev:backend": "cd ../pb && modd",
-    "dev:remote": "ssh srv.us -R 1:localhost:5173",
+    "dev:remote": "ssh srv.us -R 1:localhost:59991",
     "backend": "cd ../pb/ && pocketbase serve --http=127.0.0.1:59992",
     "build": "vite build",
     "build:backend": "cd ../pb && go build",
