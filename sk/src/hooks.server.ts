@@ -36,9 +36,7 @@ export const handle = async ({ event, resolve }) => {
         }
       })
     })
-    if (!res.ok && res.status === 429) {
-      throw res
-    }
+    if (!res.ok) throw res
 
     const { data } = await res.json()
 
@@ -53,8 +51,9 @@ export const handle = async ({ event, resolve }) => {
     }
 
     if (item.notes) desc += `\n${item.notes}\n`
-
     if (item.comparison) desc += `\n${item.comparison.replaceAll(',', ' ')}\n`
+
+    desc = desc.replaceAll('\'', '"')
 
     return resolve(event, {
       transformPageChunk: ({ html }) => {
