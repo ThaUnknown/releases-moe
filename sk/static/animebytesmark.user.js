@@ -3,13 +3,14 @@
 // @description Tags the best releases on AnimeBytes according to https://releases.moe/
 // @namespace   ThaUnknown
 // @match       *://animebytes.tv/*
-// @version     1.0.2
+// @version     1.0.3
 // @author      ThaUnknown
 // @grant       GM_xmlhttpRequest
 // @icon        http://animebytes.tv/favicon.ico
 // @downloadURL https://releases.moe/animebytesmark.user.js
 // @connect     releases.moe
 // @license     MIT
+// @run-at      document-idle
 // ==/UserScript==
 
 /* global $ */
@@ -74,12 +75,13 @@ function torrentsOnPage () {
   const torrentPageTorrents = [...document.querySelectorAll(
     (window.location.href.includes('torrents.php') ? '' : '#anime_table ') + '.group_torrent'
   )].map(elm => {
-    const a = elm.querySelector('a[href*="&torrentid="]')
-    if (!a) return null
+    const links = elm.querySelectorAll('a[href*="&torrentid="]')
+    if (links.length === 0) return null
+    const a = links[links.length - 1]
     return {
       a,
       torrentId: a.href.match(TORRENT_ID_REGEX)[1],
-      separator: a.href.includes('torrents.php') ? ' | ' : ' / '
+      separator: a.href.includes('torrents.php') && links.length === 1 ? ' | ' : ' / '
     }
   }).filter((value) => value)
   const searchResultTorrents = [...document.querySelectorAll(
