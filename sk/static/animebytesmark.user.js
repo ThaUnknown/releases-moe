@@ -3,7 +3,7 @@
 // @description Tags the best releases on AnimeBytes according to https://releases.moe/
 // @namespace   ThaUnknown
 // @match       *://animebytes.tv/*
-// @version     1.0.1
+// @version     1.0.2
 // @author      ThaUnknown
 // @grant       GM_xmlhttpRequest
 // @icon        http://animebytes.tv/favicon.ico
@@ -72,18 +72,22 @@ async function fetchSeadex (ids) {
 // for the handy selectors
 function torrentsOnPage () {
   const torrentPageTorrents = [...document.querySelectorAll(
-    (window.location.href.includes('torrents.php') ? '' : '#anime_table ') + '.group_torrent>td>a[href*="&torrentid="]'
-  )].map(a => ({
-    a,
-    torrentId: a.href.match(TORRENT_ID_REGEX)[1],
-    seperator: a.href.includes('torrents.php') ? ' | ' : ' / '
-  }))
+    (window.location.href.includes('torrents.php') ? '' : '#anime_table ') + '.group_torrent'
+  )].map(elm => {
+    const a = elm.querySelector('a[href*="&torrentid="]')
+    if (!a) return null
+    return {
+      a,
+      torrentId: a.href.match(TORRENT_ID_REGEX)[1],
+      separator: a.href.includes('torrents.php') ? ' | ' : ' / '
+    }
+  }).filter((value) => value)
   const searchResultTorrents = [...document.querySelectorAll(
     '.torrent_properties>a[href*="&torrentid="]'
   )].map(a => ({
     a,
     torrentId: a.href.match(TORRENT_ID_REGEX)[1],
-    seperator: ' | '
+    separator: ' | '
   }))
   return [...torrentPageTorrents, ...searchResultTorrents]
 }
@@ -102,7 +106,7 @@ function insertTorrentTab (torrentId, tabName, tabId, content) {
 
   // Load from url hash on page load
   let e = window.location.hash
-  if (e) e = e.substr(1).split('/')
+  if (e) e = e.substring(1).split('/')
   if (e[1] === tabId) switchTabs(a)
 }
 
@@ -116,7 +120,7 @@ function insertTorrentTab (torrentId, tabName, tabId, content) {
       if (!entry) continue
 
       // Insert tag
-      torrentLink.a.append(torrentLink.seperator)
+      torrentLink.a.append(torrentLink.separator)
       let parent = torrentLink.a
       if (torrentLink.a.classList.contains('userscript-highlight')) {
         // highlight already ran
