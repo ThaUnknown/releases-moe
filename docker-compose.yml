@@ -17,6 +17,7 @@ services:
       - ./pb:/app/pb
       - ./sk:/app/sk
       - ${HOME}/go/pkg:/go/pkg
+    restart: unless-stopped
   sk:
     image: node:alpine
     user: ${UID}:${GID}
@@ -29,3 +30,4 @@ services:
     environment:
       - HOME=/app/sk
     working_dir: /app/sk
+    restart: unless-stopped
