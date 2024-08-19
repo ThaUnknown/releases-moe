@@ -28,6 +28,9 @@ export const handle = async ({ event, resolve }) => {
                 english,
                 userPreferred
               }
+              coverImage {
+                large
+              }
             }
           }
         `,
@@ -62,10 +65,10 @@ export const handle = async ({ event, resolve }) => {
       transformPageChunk: ({ html }) => {
         return html.replace(
           '<meta name="twitter:image" content="/favicon.png">',
-          `<meta name="twitter:image" content="https://img.anili.st/media/${event.params.id}"><meta name="twitter:card" content="summary_large_image">`
+          `<meta name="twitter:image" content="${data.Media.coverImage.large}">`
         ).replace(
           '<meta property="og:image" content="/favicon.png">',
-          `<meta property="og:image" content="https://img.anili.st/media/${event.params.id}"><meta property="og:site_name" content="SeaDex" />`
+          `<meta property="og:image" content="${data.Media.coverImage.large}"><meta property="og:site_name" content="SeaDex" />`
         ).replace(
           '<meta property="og:title" content="SeaDex">',
           `<meta property="og:title" content="${data.Media.title.english || data.Media.title.userPreferred}">`
