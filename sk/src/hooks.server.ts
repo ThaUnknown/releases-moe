@@ -30,6 +30,7 @@ export const handle = async ({ event, resolve }) => {
               }
               coverImage {
                 large
+                color
               }
             }
           }
@@ -81,6 +82,9 @@ export const handle = async ({ event, resolve }) => {
         ).replace(
           '<meta property="og:description" content="Your portal to the ultimate enthusiast releases - anime with unparalleled video, audio, and subtitle perfection, backed by in-depth comparisons.">',
           `<meta property="og:description" content="${desc}">`
+        ).replace(
+          '<meta name="theme-color" content="#ff4242">',
+          `<meta name="theme-color" content="${data.Media.coverImage.color || '#3db4f2'}">`
         )
       }
     })
