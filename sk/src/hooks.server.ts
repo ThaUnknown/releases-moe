@@ -41,6 +41,9 @@ export const handle = async ({ event, resolve }) => {
     const { data } = await res.json()
 
     let desc = ''
+    
+    if (item.theoreticalBest) desc += `Theoretical Best: ${item.theoreticalBest}\n`
+
     const best = item.expand?.trs.filter(({ isBest }) => isBest)
     if (best?.length) {
       desc += `Best: ${[...new Set(best.map(({ releaseGroup }) => releaseGroup))].join('/')}\n`
