@@ -12,7 +12,7 @@
     <div class='w-full flex justify-center pb-3'>
       <img loading='lazy' src={media.coverImage.extraLarge || ''} alt='cover' class='rounded h-full mw-full' style:--color={media.coverImage.color || '#1890ff'} />
     </div>
-    <h2 class='text-white font-bold pt-2 title overflow-hidden my-0 text-2xl'>
+    <h2 class='font-bold pt-2 title overflow-hidden my-0 text-2xl'>
       {media.title.english || media.title.userPreferred}
     </h2>
     <div class='flex flex-row mt-auto pt-2 justify-between w-full font-size-18'>
