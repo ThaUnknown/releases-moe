@@ -23,7 +23,7 @@ CMD ["/app/pb/pocketbase", "serve", "--http", "0.0.0.0:59992"]
 EXPOSE 59992
 
 # Bind-mount the volumes
-VOLUME ["/app/pb", "/app/sk", "/go/pkg"]
+VOLUME ["/app/pb", "/go/pkg"]
 
 # Base image for the "sk" service
 FROM node:alpine AS sk
