@@ -29,10 +29,10 @@
 </script>
 
 <div class='flex items-center justify-between'>
-  <div class='flex flex-1 items-center space-x-2'>
+  <div class='flex flex-1 items-center space-x-2 md:max-w-[70%] mr-2'>
     <Input
       placeholder='Filter titles...'
-      class='h-8 w-[150px] lg:w-[250px]'
+      class='h-8 w-full'
       type='search'
       bind:value={$filterValues.title}
     />

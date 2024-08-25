@@ -10,6 +10,7 @@
 
   import * as DropdownMenu from '$lib/components/ui/dropdown-menu'
   import * as Avatar from '$lib/components/ui/avatar'
+  import { LogIn } from 'lucide-svelte'
 
   export const authCollection = 'users'
 
@@ -73,16 +74,18 @@
       {:else}
         {#await authMethods then methods}
           {#each methods.authProviders as p}
-            <Button variant='ghost' class='capitalize' on:click={() => providerLogin(p, coll)}>Log in with {p.name}</Button>
+            <Button variant='outline' class='capitalize' on:click={() => providerLogin(p, coll)}>
+              <LogIn class='absolute h-[1rem] w-[1rem]' />
+            </Button>
           {/each}
         {:catch}
           <!-- pocketbase not working -->
         {/await}
       {/if}
       <ModeWatcher />
-      <Button on:click={toggleMode} variant='outline' size='icon'>
-        <Sun class='h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0' />
-        <Moon class='absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100' />
+      <Button on:click={toggleMode} variant='outline' size='icon' class='ml-10'>
+        <Sun class='h-[1rem] w-[1rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0' />
+        <Moon class='absolute h-[1rem] w-[1rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100' />
         <span class='sr-only'>Toggle theme</span>
       </Button>
     </div>
