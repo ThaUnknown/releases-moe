@@ -4,7 +4,7 @@
   import * as Table from '$lib/components/ui/table'
 
   import { ColumnHeader, Pagination, Toolbar } from './index'
-  import { query, loadFromCache } from './query'
+  import { query, loadFromCache, loading } from './query'
   import { columns, tableModel } from './table'
   import { debounce } from '$lib/util'
   import type { SortKey } from 'svelte-headless-table/plugins'
@@ -32,10 +32,10 @@
   loadFromCache($pageIndex, $pageSize, $filterValues, $sortKeys, ids)
 </script>
 
-<div class='space-y-4'>
+<div class='space-y-4 w-full flex-grow flex flex-col'>
   <Toolbar {tableModel} bind:isEditing />
-  <div class='rounded-md border'>
-    <Table.Root {...$tableAttrs}>
+  <div class='rounded-md border h-full'>
+    <Table.Root {...$tableAttrs} class={$loading || !$pageRows.length ? 'h-full' : ''}>
       <Table.Header>
         {#each $headerRows as headerRow}
           <Subscribe rowAttrs={headerRow.attrs()}>
@@ -66,7 +66,13 @@
         {/each}
       </Table.Header>
       <Table.Body {...$tableBodyAttrs}>
-        {#if $pageRows.length}
+        {#if $loading}
+          <Table.Row>
+            <Table.Cell colspan={columns.length} class='h-full text-center'>
+              Loading...
+            </Table.Cell>
+          </Table.Row>
+        {:else if $pageRows.length}
           {#each $pageRows as row (row.original.id)}
             <Subscribe rowAttrs={row.attrs()} let:rowAttrs>
               <Table.Row {...rowAttrs} class='cursor-pointer' href='./{row.original.id}/{isEditing ? 'edit' : ''}'>
@@ -88,8 +94,8 @@
           {/each}
         {:else}
           <Table.Row>
-            <Table.Cell colspan={columns.length} class='h-[60vh] text-center'>
-              Loading...
+            <Table.Cell colspan={columns.length} class='h-full text-center'>
+              No Results Found.
             </Table.Cell>
           </Table.Row>
         {/if}

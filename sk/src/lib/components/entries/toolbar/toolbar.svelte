@@ -44,7 +44,7 @@
     />
     {#if $authModel?.canEdit}
       <Checkbox bind:checked={isEditing} class='border border-input' id='asEditor' />
-      <Label for='asEditor'>Edit mode</Label>
+      <Label for='asEditor'>Edit</Label>
     {/if}
     {#if showReset}
       <Button

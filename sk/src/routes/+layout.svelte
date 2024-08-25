@@ -24,6 +24,6 @@
 <Nav />
 <Toaster visibleToasts={3} position='top-right' theme='dark' richColors duration={10000} />
 
-<div class='container mx-auto py-5'>
+<div class='container mx-auto py-5 flex-grow flex'>
   <slot />
 </div>

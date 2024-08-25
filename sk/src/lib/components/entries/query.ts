@@ -13,6 +13,8 @@ export const serverItemCount = writable(0)
 
 export const progress: Writable<ProgressBar | null> = writable(null)
 
+export const loading = writable(false)
+
 type Texpand = {
   trs: TorrentsResponse[]
 }
@@ -79,6 +81,8 @@ export async function loadFromCache (pageIndex: number, perPage: number, filterV
 
 export async function query (pageIndex: number, perPage: number, filterValues: Record<string, unknown>, sortKeys: SortKey[], ids?: number[]) {
   progress.value?.start()
+  loading.value = true
   data.value = []
   data.value = await load(pageIndex, perPage, filterValues, sortKeys, ids)
+  loading.value = false
 }
