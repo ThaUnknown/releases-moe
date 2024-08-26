@@ -14,6 +14,8 @@ FROM node:alpine AS sk
 
 WORKDIR /app/sk
 
+RUN apk add --no-cache git
+
 COPY ./sk .
 
 RUN npm install -g pnpm
@@ -25,6 +27,8 @@ FROM node:alpine AS prod
 
 WORKDIR /app
 
+RUN apk add --no-cache git
+
 # Copy PocketBase files
 COPY --from=pb /app/pb/pocketbase /app/pb/
 COPY --from=pb /go/bin/modd /usr/local/bin/
@@ -32,6 +36,7 @@ COPY --from=pb /go/bin/modd /usr/local/bin/
 # Copy Sveltekit files
 COPY --from=sk /app/sk/build /app/sk/build
 COPY --from=sk /app/sk/package.json /app/sk/
+COPY --from=sk /app/sk/pnpm-lock.yaml /app/sk/
 COPY --from=sk /app/sk/server.js /app/sk/
 
 RUN npm install -g pnpm
@@ -47,4 +52,4 @@ VOLUME ["/app/pb"]
 EXPOSE 59991 59992
 
 # Start both services
-CMD sh -c "/app/pb/pocketbase serve --http 0.0.0.0:59992 & cd /app/sk && PORT=59991 PROXY_TARGET=http://localhost:59992 node server.js"
+CMD ["/bin/sh", "-c", "/app/pb/pocketbase serve --http 0.0.0.0:59992 & cd /app/sk && PORT=59991 PROXY_TARGET=http://localhost:59992 node server.js"]
