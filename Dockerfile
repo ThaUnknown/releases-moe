@@ -1,16 +1,12 @@
-# Base image for the "pb" service
-FROM golang:1.21.5-alpine AS pb
+FROM golang:1.21.5-alpine AS backend-builder
 
 WORKDIR /app/pb
-
 COPY ./pb .
 
 RUN go mod tidy && go build
-
 RUN go install github.com/cortesi/modd/cmd/modd@latest
 
-# Base image for the "sk" service
-FROM node:alpine AS sk
+FROM node:alpine AS frontend-builder
 
 WORKDIR /app/sk
 
@@ -22,34 +18,32 @@ RUN npm install -g pnpm
 RUN pnpm install
 RUN npm run build
 
-# Final image
-FROM node:alpine AS prod
-
-WORKDIR /app
+FROM node:alpine
 
 RUN apk add --no-cache git
 
 # Copy PocketBase files
-COPY --from=pb /app/pb/pocketbase /app/pb/
-COPY --from=pb /go/bin/modd /usr/local/bin/
+COPY --from=backend-builder /app/pb/pocketbase /app/pb/pocketbase
+COPY --from=backend-builder /app/pb/pb_hooks/ /app/pb/pb_hooks/
+COPY --from=backend-builder /app/pb/pb_migrations/ /app/pb/pb_migrations/
+COPY --from=backend-builder /go/bin/modd /usr/local/bin/modd
 
 # Copy Sveltekit files
-COPY --from=sk /app/sk/build /app/sk/build
-COPY --from=sk /app/sk/package.json /app/sk/
-COPY --from=sk /app/sk/pnpm-lock.yaml /app/sk/
-COPY --from=sk /app/sk/server.js /app/sk/
+COPY --from=frontend-builder /app/sk/build/ /app/sk/build/
+COPY --from=frontend-builder /app/sk/package.json /app/sk/package.json
+COPY --from=frontend-builder /app/sk/pnpm-lock.yaml /app/sk/pnpm-lock.yaml
+COPY --from=frontend-builder /app/sk/server.js /app/sk/server.js
 
 RUN npm install -g pnpm
 
-# Install Sveltekit dependencies
 WORKDIR /app/sk
+# Install Sveltekit dependencies
 RUN pnpm install
 
-# Set up volume for PocketBase only
-VOLUME ["/app/pb"]
-
-# Expose ports
-EXPOSE 59991 59992
+    # Frontend port
+ENV PORT=59991 \
+    # Backend proxy
+    PROXY_TARGET=http://0.0.0.0:59992
 
 # Start both services
-CMD ["/bin/sh", "-c", "/app/pb/pocketbase serve --http 0.0.0.0:59992 & cd /app/sk && PORT=59991 PROXY_TARGET=http://localhost:59992 node server.js"]
+CMD ["/bin/sh", "-c", "/app/pb/pocketbase serve --http 0.0.0.0:59992 --dir /data & node server.js"]
