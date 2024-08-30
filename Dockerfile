@@ -4,7 +4,6 @@ WORKDIR /app/pb
 COPY ./pb .
 
 RUN go mod tidy && go build
-RUN go install github.com/cortesi/modd/cmd/modd@latest
 
 FROM node:alpine AS frontend-builder
 
@@ -26,7 +25,6 @@ RUN apk add --no-cache git
 COPY --from=backend-builder /app/pb/pocketbase /app/pb/pocketbase
 COPY --from=backend-builder /app/pb/pb_hooks/ /app/pb/pb_hooks/
 COPY --from=backend-builder /app/pb/pb_migrations/ /app/pb/pb_migrations/
-COPY --from=backend-builder /go/bin/modd /usr/local/bin/modd
 
 # Copy Sveltekit files
 COPY --from=frontend-builder /app/sk/build/ /app/sk/build/
