@@ -2,7 +2,7 @@ import PocketBase from 'pocketbase'
 import { env } from '$env/dynamic/private'
 import type { EntriesResponse, TorrentsResponse } from '$lib/pocketbase/generated-types'
 
-const client = new PocketBase(env.PROXY_TARGET || 'http://127.0.0.1:59992')
+const client = new PocketBase(env.PROXY_TARGET || 'http://0.0.0.0:59992')
 
 export const handle = async ({ event, resolve }) => {
   if (!event.params.id || !Number(event.params.id)) return resolve(event)
