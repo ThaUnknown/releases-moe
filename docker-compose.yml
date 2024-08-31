@@ -2,13 +2,13 @@
 services:
   seadex:
     image: ghcr.io/thaunknown/release-moe:latest
-    container_name: seadex
+    container_name: SeaDex
     environment:
       - PUID=1000
       - PGID=1000
       - TZ=Etc/UTC
     volumes:
-      - /host/path/to/data:/data
+      - /host/path/to/pocketbase/database:/app/pb/pb_data
     ports:
       - 59991:59991
     restart: unless-stopped
