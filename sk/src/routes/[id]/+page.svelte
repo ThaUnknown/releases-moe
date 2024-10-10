@@ -2,7 +2,7 @@
   import { metadata } from '$lib/app/stores'
   import MediaDetails from '$lib/components/MediaDetails.svelte'
   import { authModel } from '$lib/pocketbase'
-  import { fastPrettyBytes } from '$lib/util'
+  import { fastPrettyBytes, sortTorrents } from '$lib/util'
   import MediaRelations from '$lib/components/MediaRelations.svelte'
   import { Button } from '$lib/components/ui/button'
   import * as Card from '$lib/components/ui/card'
@@ -15,7 +15,7 @@
   $: entry = data.entry
   $: media = data.media
 
-  $: groupped = Object.groupBy(entry.expand?.trs || [], ({ releaseGroup }) => releaseGroup) as Record<string, TorrentsResponse[]>
+  $: groupped = Object.groupBy(sortTorrents(entry.expand?.trs), ({ releaseGroup }) => releaseGroup) as Record<string, TorrentsResponse[]>
 
   function hasDualBest (torrents: TorrentsResponse[]) {
     let isBest = false
