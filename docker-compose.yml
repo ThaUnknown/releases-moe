@@ -1,31 +1,14 @@
-version: '3.5'
-
+---
 services:
-  pb:
-    image: golang:1.21.5-alpine
-    entrypoint: ./entrypoint.sh
-    command: "/app/pb/pocketbase serve --http 0.0.0.0:59992"
-    # command: tail -f /dev/null
-    user: ${UID}:${GID}
-    ports:
-      - 59992:59992
-    working_dir: /app/pb
+  seadex:
+    image: ghcr.io/thaunknown/release-moe:latest
+    container_name: SeaDex
     environment:
-      - HOME=/app/pb
-      - AUDITLOG=${AUDITLOG}
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
     volumes:
-      - ./pb:/app/pb
-      - ./sk:/app/sk
-      - ${HOME}/go/pkg:/go/pkg
-  sk:
-    image: node:alpine
-    user: ${UID}:${GID}
+      - /host/path/to/pocketbase/database:/app/pb/pb_data
     ports:
       - 59991:59991
-    # sveltekit build
-    command: sh -c "npx pnpm install && npm run build && PORT=59991 PROXY_TARGET=http://pb:59992 node server.js"
-    volumes:
-      - ./sk:/app/sk
-    environment:
-      - HOME=/app/sk
-    working_dir: /app/sk
+    restart: unless-stopped
