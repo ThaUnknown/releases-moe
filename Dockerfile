@@ -31,6 +31,7 @@ WORKDIR /app/sk
 ENV NODE_ENV=production \
     # Frontend port
     PORT=59991 \
+    ABX=FALSE \
     # Backend proxy
     PROXY_TARGET=http://0.0.0.0:59992
 
