@@ -52,3 +52,24 @@ onRecordAfterCreateRequest(e => {
     console.log(e)
   }
 })
+
+// This is here as the torrents get updated first then the entry
+// and due to how we expand for the torrent data it will only
+// ever have one data set to pull from meaning the data is the same.
+onRecordBeforeUpdateRequest(e => {
+  try {
+    const record = e.record
+    const hooks = $app.dao()?.findRecordsByFilter('hooks', 'event = \'insert\'')
+    if (!hooks || !record) return
+    if (record.collection()?.name !== 'torrents') return
+    const store = $app.store()
+    for (const hook of hooks || []) {
+      if (!hook || hook.get('collection') !== 'entries') continue
+
+      store.set(record.get("id"), record)
+    }
+
+  } catch (e) {
+    console.log(e)
+  }
+})

@@ -49,6 +49,18 @@ module.exports = {
     if (!diff) return ""
     return `\`\`\`diff\n${diff.trim()}\n\`\`\``
   },
+  expandOld (old) {
+    const store = $app.store()
+    const trs = {}
+
+    for (const tr of old.get("trs")) {
+      const data = store.get(tr)
+      trs[tr] = data || {}
+
+      if (data) store.remove(tr)
+    }
+    return trs
+  },
   /**
    * @param {models.Record} record
    * @param {models.Record} user
@@ -64,10 +76,9 @@ module.exports = {
     console.log(record.publicExport())
 
     $app.dao()?.expandRecord(record, ['trs'])
-    $app.dao()?.expandRecord(preRecord, ['trs'])
 
     const curTrs = record.expandedAll('trs')
-    const preTrs = preRecord.expandedAll('trs')
+    const preTrs = this.expandOld(preRecord)
 
     const best = this.wrapMultiple(preTrs, curTrs, 'isBest', 'releaseGroup')
     if (best) fields.push({ name: 'Best', value: best, inline: true })
