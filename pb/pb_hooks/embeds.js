@@ -56,6 +56,7 @@ module.exports = {
 
     for (const tr of old.get("trs")) {
       const data = store.get(tr)
+      console.log(JSON.stringify(data || {}))
       trs.push(data || {})
 
       if (data) store.remove(tr)
