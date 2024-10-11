@@ -39,6 +39,8 @@ onRecordAfterCreateRequest(e => {
     const util = require(`${__hooks}/util.js`)
     const data = embeds[record.collection()?.name || ''](record, user, util)
 
+    if (!data) return
+
     for (const hook of hooks || []) {
       if (!hook || hook.get('collection') !== record.collection()?.name) continue
       $http.send({

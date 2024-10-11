@@ -42,7 +42,7 @@ module.exports = {
     const Diff = require(`${__hooks}/diff.js`)
 
     let diff = ''
-    for (const part of Diff.diffLines(before, after, {ignoreNewlineAtEof: true})) {
+    for (const part of Diff.diffLines(before, after, {ignoreWhitespace: true})) {
       if (part.removed) diff += `- ${part.value}\n`
       if (part.added) diff += `+ ${part.value}\n`
     }
@@ -55,7 +55,6 @@ module.exports = {
 
     for (const tr of old.get("trs")) {
       const data = store.get(tr)
-      console.log(JSON.stringify(data || {}))
       trs.push(data || {})
 
       if (data) store.remove(tr)
@@ -88,6 +87,8 @@ module.exports = {
 
     const notes = this.warpDiff(preRecord.get('notes'), record.get('notes'))
     if (notes) fields.push({ name: 'Notes', value: notes })
+
+    if (!fields) return
 
     return this.embed(user, fields, util.anilistTitle(id), id)
   },
