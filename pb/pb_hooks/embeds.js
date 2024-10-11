@@ -57,7 +57,6 @@ module.exports = {
     const fields = []
 
     const preRecord = record.OriginalCopy()
-
     const id = record.get('alID')
 
     $app.dao()?.expandRecord(record, ['trs'])
