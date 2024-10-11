@@ -47,7 +47,7 @@ module.exports = {
       if (part.added) diff += `+ ${part.value}`
     }
 
-    return `\`\`\`diff\n${diff}\`\`\``
+    return `\`\`\`diff\n${diff}\n\`\`\``
   },
   /**
    * @param {models.Record} record
