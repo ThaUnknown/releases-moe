@@ -39,7 +39,7 @@ module.exports = {
     return this.warpDiff(before, after)
   },
   warpDiff (before, after) {
-    const Diff = require(`${__hooks}/diff.min.js`)
+    const Diff = require(`${__hooks}/diff.js`)
 
     let diff = ''
     for (const part of Diff.diffTrimmedLines(before, after)) {
