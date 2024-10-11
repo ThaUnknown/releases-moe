@@ -22,6 +22,9 @@ module.exports = {
     if (id) obj.embeds[0].url = `${DOMAIN}/${id}`
     return obj
   },
+  wrap (text) {
+    return '```' + text + '```'
+  },
   getValue(trs, check, retValue, expected=true) {
     let value = ''
     for (const record of trs) {
@@ -70,10 +73,10 @@ module.exports = {
     if (alt) fields.push({ name: 'Alt', value: alt, inline: true })
 
     const notes = this.warpDiff(preRecord.get('notes'), record.get('notes'))
-    if (notes) fields.push({ name: 'Notes', value: this.wrap(notes) })
+    if (notes) fields.push({ name: 'Notes', value: notes })
       
     const unmuxed = this.warpDiff(preRecord.get('theoreticalBest'), record.get('theoreticalBest'))
-    if (unmuxed) fields.push({ name: 'Unmuxed Best', value: this.wrap(unmuxed) })
+    if (unmuxed) fields.push({ name: 'Unmuxed Best', value: unmuxed })
 
     return this.embed(user, fields, util.anilistTitle(id), id)
   },
