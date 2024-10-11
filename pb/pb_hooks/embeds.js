@@ -51,14 +51,12 @@ module.exports = {
   },
   expandOld (old) {
     const store = $app.store()
-    const trs = {}
+    const trs = []
 
-    console.log(JSON.stringify(old))
-    console.log(JSON.stringify(old.get("trs")))
 
-    for (const tr of Object.keys(old.get("trs"))) {
+    for (const tr of old.get("trs")) {
       const data = store.get(tr)
-      trs[tr] = data || {}
+      trs.push(data || {})
 
       if (data) store.remove(tr)
     }
