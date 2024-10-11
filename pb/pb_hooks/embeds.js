@@ -72,11 +72,11 @@ module.exports = {
     const alt = this.wrapMultiple(preTrs, curTrs, 'isBest', 'releaseGroup', false)
     if (alt) fields.push({ name: 'Alt', value: alt, inline: true })
 
-    const notes = this.warpDiff(preRecord.get('notes'), record.get('notes'))
-    if (notes) fields.push({ name: 'Notes', value: notes })
-      
     const unmuxed = this.warpDiff(preRecord.get('theoreticalBest'), record.get('theoreticalBest'))
     if (unmuxed) fields.push({ name: 'Unmuxed Best', value: unmuxed })
+
+    const notes = this.warpDiff(preRecord.get('notes'), record.get('notes'))
+    if (notes) fields.push({ name: 'Notes', value: notes })
 
     return this.embed(user, fields, util.anilistTitle(id), id)
   },
