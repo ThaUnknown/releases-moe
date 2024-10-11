@@ -6,6 +6,7 @@ on:
       - main
     tags:
       - "*"
+  pull_request:
 
 jobs:
   build-and-push:
@@ -37,11 +38,12 @@ jobs:
           tags: |
             type=ref,event=tag
             type=ref,event=branch
+            type=ref,event=pr
             type=sha,format=long
             type=raw,value=latest,enable={{is_default_branch}}
       
       - name: Build and push Docker images
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           push: true
