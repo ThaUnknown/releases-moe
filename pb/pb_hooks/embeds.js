@@ -26,11 +26,11 @@ module.exports = {
     return '```' + text + '```'
   },
   getValue(trs, check, retValue, expected=true) {
-    let value = ''
+    let values = new Set()
     for (const record of trs) {
-      if (record?.get(check) === expected) value += record?.get(retValue)
+      if (record?.get(check) === expected) values.add(record?.get(retValue))
     }
-    return value
+    return [...values].join("\n")
   },
   wrapMultiple (previous, current, check, retValue, expected=true) {
     let before = this.getValue(previous, check, retValue, expected)
@@ -92,4 +92,3 @@ module.exports = {
     return this.embed(user, fields, 'New Torrent')
   }
 }
-// kill docker
