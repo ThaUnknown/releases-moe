@@ -59,6 +59,10 @@ module.exports = {
     const preRecord = record.originalCopy()
     const id = record.get('alID')
 
+
+    console.log(preRecord.publicExport())
+    console.log(record.publicExport())
+
     $app.dao()?.expandRecord(record, ['trs'])
     $app.dao()?.expandRecord(preRecord, ['trs'])
 
