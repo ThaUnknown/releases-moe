@@ -36,6 +36,9 @@ module.exports = {
     let before = this.getValue(previous, check, retValue, expected)
     let after = this.getValue(current, check, retValue, expected)
 
+    console.log(before)
+    console.log(after)
+
     return this.warpDiff(before, after)
   },
   warpDiff (before, after) {
