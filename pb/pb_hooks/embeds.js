@@ -5,8 +5,6 @@ module.exports = {
     const DOMAIN = 'https://releases.moe'
 
     const obj = {
-      username: user.get('username'),
-      avatar_url: `${DOMAIN}/api/files/${user.collection().id}/${user.id}/${user.get('avatar')}`,
       embeds: [
         {
           type: 'rich',
@@ -24,8 +22,29 @@ module.exports = {
     if (id) obj.embeds[0].url = `${DOMAIN}/${id}`
     return obj
   },
-  wrap (text) {
-    return '```' + text + '```'
+  getValue(trs, check, retValue, expected=true) {
+    let value = ''
+    for (const record of trs) {
+      if (record?.get(check) === expected) value += record?.get(retValue)
+    }
+    return value
+  },
+  wrapMultiple (previous, current, check, retValue, expected=true) {
+    let before = this.getValue(previous, check, retValue, expected)
+    let after = this.getValue(current, check, retValue, expected)
+
+    return this.warpDiff(before, after)
+  },
+  warpDiff (before, after) {
+    const Diff = require(`${__hooks}/diff.min.js`)
+
+    let diff = ''
+    for (const part of Diff.diffTrimmedLines(before, after)) {
+      if (part.removed) diff += `- ${part.value}`
+      if (part.added) diff += `+ ${part.value}`
+    }
+
+    return `\`\`\`diff\n${diff}\`\`\``
   },
   /**
    * @param {models.Record} record
@@ -34,24 +53,29 @@ module.exports = {
   entries (record, user, util) {
     const fields = []
 
+    const preRecord = record.OriginalCopy()
+
     const id = record.get('alID')
 
-    fields.push({ name: 'Title', value: this.wrap(util.anilistTitle(id)) })
-
     $app.dao()?.expandRecord(record, ['trs'])
+    $app.dao()?.expandRecord(preRecord, ['trs'])
 
-    const trs = record.expandedAll('trs')
+    const curTrs = record.expandedAll('trs')
+    const preTrs = preRecord.expandedAll('trs')
 
-    const best = trs.find(record => record?.get('isBest'))
-    if (best) fields.push({ name: 'Best', value: this.wrap(best.get('releaseGroup')), inline: true })
-    const alt = trs.find(record => record && !record.get('isBest'))
-    if (alt) fields.push({ name: 'Alt', value: this.wrap(alt.get('releaseGroup')), inline: true })
-    const notes = record.get('notes')
+    const best = this.wrapMultiple(preTrs, curTrs, 'isBest', 'releaseGroup')
+    if (best) fields.push({ name: 'Best', value: best, inline: true })
+
+    const alt = this.wrapMultiple(preTrs, curTrs, 'isBest', 'releaseGroup', false)
+    if (alt) fields.push({ name: 'Alt', value: alt, inline: true })
+
+    const notes = this.warpDiff(preRecord.get('notes'), record.get('notes'))
     if (notes) fields.push({ name: 'Notes', value: this.wrap(notes) })
-    const unmuxed = record.get('theoreticalBest')
+      
+    const unmuxed = this.warpDiff(preRecord.get('theoreticalBest'), record.get('theoreticalBest'))
     if (unmuxed) fields.push({ name: 'Unmuxed Best', value: this.wrap(unmuxed) })
 
-    return this.embed(user, fields, 'New Entry', id)
+    return this.embed(user, fields, util.anilistTitle(id), id)
   },
   torrents (record, user) {
     const fields = []
