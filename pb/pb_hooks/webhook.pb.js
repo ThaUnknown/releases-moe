@@ -66,7 +66,7 @@ onRecordBeforeUpdateRequest(e => {
     for (const hook of hooks || []) {
       if (!hook || hook.get('collection') !== 'entries') continue
 
-      store.set(record.get("id"), record)
+      store.set(record.get("id"), record.originalCopy())
     }
 
   } catch (e) {

@@ -53,7 +53,6 @@ module.exports = {
     const store = $app.store()
     const trs = []
 
-
     for (const tr of old.get("trs")) {
       const data = store.get(tr)
       console.log(JSON.stringify(data || {}))
@@ -72,10 +71,6 @@ module.exports = {
 
     const preRecord = record.originalCopy()
     const id = record.get('alID')
-
-
-    console.log(preRecord.publicExport())
-    console.log(record.publicExport())
 
     $app.dao()?.expandRecord(record, ['trs'])
 
