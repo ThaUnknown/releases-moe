@@ -53,7 +53,10 @@ module.exports = {
     const store = $app.store()
     const trs = {}
 
-    for (const tr of old.get("trs")) {
+    console.log(JSON.stringify(old))
+    console.log(JSON.stringify(old.get("trs")))
+
+    for (const tr of Object.keys(old.get("trs"))) {
       const data = store.get(tr)
       trs[tr] = data || {}
 
