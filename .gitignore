@@ -145,3 +145,4 @@ dist
 /sk/.env
 /sk/.env.*
 /sk/!.env.example
+/db/*
