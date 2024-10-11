@@ -43,11 +43,11 @@ module.exports = {
 
     let diff = ''
     for (const part of Diff.diffTrimmedLines(before, after)) {
-      if (part.removed) diff += `- ${part.value}`
-      if (part.added) diff += `+ ${part.value}`
+      if (part.removed) diff += `- ${part.value}\n`
+      if (part.added) diff += `+ ${part.value}\n`
     }
-
-    return `\`\`\`diff\n${diff}\n\`\`\``
+    if (!diff) return ""
+    return `\`\`\`diff\n${diff.trim()}\n\`\`\``
   },
   /**
    * @param {models.Record} record
