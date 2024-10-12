@@ -12,6 +12,7 @@ onRecordAfterUpdateRequest(e => {
 
     const util = require(`${__hooks}/util.js`)
     const data = embeds[record.collection()?.name || ''](record, user, util)
+    if (!data) return
 
     for (const hook of hooks || []) {
       if (!hook || hook.get('collection') !== record.collection()?.name) continue
@@ -61,7 +62,7 @@ onRecordAfterCreateRequest(e => {
 onRecordBeforeUpdateRequest(e => {
   try {
     const record = e.record
-    const hooks = $app.dao()?.findRecordsByFilter('hooks', 'event = \'insert\'')
+    const hooks = $app.dao()?.findRecordsByFilter('hooks', 'event = \'update\'')
     if (!hooks || !record) return
     if (record.collection()?.name !== 'torrents') return
     const store = $app.store()
