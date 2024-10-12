@@ -41,9 +41,6 @@ module.exports = {
   warpDiff (before, after) {
     const Diff = require(`${__hooks}/diff.js`)
 
-    console.log(before)
-    console.log(after)
-
     let diff = ''
     for (const part of Diff.diffLines(before, after, {ignoreWhitespace: true})) {
       if (part.removed) diff += `- ${part.value}\n`
