@@ -41,6 +41,9 @@ module.exports = {
   warpDiff (before, after) {
     const Diff = require(`${__hooks}/diff.js`)
 
+    console.log(before)
+    console.log(after)
+
     let diff = ''
     for (const part of Diff.diffLines(before, after, {ignoreWhitespace: true})) {
       if (part.removed) diff += `- ${part.value}\n`
@@ -49,15 +52,15 @@ module.exports = {
     if (!diff) return ""
     return `\`\`\`diff\n${diff.trim()}\n\`\`\``
   },
-  expandOld (old) {
+  expandOld (old, expandOld) {
     const store = $app.store()
     const trs = []
 
     for (const tr of old.get("trs")) {
-      const data = store.get(tr)
+      const data = store.get(tr) || expandOld.find((record) => record.get('id') === tr)
       if (data) {
         trs.push(data)
-        store.remove(tr)
+        if (store.has(tr)) store.remove(tr)
       }
     }
     return trs
@@ -70,12 +73,14 @@ module.exports = {
     const fields = []
 
     const preRecord = record.originalCopy()
+    const preRecordExpand = record.originalCopy()
     const id = record.get('alID')
 
     $app.dao()?.expandRecord(record, ['trs'])
+    $app.dao()?.expandRecord(preRecordExpand, ['trs'])
 
     const curTrs = record.expandedAll('trs')
-    const preTrs = this.expandOld(preRecord)
+    const preTrs = this.expandOld(preRecord, preRecordExpand.expandedAll('trs'))
 
     const best = this.wrapMultiple(preTrs, curTrs, 'isBest', 'releaseGroup')
     if (best) fields.push({ name: 'Best', value: best, inline: true })
