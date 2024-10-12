@@ -59,7 +59,7 @@ onRecordAfterCreateRequest(e => {
 // This is here as the torrents get updated first then the entry
 // and due to how we expand for the torrent data it will only
 // ever have one data set to pull from meaning the data is the same.
-onRecordBeforeUpdateRequest(e => {
+const torrentHook = e => {
   try {
     const record = e.record
     const hooks = $app.dao()?.findRecordsByFilter('hooks', 'event = \'update\'')
@@ -75,4 +75,6 @@ onRecordBeforeUpdateRequest(e => {
   } catch (e) {
     console.log(e)
   }
-})
+}
+onRecordBeforeUpdateRequest(torrentHook)
+onRecordBeforeDeleteRequest(torrentHook)
