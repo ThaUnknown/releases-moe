@@ -55,9 +55,10 @@ module.exports = {
 
     for (const tr of old.get("trs")) {
       const data = store.get(tr)
-      trs.push(data || {})
-
-      if (data) store.remove(tr)
+      if (data) {
+        trs.push(data)
+        store.remove(tr)
+      }
     }
     return trs
   },
