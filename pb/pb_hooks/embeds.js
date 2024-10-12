@@ -94,7 +94,7 @@ module.exports = {
     const notes = this.warpDiff(preRecord.get('notes'), record.get('notes'))
     if (notes) fields.push({ name: 'Notes', value: notes })
 
-    if (!fields) return
+    if (!fields.length) return
 
     return this.embed(user, fields, util.anilistTitle(id), id)
   },
