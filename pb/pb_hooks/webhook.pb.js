@@ -11,7 +11,7 @@ onRecordAfterUpdateRequest(e => {
     if (!hooks || !record) return
 
     const util = require(`${__hooks}/util.js`)
-    const data = embeds[record.collection()?.name || ''](record, user, util)
+    const data = embeds[record.collection()?.name || ''](record, user, util, 'update')
     if (!data) return
 
     for (const hook of hooks || []) {
@@ -38,7 +38,7 @@ onRecordAfterCreateRequest(e => {
     if (!hooks || !record) return
 
     const util = require(`${__hooks}/util.js`)
-    const data = embeds[record.collection()?.name || ''](record, user, util)
+    const data = embeds[record.collection()?.name || ''](record, user, util, 'insert')
 
     if (!data) return
 
