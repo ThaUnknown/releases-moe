@@ -44,9 +44,9 @@ module.exports = {
     const Diff = require(`${__hooks}/diff.js`)
 
     let diff = ''
-    for (const part of Diff.diffLines(before, after, {ignoreWhitespace: true, newlineIsToken: true})) {
-      if (part.removed) diff += `- ${part.value}\n`
-      if (part.added) diff += `+ ${part.value}\n`
+    for (const part of Diff.diffLines(before, after, {ignoreWhitespace: true})) {
+      if (part.removed) diff += `- ${part.value.replace('\n', '\n- ')}\n`
+      if (part.added) diff += `+ ${part.value.replace('\n', '\n+ ')}\n`
     }
     if (!diff) return ""
     return `\`\`\`diff\n${diff.trim()}\n\`\`\``
