@@ -1,6 +1,6 @@
 module.exports = {
   copy: obj => JSON.parse(JSON.stringify(obj)),
-  anilistTitle: id => {
+  anilistData: id => {
     try {
       const res = $http.send({
         url: 'https://graphql.anilist.co',
