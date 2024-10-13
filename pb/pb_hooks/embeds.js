@@ -1,7 +1,7 @@
 /// <reference path="../pb_data/types.d.ts" />
 
 module.exports = {
-  embed (user, fields, title, id) {
+  embed (user, fields, title, id, thumbnail) {
     const DOMAIN = 'https://releases.moe'
 
     const obj = {
@@ -20,6 +20,8 @@ module.exports = {
       ]
     }
     if (id) obj.embeds[0].url = `${DOMAIN}/${id}`
+    if (thumbnail) obj.embeds[0].thumbnail = {url: thumbnail}
+
     return obj
   },
   wrap (text) {
@@ -73,6 +75,8 @@ module.exports = {
     const preRecordExpand = record.originalCopy()
     const id = record.get('alID')
 
+    const {title, poster} = util.anilistData(id)
+
     $app.dao()?.expandRecord(record, ['trs'])
     $app.dao()?.expandRecord(preRecordExpand, ['trs'])
 
@@ -93,7 +97,7 @@ module.exports = {
 
     if (!fields.length) return
 
-    return this.embed(user, fields, util.anilistTitle(id), id)
+    return this.embed(user, fields, title, id, poster)
   },
   torrents (record, user) {
     const fields = []
