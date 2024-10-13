@@ -11,7 +11,7 @@ onRecordAfterUpdateRequest(e => {
     if (!hooks || !record) return
 
     const util = require(`${__hooks}/util.js`)
-    const data = embeds[record.collection()?.name || ''](record, user, util, 'update')
+    const data = embeds[record.collection()?.name || ''](record, user, util)
     if (!data) return
 
     for (const hook of hooks || []) {
@@ -38,7 +38,7 @@ onRecordAfterCreateRequest(e => {
     if (!hooks || !record) return
 
     const util = require(`${__hooks}/util.js`)
-    const data = embeds[record.collection()?.name || ''](record, user, util, 'insert')
+    const data = embeds[record.collection()?.name || ''](record, user, util)
 
     if (!data) return
 
@@ -78,3 +78,4 @@ const torrentHook = e => {
 }
 onRecordBeforeUpdateRequest(torrentHook)
 onRecordBeforeDeleteRequest(torrentHook)
+onRecordBeforeCreateRequest(torrentHook)

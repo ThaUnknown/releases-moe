@@ -68,7 +68,7 @@ module.exports = {
    * @param {models.Record} record
    * @param {models.Record} user
    */
-  entries (record, user, util, type) {
+  entries (record, user, util) {
     const fields = []
 
     const preRecord = record.originalCopy()
@@ -78,13 +78,10 @@ module.exports = {
     const {title, poster} = util.anilistData(id)
 
     $app.dao()?.expandRecord(record, ['trs'])
+    $app.dao()?.expandRecord(preRecordExpand, ['trs'])
 
     const curTrs = record.expandedAll('trs')
-    let preTrs = []
-    if (type === 'update') {
-      $app.dao()?.expandRecord(preRecordExpand, ['trs'])
-      preTrs = this.expandOld(preRecord, preRecordExpand.expandedAll('trs'))
-    }
+    const preTrs = this.expandOld(preRecord, preRecordExpand.expandedAll('trs'))
 
     const best = this.wrapMultiple(preTrs, curTrs, 'isBest', 'releaseGroup')
     if (best) fields.push({ name: 'Best', value: best, inline: true })
