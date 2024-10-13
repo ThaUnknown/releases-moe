@@ -11,7 +11,7 @@ onRecordAfterUpdateRequest(e => {
     if (!hooks || !record) return
 
     const util = require(`${__hooks}/util.js`)
-    const data = embeds[record.collection()?.name || ''](record, user, util)
+    const data = embeds[record.collection()?.name || ''](record, user, util, 'update')
     if (!data) return
 
     for (const hook of hooks || []) {
@@ -38,7 +38,7 @@ onRecordAfterCreateRequest(e => {
     if (!hooks || !record) return
 
     const util = require(`${__hooks}/util.js`)
-    const data = embeds[record.collection()?.name || ''](record, user, util)
+    const data = embeds[record.collection()?.name || ''](record, user, util, 'insert')
 
     if (!data) return
 
@@ -59,7 +59,7 @@ onRecordAfterCreateRequest(e => {
 // This is here as the torrents get updated first then the entry
 // and due to how we expand for the torrent data it will only
 // ever have one data set to pull from meaning the data is the same.
-const torrentHook = (type) => { return e => {
+const torrentHook = e => {
   try {
     const record = e.record
     const hooks = $app.dao()?.findRecordsByFilter('hooks', 'event = \'update\'')
@@ -68,13 +68,14 @@ const torrentHook = (type) => { return e => {
     const store = $app.store()
     for (const hook of hooks || []) {
       if (!hook || hook.get('collection') !== 'entries') continue
-      store.set(record.get("id"), type === "create" && {} || record.originalCopy())
+
+      store.set(record.get("id"), record.originalCopy())
     }
 
   } catch (e) {
     console.log(e)
   }
-}}
-onRecordBeforeUpdateRequest(torrentHook("update"))
-onRecordBeforeDeleteRequest(torrentHook("delete"))
-onRecordBeforeCreateRequest(torrentHook("create"))
+}
+onRecordBeforeUpdateRequest(torrentHook)
+onRecordBeforeDeleteRequest(torrentHook)
+onRecordBeforeCreateRequest(torrentHook)
