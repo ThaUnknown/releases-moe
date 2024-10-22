@@ -81,7 +81,8 @@ module.exports = {
 
     const curTrs = record.expandedAll('trs')
     let preTrs = []
-    if (type === 'update') {
+    const isUpdate = type === 'update'
+    if (isUpdate) {
       $app.dao()?.expandRecord(preRecordExpand, ['trs'])
       preTrs = this.expandOld(preRecord, preRecordExpand.expandedAll('trs'))
     }
@@ -92,10 +93,10 @@ module.exports = {
     const alt = this.wrapMultiple(preTrs, curTrs, 'isBest', 'releaseGroup', false)
     if (alt) fields.push({ name: 'Alt', value: alt, inline: true })
 
-    const unmuxed = this.warpDiff(preRecord.get('theoreticalBest'), record.get('theoreticalBest'))
+    const unmuxed = this.warpDiff(isUpdate ? preRecord.get('theoreticalBest') : '', record.get('theoreticalBest'))
     if (unmuxed) fields.push({ name: 'Unmuxed Best', value: unmuxed })
 
-    const notes = this.warpDiff(preRecord.get('notes'), record.get('notes'))
+    const notes = this.warpDiff(isUpdate ? preRecord.get('notes') : '', record.get('notes'))
     if (notes) fields.push({ name: 'Notes', value: notes })
 
     if (!fields.length) return
