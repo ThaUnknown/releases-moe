@@ -143,6 +143,7 @@ dist
 /sk/.svelte-kit
 /sk/package
 /sk/.env
+/sk/.local
 /sk/.env.*
 /sk/!.env.example
 /db/*
