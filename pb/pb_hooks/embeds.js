@@ -20,23 +20,23 @@ module.exports = {
       ]
     }
     if (id) obj.embeds[0].url = `${DOMAIN}/${id}`
-    if (thumbnail) obj.embeds[0].thumbnail = {url: thumbnail}
+    if (thumbnail) obj.embeds[0].thumbnail = { url: thumbnail }
 
     return obj
   },
   wrap (text) {
     return '```' + text + '```'
   },
-  getValue(trs, check, retValue, expected=true) {
-    let values = new Set()
+  getValue (trs, check, retValue, expected = true) {
+    const values = new Set()
     for (const record of trs) {
       if (record?.get(check) === expected) values.add(record?.get(retValue))
     }
-    return [...values].join("\n")
+    return [...values].join('\n')
   },
-  wrapMultiple (previous, current, check, retValue, expected=true) {
-    let before = this.getValue(previous, check, retValue, expected)
-    let after = this.getValue(current, check, retValue, expected)
+  wrapMultiple (previous, current, check, retValue, expected = true) {
+    const before = this.getValue(previous, check, retValue, expected)
+    const after = this.getValue(current, check, retValue, expected)
 
     return this.warpDiff(before, after)
   },
@@ -44,18 +44,18 @@ module.exports = {
     const Diff = require(`${__hooks}/diff.js`)
 
     let diff = ''
-    for (const part of Diff.diffLines(before, after, {ignoreWhitespace: true})) {
+    for (const part of Diff.diffLines(before, after, { ignoreWhitespace: true })) {
       if (part.removed) diff += `- ${part.value.trim().replace('\n', '\n- ')}\n`
       if (part.added) diff += `+ ${part.value.trim().replace('\n', '\n+ ')}\n`
     }
-    if (!diff) return ""
+    if (!diff) return ''
     return `\`\`\`diff\n${diff.trim()}\n\`\`\``
   },
   expandOld (old, expandOld) {
     const store = $app.store()
     const trs = []
 
-    for (const tr of old.get("trs")) {
+    for (const tr of old.get('trs')) {
       const data = store.get(tr) || expandOld.find((record) => record.get('id') === tr)
       if (data) {
         trs.push(data)
@@ -75,7 +75,7 @@ module.exports = {
     const preRecordExpand = record.originalCopy()
     const id = record.get('alID')
 
-    const {title, poster} = util.anilistData(id)
+    const { title, poster } = util.anilistData(id)
 
     $app.dao()?.expandRecord(record, ['trs'])
 

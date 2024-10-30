@@ -12,7 +12,7 @@ module.exports = {
         }
       })
       const title = res.json.data.Media.title
-      const poster = res.json.data.Media.coverImage.large || ""
+      const poster = res.json.data.Media.coverImage.large || ''
       return {
         title: title.english || title.romaji,
         poster
