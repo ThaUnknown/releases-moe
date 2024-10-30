@@ -1,12 +1,10 @@
 /// <reference path="../pb_data/types.d.ts" />
 
 module.exports = {
-  embed (user, fields, title, id) {
+  embed (user, fields, title, id, thumbnail) {
     const DOMAIN = 'https://releases.moe'
 
     const obj = {
-      username: user.get('username'),
-      avatar_url: `${DOMAIN}/api/files/${user.collection().id}/${user.id}/${user.get('avatar')}`,
       embeds: [
         {
           type: 'rich',
@@ -22,36 +20,88 @@ module.exports = {
       ]
     }
     if (id) obj.embeds[0].url = `${DOMAIN}/${id}`
+    if (thumbnail) obj.embeds[0].thumbnail = { url: thumbnail }
+
     return obj
   },
   wrap (text) {
     return '```' + text + '```'
   },
+  getValue (trs, check, retValue, expected = true) {
+    const values = new Set()
+    for (const record of trs) {
+      if (record?.get(check) === expected) values.add(record?.get(retValue))
+    }
+    return [...values].join('\n')
+  },
+  wrapMultiple (previous, current, check, retValue, expected = true) {
+    const before = this.getValue(previous, check, retValue, expected)
+    const after = this.getValue(current, check, retValue, expected)
+
+    return this.warpDiff(before, after)
+  },
+  warpDiff (before, after) {
+    const Diff = require(`${__hooks}/diff.js`)
+
+    let diff = ''
+    for (const part of Diff.diffLines(before, after, { ignoreWhitespace: true })) {
+      if (part.removed) diff += `- ${part.value.trim().replace('\n', '\n- ')}\n`
+      if (part.added) diff += `+ ${part.value.trim().replace('\n', '\n+ ')}\n`
+    }
+    if (!diff) return ''
+    return `\`\`\`diff\n${diff.trim()}\n\`\`\``
+  },
+  expandOld (old, expandOld) {
+    const store = $app.store()
+    const trs = []
+
+    for (const tr of old.get('trs')) {
+      const data = store.get(tr) || expandOld.find((record) => record.get('id') === tr)
+      if (data) {
+        trs.push(data)
+        if (store.has(tr)) store.remove(tr)
+      }
+    }
+    return trs
+  },
   /**
    * @param {models.Record} record
    * @param {models.Record} user
    */
-  entries (record, user, util) {
+  entries (record, user, util, type) {
     const fields = []
 
+    const preRecord = record.originalCopy()
+    const preRecordExpand = record.originalCopy()
     const id = record.get('alID')
 
-    fields.push({ name: 'Title', value: this.wrap(util.anilistTitle(id)) })
+    const { title, poster } = util.anilistData(id)
 
     $app.dao()?.expandRecord(record, ['trs'])
 
-    const trs = record.expandedAll('trs')
+    const curTrs = record.expandedAll('trs')
+    let preTrs = []
+    const isUpdate = type === 'update'
+    if (isUpdate) {
+      $app.dao()?.expandRecord(preRecordExpand, ['trs'])
+      preTrs = this.expandOld(preRecord, preRecordExpand.expandedAll('trs'))
+    }
 
-    const best = trs.find(record => record?.get('isBest'))
-    if (best) fields.push({ name: 'Best', value: this.wrap(best.get('releaseGroup')), inline: true })
-    const alt = trs.find(record => record && !record.get('isBest'))
-    if (alt) fields.push({ name: 'Alt', value: this.wrap(alt.get('releaseGroup')), inline: true })
-    const notes = record.get('notes')
-    if (notes) fields.push({ name: 'Notes', value: this.wrap(notes) })
-    const unmuxed = record.get('theoreticalBest')
-    if (unmuxed) fields.push({ name: 'Unmuxed Best', value: this.wrap(unmuxed) })
+    const best = this.wrapMultiple(preTrs, curTrs, 'isBest', 'releaseGroup')
+    if (best) fields.push({ name: 'Best', value: best, inline: true })
 
-    return this.embed(user, fields, 'New Entry', id)
+    const alt = this.wrapMultiple(preTrs, curTrs, 'isBest', 'releaseGroup', false)
+    if (alt) fields.push({ name: 'Alt', value: alt, inline: true })
+
+    const unmuxed = this.warpDiff(isUpdate ? preRecord.get('theoreticalBest') : '', record.get('theoreticalBest'))
+    if (unmuxed) fields.push({ name: 'Unmuxed Best', value: unmuxed })
+
+    const notes = this.warpDiff(isUpdate ? preRecord.get('notes') : '', record.get('notes'))
+    if (notes) fields.push({ name: 'Notes', value: notes })
+
+    if (!fields.length) return
+
+    return this.embed(user, fields, title, id, poster)
   },
   torrents (record, user) {
     const fields = []
