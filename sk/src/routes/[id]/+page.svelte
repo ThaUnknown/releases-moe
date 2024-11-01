@@ -2,8 +2,9 @@
   import { metadata } from '$lib/app/stores'
   import MediaDetails from '$lib/components/MediaDetails.svelte'
   import { authModel } from '$lib/pocketbase'
-  import { fastPrettyBytes, sortTorrents } from '$lib/util'
+  import { sortTorrents } from '$lib/util'
   import MediaRelations from '$lib/components/MediaRelations.svelte'
+  import ReleaseCard from '$lib/components/ReleaseCard.svelte'
   import { Button } from '$lib/components/ui/button'
   import * as Card from '$lib/components/ui/card'
   import { Separator } from '$lib/components/ui/separator'
@@ -15,30 +16,23 @@
   $: entry = data.entry
   $: media = data.media
 
-  $: groupped = Object.groupBy(sortTorrents(entry.expand?.trs), ({ releaseGroup }) => releaseGroup) as Record<string, TorrentsResponse[]>
-
-  function hasDualBest (torrents: TorrentsResponse[]) {
-    let isBest = false
-    let isDual = false
-    const sizes: string[] = []
-    for (const torrent of torrents) {
-      if (torrent.isBest) isBest = true
-      if (torrent.dualAudio) isDual = true
-      const size = torrent.files && fastPrettyBytes(torrent.files.reduce((acc, { length }) => acc + length, 0))
-      if (size && !sizes.includes(size)) sizes.push(size)
+  $: groupped = sortTorrents(entry.expand?.trs).reduce((acc, item) => {
+    const { releaseGroup, isBest } = item;
+    
+    // Initialize the releaseGroup if it doesn't exist
+    if (!acc[releaseGroup]) {
+      acc[releaseGroup] = { best: [], alt: [] };
     }
-    return { isBest, isDual, sizes }
-  }
 
-  const icons: Record<TorrentsTrackerOptions, string> = {
-    AnimeBytes: '/ab.ico',
-    AniDex: '/anidex.ico',
-    AnimeTosho: '/tosho.ico',
-    Nyaa: '/cat.png',
-    RuTracker: '/rutracker.ico',
-    BeyondHD: '/bhd.ico',
-    Other: ''
-  }
+    // Push the item into the 'best' or 'alt' group based on the boolean 'best' value
+    if (isBest) {
+      acc[releaseGroup].best.push(item);
+    } else {
+      acc[releaseGroup].alt.push(item);
+    }
+
+    return acc;
+  }, {}) as Record<string, Record<string, TorrentsResponse[]>>
 
   $metadata.title = media.title.userPreferred
 </script>
@@ -81,40 +75,15 @@
           </Card.Footer>
         </Card.Root>
       {/if}
-      {#each Object.entries(groupped) as [releaseGroup, torrents]}
-        {@const { isBest, isDual, sizes } = hasDualBest(torrents)}
-        <Card.Root class='w-80 max-w-full'>
-          <Card.Header class='pb-3'>
-            <Card.Title>{releaseGroup}</Card.Title>
-            <Card.Description>
-              {#each sizes as size}
-                <span class='size text-nowrap'>{size}</span>
-              {/each}
-            </Card.Description>
-          </Card.Header>
-          <Card.Content class='pb-3'>
-            {#if isDual}
-              <span class='bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300'>DualAudio</span>
-            {/if}
-            {#if isBest}
-              <span class='bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300'>Best</span>
-            {:else}
-              <span class='bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300'>Alt</span>
-            {/if}
-          </Card.Content>
-          <Card.Footer>
-            <div class='grid grid-cols-2 gap-4 w-full'>
-              {#each torrents as torrent}
-                <Button size='sm' variant='outline' class='px-4' href={torrent.url}>
-                  {#if icons[torrent.tracker]}
-                    <img src={icons[torrent.tracker]} alt={torrent.tracker} class='w-3 h-3 me-2' />
-                  {/if}
-                  {torrent.tracker}
-                </Button>
-              {/each}
-            </div>
-          </Card.Footer>
-        </Card.Root>
+      {#each Object.entries(groupped) as [releaseGroup, torrentinfo]}
+        {#each torrentinfo["best"] as torrents}
+          <ReleaseCard releaseGroup={releaseGroup} torrents={torrents} />
+        {/each}        
+      {/each}
+      {#each Object.entries(groupped) as [releaseGroup, torrentinfo]}
+        {#each torrentinfo["alt"] as torrents}
+          <ReleaseCard releaseGroup={releaseGroup} torrents={torrents} />
+        {/each}        
       {/each}
     </div>
     <Separator class='my-10' />
