@@ -76,14 +76,10 @@
         </Card.Root>
       {/if}
       {#each Object.entries(groupped) as [releaseGroup, torrentinfo]}
-        {#each torrentinfo["best"] as torrents}
-          <ReleaseCard releaseGroup={releaseGroup} torrents={torrents} />
-        {/each}        
+        <ReleaseCard releaseGroup={releaseGroup} torrents={torrentinfo["best"]} />      
       {/each}
       {#each Object.entries(groupped) as [releaseGroup, torrentinfo]}
-        {#each torrentinfo["alt"] as torrents}
-          <ReleaseCard releaseGroup={releaseGroup} torrents={torrents} />
-        {/each}        
+          <ReleaseCard releaseGroup={releaseGroup} torrents={torrentinfo["alt"]} />     
       {/each}
     </div>
     <Separator class='my-10' />
