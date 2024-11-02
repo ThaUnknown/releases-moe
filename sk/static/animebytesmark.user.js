@@ -3,7 +3,7 @@
 // @description Tags the best releases on AnimeBytes according to https://releases.moe/
 // @namespace   ThaUnknown
 // @match       *://animebytes.tv/*
-// @version     1.0.3
+// @version     1.0.4
 // @author      ThaUnknown
 // @grant       GM_xmlhttpRequest
 // @icon        http://animebytes.tv/favicon.ico
