@@ -3,7 +3,7 @@
 // @description Tags the best releases on AnimeBytes according to https://releases.moe/
 // @namespace   ThaUnknown
 // @match       *://animebytes.tv/*
-// @version     1.0.3
+// @version     1.0.4
 // @author      ThaUnknown
 // @grant       GM_xmlhttpRequest
 // @icon        http://animebytes.tv/favicon.ico
@@ -137,7 +137,7 @@ function insertTorrentTab (torrentId, tabName, tabId, content) {
       img.src = entry.isBest
         ? 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACIAAAAJCAYAAABXLP43AAAAAXNSR0IArs4c6QAAAMJJREFUOE9jZBgkgFE1TWwaAwNDJhb3TCdOnHE+K8u/vN9/GLug6qffnvUqC8lcMB+bf5HVgBzyP6skH0PdtJ6JDMSIg9QxMDDOZ2D4nwhSD+EzgD0B49+e9YoR3QKYI2Bq4A6BGoCiHslgnOIINaiOQXMUSD8o1FFCC1kN0SGCy6ewEMUmj2QxONTxqcGaRmCaqB0iWMyFpx+iQwQWN+hph9g0gp4mYKEFM5fiXPP/z//5bBwMROUafDkJIzUPVLECALBqyRj71YzpAAAAAElFTkSuQmCC'
         : 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACIAAAAJCAYAAABXLP43AAAAAXNSR0IArs4c6QAAALJJREFUOE/NlMEOgkAMRN961Z/kqAfOfoLxA+S4n+lJMd1QUmohTTRRbi2zs9NhSuFPntLBDTgGeoZM/wl1D/0drhN+qHAyvK2O5rUYETKeA9QFyPQFJ2J20AleaqANoXWF4q9QEYqZhUwEC7whXu0rxotxouS8uL5wy2LSjqxNqo5G783FzfUtTJgRPfRtRwLeOT9pR/Tb+OxkM+IzoW4p78db84B6SG7N1ia9pflXv5UXtZlmWNmuM34AAAAASUVORK5CYII='
-      img.title = 'This release is seadex approved!' + (entry.notes ? ` Seadex Notes:\n${entry.notes}` : '')
+      img.title = entry.notes ? ` Seadex Notes:\n${entry.notes}` : ''
       img.alt = 'Seadex Choice!'
       img.dataset.seadex = ''
       img.onclick = e => {
