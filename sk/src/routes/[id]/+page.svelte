@@ -8,7 +8,7 @@
   import { Button } from '$lib/components/ui/button'
   import * as Card from '$lib/components/ui/card'
   import { Separator } from '$lib/components/ui/separator'
-  import type { TorrentsResponse, TorrentsTrackerOptions } from '$lib/pocketbase/generated-types.js'
+  import type { TorrentsResponse } from '$lib/pocketbase/generated-types.js'
   export let data
 
   let { entry, media } = data
@@ -17,22 +17,22 @@
   $: media = data.media
 
   $: groupped = sortTorrents(entry.expand?.trs).reduce((acc, item) => {
-    const { releaseGroup, isBest } = item;
-    
+    const { releaseGroup, isBest } = item
+
     // Initialize the releaseGroup if it doesn't exist
     if (!acc[releaseGroup]) {
-      acc[releaseGroup] = { best: [], alt: [] };
+      acc[releaseGroup] = { best: [], alt: [] }
     }
 
     // Push the item into the 'best' or 'alt' group based on the boolean 'best' value
     if (isBest) {
-      acc[releaseGroup].best.push(item);
+      acc[releaseGroup].best.push(item)
     } else {
-      acc[releaseGroup].alt.push(item);
+      acc[releaseGroup].alt.push(item)
     }
 
-    return acc;
-  }, {}) as Record<string, Record<string, TorrentsResponse[]>>
+    return acc
+  }, {} as Record<string, { best: TorrentsResponse[], alt:TorrentsResponse[] }>)
 
   $metadata.title = media.title.userPreferred
 </script>
@@ -76,13 +76,13 @@
         </Card.Root>
       {/if}
       {#each Object.entries(groupped) as [releaseGroup, torrentinfo]}
-        {#if torrentinfo["best"].length}
-          <ReleaseCard releaseGroup={releaseGroup} torrents={torrentinfo["best"]} />
-        {/if}   
+        {#if torrentinfo.best.length}
+          <ReleaseCard {releaseGroup} torrents={torrentinfo.best} />
+        {/if}
       {/each}
       {#each Object.entries(groupped) as [releaseGroup, torrentinfo]}
-        {#if torrentinfo["alt"].length}
-          <ReleaseCard releaseGroup={releaseGroup} torrents={torrentinfo["alt"]} />
+        {#if torrentinfo.alt.length}
+          <ReleaseCard {releaseGroup} torrents={torrentinfo.alt} />
         {/if}
       {/each}
     </div>
@@ -99,10 +99,3 @@
     {/key}
   </div>
 </div>
-
-<style>
-  .size + .size::before {
-    content: ' | ';
-    white-space: normal;
-  }
-</style>
