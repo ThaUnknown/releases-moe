@@ -38,7 +38,7 @@
 </script>
 
 <div class='flex h-full md:flex-row flex-col justify-content-center'>
-  <div class='mb-3 min-w-0'>
+  <div class='mb-3 min-w-0 max-w-72 shrink-0'>
     {#if entry.incomplete}
       <div class='font-medium text-red-600 text-xl mb-3'>This Entry Is Incomplete</div>
     {/if}
