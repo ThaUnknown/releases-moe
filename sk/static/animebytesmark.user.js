@@ -1,9 +1,9 @@
 // ==UserScript==
-// @name        AB - Mark Seadex Releases
+// @name        AB - Mark SeaDex Releases
 // @description Tags the best releases on AnimeBytes according to https://releases.moe/
 // @namespace   ThaUnknown
 // @match       *://animebytes.tv/*
-// @version     1.0.4
+// @version     1.1.0
 // @author      ThaUnknown
 // @grant       GM_xmlhttpRequest
 // @icon        http://animebytes.tv/favicon.ico
@@ -115,60 +115,64 @@ function insertTorrentTab (torrentId, tabName, tabId, content) {
 (async function () {
   try {
     const torrents = torrentsOnPage()
-    const linkMap = await fetchSeadex(torrents)
+    // Do a 100 torrents at a time to make url length manageable
+    for (let i = 0; i < torrents.length; i += 100) {
+        const sliced = torrents.slice(i, i + 100)
+        const linkMap = await fetchSeadex(sliced)
 
-    for (const torrentLink of torrents) {
-      const entry = linkMap[torrentLink.torrentId]
-      if (!entry) continue
+        for (const torrentLink of sliced) {
+            const entry = linkMap[torrentLink.torrentId]
+            if (!entry) continue
 
-      // Insert tag
-      torrentLink.a.append(torrentLink.separator)
-      let parent = torrentLink.a
-      if (torrentLink.a.classList.contains('userscript-highlight')) {
-        // highlight already ran
-        parent = document.createElement('span')
-        parent.className = 'userscript-highlight torrent-field'
-        parent.dataset.seadex = 'Seadex'
-        parent.dataset.field = 'Seadex'
-        torrentLink.a.append(parent)
-      }
+            // Insert tag
+            torrentLink.a.append(torrentLink.separator)
+            let parent = torrentLink.a
+            if (torrentLink.a.classList.contains('userscript-highlight')) {
+                // highlight already ran
+                parent = document.createElement('span')
+                parent.className = 'userscript-highlight torrent-field'
+                parent.dataset.seadex = 'SeaDex'
+                parent.dataset.field = 'SeaDex'
+                torrentLink.a.append(parent)
+            }
 
-      const img = document.createElement('img')
-      img.src = entry.isBest
-        ? 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACIAAAAJCAYAAABXLP43AAAAAXNSR0IArs4c6QAAAMJJREFUOE9jZBgkgFE1TWwaAwNDJhb3TCdOnHE+K8u/vN9/GLug6qffnvUqC8lcMB+bf5HVgBzyP6skH0PdtJ6JDMSIg9QxMDDOZ2D4nwhSD+EzgD0B49+e9YoR3QKYI2Bq4A6BGoCiHslgnOIINaiOQXMUSD8o1FFCC1kN0SGCy6ewEMUmj2QxONTxqcGaRmCaqB0iWMyFpx+iQwQWN+hph9g0gp4mYKEFM5fiXPP/z//5bBwMROUafDkJIzUPVLECALBqyRj71YzpAAAAAElFTkSuQmCC'
-        : 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACIAAAAJCAYAAABXLP43AAAAAXNSR0IArs4c6QAAALJJREFUOE/NlMEOgkAMRN961Z/kqAfOfoLxA+S4n+lJMd1QUmohTTRRbi2zs9NhSuFPntLBDTgGeoZM/wl1D/0drhN+qHAyvK2O5rUYETKeA9QFyPQFJ2J20AleaqANoXWF4q9QEYqZhUwEC7whXu0rxotxouS8uL5wy2LSjqxNqo5G783FzfUtTJgRPfRtRwLeOT9pR/Tb+OxkM+IzoW4p78db84B6SG7N1ia9pflXv5UXtZlmWNmuM34AAAAASUVORK5CYII='
-      img.title = entry.notes ? ` Seadex Notes:\n${entry.notes}` : ''
-      img.alt = 'Seadex Choice!'
-      img.dataset.seadex = ''
-      img.onclick = e => {
-        e.preventDefault()
-        e.stopImmediatePropagation()
-        window.open(`https://releases.moe/${entry.alID}`, '_blank').focus()
-      }
-      parent.append(img)
+            const img = document.createElement('img')
+            img.src = entry.isBest
+                ? 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACIAAAAJCAYAAABXLP43AAAAAXNSR0IArs4c6QAAAMJJREFUOE9jZBgkgFE1TWwaAwNDJhb3TCdOnHE+K8u/vN9/GLug6qffnvUqC8lcMB+bf5HVgBzyP6skH0PdtJ6JDMSIg9QxMDDOZ2D4nwhSD+EzgD0B49+e9YoR3QKYI2Bq4A6BGoCiHslgnOIINaiOQXMUSD8o1FFCC1kN0SGCy6ewEMUmj2QxONTxqcGaRmCaqB0iWMyFpx+iQwQWN+hph9g0gp4mYKEFM5fiXPP/z//5bBwMROUafDkJIzUPVLECALBqyRj71YzpAAAAAElFTkSuQmCC'
+            : 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACIAAAAJCAYAAABXLP43AAAAAXNSR0IArs4c6QAAALJJREFUOE/NlMEOgkAMRN961Z/kqAfOfoLxA+S4n+lJMd1QUmohTTRRbi2zs9NhSuFPntLBDTgGeoZM/wl1D/0drhN+qHAyvK2O5rUYETKeA9QFyPQFJ2J20AleaqANoXWF4q9QEYqZhUwEC7whXu0rxotxouS8uL5wy2LSjqxNqo5G783FzfUtTJgRPfRtRwLeOT9pR/Tb+OxkM+IzoW4p78db84B6SG7N1ia9pflXv5UXtZlmWNmuM34AAAAASUVORK5CYII='
+            img.title = entry.notes ? `SeaDex Notes:\n${entry.notes}` : ''
+            img.alt = 'SeaDex Choice!'
+            img.dataset.seadex = ''
+            img.onclick = e => {
+                e.preventDefault()
+                e.stopImmediatePropagation()
+                window.open(`https://releases.moe/${entry.alID}`, '_blank').focus()
+            }
+            parent.append(img)
 
-      // seadex tab
-      const tab = $('<div></div>')
-      tab.append(`<div style="margin-bottom: 16px;"><h2><a target="_blank" href="https://releases.moe/${entry.alID}">Releases.moe Entry</a></h2><span>Click to open the entry on the website</span></div>`)
+            // seadex tab
+            const tab = $('<div></div>')
+            tab.append(`<div style="margin-bottom: 16px;"><h2><a target="_blank" href="https://releases.moe/${entry.alID}">Releases.moe Entry</a></h2><span>Click to open the entry on the website</span></div>`)
 
-      if (entry.notes) {
-        const span = $('<span style="white-space: pre-wrap;"></span>')
-        span.text(entry.notes)
-        const div = $('<div style="margin-bottom: 16px;"></div>')
-        div.append('<h2>Notes</h2>', span)
-        tab.append(div)
-      }
+            if (entry.notes) {
+                const span = $('<span style="white-space: pre-wrap;"></span>')
+                span.text(entry.notes)
+                const div = $('<div style="margin-bottom: 16px;"></div>')
+                div.append('<h2>Notes</h2>', span)
+                tab.append(div)
+            }
 
-      if (Array.isArray(entry.comparisons) && entry.comparisons?.length > 0) {
-        const div = $('<div style="margin-bottom: 16px;"></div>')
-        div.append('<h2>Comparisons</h2>')
-        for (const link of entry.comparisons) {
-          div.append(`<a target="_blank" href="${link}">${link}</a>`, '<br>')
+            if (Array.isArray(entry.comparisons) && entry.comparisons?.length > 0) {
+                const div = $('<div style="margin-bottom: 16px;"></div>')
+                div.append('<h2>Comparisons</h2>')
+                for (const link of entry.comparisons) {
+                    div.append(`<a target="_blank" href="${link}">${link}</a>`, '<br>')
+                }
+                tab.append(div)
+            }
+
+            insertTorrentTab(torrentLink.torrentId, 'SeaDex', 'seadex', tab)
         }
-        tab.append(div)
-      }
-
-      insertTorrentTab(torrentLink.torrentId, 'Seadex', 'seadex', tab)
     }
   } catch (err) {
     console.error(`Failed to fetch seadex for best releases - ${err?.message || err}`)
