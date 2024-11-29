@@ -55,15 +55,15 @@ async function setViewBlue () {
       document.head.insertAdjacentHTML('beforeend', '<style id="css_blue" type="text/css">button.btn-seadex {margin-right: 5px; color: #fff; background-color: #247fcc; border-color: #247fcc;} button.btn-seadex:hover {margin-right: 5px; color: #fff; background-color: #19578b; border-color: #19578b;} </style>')
 
       for (const [i, info] of entries.items?.entries()) {
-        report?.insertAdjacentHTML("afterend", `<button type="button" id="md-seadex-${i}" class="btn btn-xs btn-seadex pull-right">Seadex</button>`)
-
-        const button = document.querySelector(`button#md-seadex-${i}`)
-
+        const button = document.createElement('button')
+        button.classList.add("btn", "btn-xs", "btn-seadex", "pull-right")
+        button.textContent = "SeaDex"
         button.onclick = (e) => {
           e.preventDefault()
           e.stopImmediatePropagation()
           window.open(`https://releases.moe/${info.alID}`, '_blank').focus()
         }
+        report?.insertAdjacentElement("afterend", button)
       }
     }
   }
