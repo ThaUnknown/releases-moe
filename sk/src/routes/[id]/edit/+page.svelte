@@ -163,7 +163,7 @@
 
 <form on:submit|preventDefault={submit}>
   <div class='flex h-full lg:flex-row flex-col justify-content-center'>
-    <div class='mb-3 min-w-0'>
+    <div class='mb-3 min-w-0 max-w-72 shrink-0'>
       <MediaDetails {media} />
       <div class='pt-2'>Episodes: {media.episodes || 'N/A'}</div>
       <Separator class='my-10' />
