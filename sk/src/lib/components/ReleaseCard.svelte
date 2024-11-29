@@ -55,7 +55,7 @@
     <Card.Footer>
       <div class='grid grid-cols-2 gap-4 w-full'>
         {#each torrents as torrent}
-          <Button size='sm' variant='outline' class='px-4' href={torrent.url} target="_blank">
+          <Button size='sm' variant='outline' class='px-4' href={torrent.url} target='_blank'>
             {#if icons[torrent.tracker]}
               <img src={icons[torrent.tracker]} alt={torrent.tracker} class='w-3 h-3 me-2' />
             {/if}
