@@ -34,37 +34,30 @@ async function setViewBlue () {
   const infoHash = getViewHash()
   const element = document.querySelector('.container .panel')
 
-  const torrentsResponse = await seadexEndpoint('', {
-    filter: 'infoHash="' + infoHash + '"'
+  const collectionResponse = await seadexEntryEndpoint('', {
+    filter: 'trs.infoHash?="' + infoHash + '"',
+    expand: 'trs',
+    skipToal: true
   })
 
-  const { items } = await torrentsResponse.json()
-  if (items[0]?.infoHash) {
-    element?.classList.add(items[0]?.isBest ? 'panel-info' : 'panel-info-alt')
-  }
-  if (items[0]?.id) {
-    const collectionResponse = await seadexEntryEndpoint('', {
-      filter: 'trs~"' + items[0]?.id + '"'
-    })
+  const { items } = await collectionResponse.json()
+  if (items?.length) {
+    element?.classList.add(items[0].expand.trs.find((info)=> info.infoHash === infoHash)?.isBest ? 'panel-info' : 'panel-info-alt')
 
-    const entries = await collectionResponse.json()
+    const report = document.querySelector('body > div > div:nth-child(1) > div.panel-footer.clearfix > button')
 
-    if (entries.items?.length !== 0) {
-      const report = document.querySelector('body > div > div:nth-child(1) > div.panel-footer.clearfix > button')
+    document.head.insertAdjacentHTML('beforeend', '<style id="css_blue" type="text/css">button.btn-seadex {margin-right: 5px; color: #fff; background-color: #247fcc; border-color: #247fcc;} button.btn-seadex:hover {margin-right: 5px; color: #fff; background-color: #19578b; border-color: #19578b;} </style>')
 
-      document.head.insertAdjacentHTML('beforeend', '<style id="css_blue" type="text/css">button.btn-seadex {margin-right: 5px; color: #fff; background-color: #247fcc; border-color: #247fcc;} button.btn-seadex:hover {margin-right: 5px; color: #fff; background-color: #19578b; border-color: #19578b;} </style>')
-
-      for (const [i, info] of entries.items?.entries()) {
-        const button = document.createElement('button')
-        button.classList.add("btn", "btn-xs", "btn-seadex", "pull-right")
-        button.textContent = "SeaDex"
-        button.onclick = (e) => {
-          e.preventDefault()
-          e.stopImmediatePropagation()
-          window.open(`https://releases.moe/${info.alID}`, '_blank').focus()
-        }
-        report?.insertAdjacentElement("afterend", button)
+    for (const info of items) {
+      const button = document.createElement('button')
+      button.classList.add("btn", "btn-xs", "btn-seadex", "pull-right")
+      button.textContent = "SeaDex"
+      button.onclick = (e) => {
+        e.preventDefault()
+        e.stopImmediatePropagation()
+        window.open(`https://releases.moe/${info.alID}`, '_blank').focus()
       }
+      report?.insertAdjacentElement("afterend", button)
     }
   }
 }
