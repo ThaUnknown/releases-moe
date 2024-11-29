@@ -37,7 +37,7 @@ async function setViewBlue () {
   const collectionResponse = await seadexEntryEndpoint('', {
     filter: 'trs.infoHash?="' + infoHash + '"',
     expand: 'trs',
-    skipToal: true
+    skipTotal: true
   })
 
   const { items } = await collectionResponse.json()
