@@ -5,7 +5,7 @@
 
   export let edit = false
 
-  const edgesFiltered = edges?.filter(({ node }) => node.type === 'ANIME' && node.format !== 'MUSIC') || []
+  const edgesFiltered = edges?.filter(({ node }) => node.type === 'ANIME' && node.format !== 'MUSIC' && node.format !== 'CHARACTER') || []
 </script>
 
 {#if edgesFiltered?.length}
@@ -18,7 +18,7 @@
           <div class='p-2 ps-3 flex flex-col w-full' style:min-width='0'>
             <div class='font-bold truncate w-full'>{node.title.english || node.title.userPreferred}</div>
             <div class='mt-auto flex flex-row gap-2'>
-              {#if formatMap[node.format]}
+              {#if (node.format ?? '') in formatMap}
                 <span class='bg-green-100 text-green-800 text-xs font-medium me-1 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300'>{formatMap[node.format]}</span>
               {/if}
               {#if node.seasonYear}

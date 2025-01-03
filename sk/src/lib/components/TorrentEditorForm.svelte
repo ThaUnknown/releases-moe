@@ -6,6 +6,7 @@
   import * as Select from '$lib/components/ui/select'
   import * as Accordion from '$lib/components/ui/accordion'
   import { Button } from './ui/button'
+  import { PRIVATE_TRACKERS, URL_TRACKER_MAP } from '$lib/torrent'
 
   type TorrentData = { id?: string } & TorrentsRecord
 
@@ -25,13 +26,20 @@
   $: selectedTracker = torrent.tracker
     ? { label: torrent.tracker, value: torrent.tracker }
     : undefined
+
+  function updateTracker () {
+    const ent = Object.entries(URL_TRACKER_MAP).find(([url]) => torrent.url.startsWith(url)) ?? []
+    if (ent[1]) {
+      torrent.tracker = ent[1]
+    }
+  }
 </script>
 
 <div class='grid grid-cols-2 gap-3'>
   <div>
     <div class='mb-2'>
       <Label for={'infohash' + i}>InfoHash</Label>
-      {#if torrent.tracker === TorrentsTrackerOptions.AnimeBytes || torrent.tracker === TorrentsTrackerOptions.BeyondHD}
+      {#if PRIVATE_TRACKERS.includes(torrent.tracker)}
         <Input type='text' class='form-control disabled' required disabled id={'infohash' + i} value='<redacted>' />
       {:else}
         <Input type='text' class='form-control disabled' required disabled id={'infohash' + i} bind:value={torrent.infoHash} />
@@ -64,7 +72,7 @@
   <div>
     <div class='mb-2'>
       <Label for={'url' + i}>URL</Label>
-      <Input type='text' class='form-control' required id={'url' + i} bind:value={torrent.url} />
+      <Input type='text' class='form-control' on:change={updateTracker} required id={'url' + i} bind:value={torrent.url} />
     </div>
   </div>
 </div>

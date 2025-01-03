@@ -27,7 +27,12 @@
     Nyaa: '/cat.png',
     RuTracker: '/rutracker.ico',
     BeyondHD: '/bhd.ico',
-    Other: ''
+    Aither: '/aith.ico',
+    Blutopia: '/blu.ico',
+    HDBits: '/hdb.png',
+    BroadcastTheNet: '/btn.ico',
+    PassThePopcorn: 'ptp.ico',
+    Other: '/favicon.png'
   }
 </script>
 

@@ -108,7 +108,7 @@ export enum TorrentsTrackerOptions {
 	"PassThePopcorn" = "PassThePopcorn",
 	"Other" = "Other",
 }
-export type TorrentsRecord<Tfiles = unknown> = {
+export type TorrentsRecord<Tfiles = { length: number, name: string }[]> = {
 	dualAudio?: boolean
 	files: null | Tfiles
 	infoHash: string
@@ -130,7 +130,7 @@ export type DeadDataResponse<Texpand = unknown> = Required<DeadDataRecord> & Bas
 export type EditorsResponse<Texpand = unknown> = Required<EditorsRecord> & BaseSystemFields<Texpand>
 export type EntriesResponse<Texpand = unknown> = Required<EntriesRecord> & BaseSystemFields<Texpand>
 export type HooksResponse<Texpand = unknown> = Required<HooksRecord> & BaseSystemFields<Texpand>
-export type TorrentsResponse<Tfiles = unknown, Texpand = unknown> = Required<TorrentsRecord<Tfiles>> & BaseSystemFields<Texpand>
+export type TorrentsResponse<Tfiles = { length: number, name: string }[], Texpand = unknown> = Required<TorrentsRecord<Tfiles>> & BaseSystemFields<Texpand>
 export type UsersResponse<Texpand = unknown> = Required<UsersRecord> & AuthSystemFields<Texpand>
 
 // Types containing all Records and Responses, useful for creating typing helper functions

@@ -1,5 +1,5 @@
 <script lang='ts' context='module'>
-  import { TorrentsTrackerOptions, type EntriesRecord, type TorrentsRecord } from '$lib/pocketbase/generated-types'
+  import { type EntriesRecord, type TorrentsRecord } from '$lib/pocketbase/generated-types'
   import TorrentModal from '$lib/components/TorrentModal.svelte'
   import MediaDetails from '$lib/components/MediaDetails.svelte'
   import { TYPE_EXCLUSIONS, VIDEO_RX, anitomyscriptarray } from '$lib/util'
@@ -14,7 +14,7 @@
   import { goto, invalidateAll } from '$app/navigation'
   import type { PageData } from './$types'
   import TorrentEditorForm from '$lib/components/TorrentEditorForm.svelte'
-  import { createTorrentFromData, fromTorrentList } from '$lib/torrent'
+  import { createTorrentFromData, fromTorrentList, PRIVATE_TRACKERS } from '$lib/torrent'
   import MediaRelations from '$lib/components/MediaRelations.svelte'
   import { Button } from '$lib/components/ui/button'
   import { Input } from '$lib/components/ui/input'
@@ -84,7 +84,7 @@
       const savedTorrents = []
       for (const torrent of torrents) {
         // we want to duplicate torrents on private trackers, so id is removed to not override existing entries on publics
-        if ((torrent.tracker === TorrentsTrackerOptions.AnimeBytes || torrent.tracker === TorrentsTrackerOptions.BeyondHD) && torrent.infoHash !== '<redacted>') {
+        if (PRIVATE_TRACKERS.includes(torrent.tracker) && torrent.infoHash !== '<redacted>') {
           torrent.infoHash = '<redacted>'
           torrent.id = ''
         }
@@ -203,7 +203,7 @@
         <Separator class='my-5' />
         <TorrentEditorForm bind:torrent {i} {removeSingleTorrent} {duplicateTorrent} />
       {/each}
-      {#key media}
+      {#key media.id}
         <MediaRelations edges={media.relations?.edges} edit={true} />
       {/key}
     </div>
