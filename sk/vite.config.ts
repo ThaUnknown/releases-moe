@@ -3,7 +3,7 @@ import { enhancedImages } from '@sveltejs/enhanced-img'
 import type { UserConfig } from 'vite'
 
 // detect if we're running inside docker and set the backend accordingly
-const pocketbaseUrl = 'http://0.0.0.0:59992'
+const pocketbaseUrl = 'http://127.0.0.1:59992'
 
 const config: UserConfig = {
   plugins: [
