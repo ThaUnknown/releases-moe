@@ -65,7 +65,7 @@ export async function fromTorrentList () {
 
 export const TRACKER_URL_MAP: Record<TorrentsTrackerOptions, string> = {
   [TorrentsTrackerOptions.Nyaa]: 'https://nyaa.si/view/',
-  [TorrentsTrackerOptions.Other]: 'https://nyaa.si/view/',
+  [TorrentsTrackerOptions.Other]: 'https://example.com/',
   [TorrentsTrackerOptions.AnimeBytes]: 'https://animebytes.tv',
   [TorrentsTrackerOptions.AniDex]: 'https://anidex.info/torrent/',
   [TorrentsTrackerOptions.RuTracker]: 'https://rutracker.org',
