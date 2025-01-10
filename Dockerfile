@@ -5,7 +5,7 @@ COPY ./pb .
 
 RUN go mod tidy && go build
 
-FROM node:alpine AS frontend-builder
+FROM node:22-alpine AS frontend-builder
 
 WORKDIR /app/sk
 COPY ./sk .
@@ -14,7 +14,7 @@ RUN npm install -g pnpm
 RUN pnpm install
 RUN npm run build
 
-FROM node:alpine
+FROM node:22-alpine
 
 # Copy PocketBase files
 COPY --from=backend-builder /app/pb/pocketbase /app/pb/pocketbase
