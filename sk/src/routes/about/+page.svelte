@@ -11,7 +11,7 @@
 
   const pocketBaseExample = `import PocketBase from 'pocketbase'
 
-const pb = new PocketBase('${origin}/api/')
+const pb = new PocketBase('${origin}/')
 
 const entriesList = await pb.collection('entries').getList(1, 50, { filter: 'alID=1' })`
 
