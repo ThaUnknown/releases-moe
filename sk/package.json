@@ -6,7 +6,7 @@
     "dev": "vite dev",
     "dev:backend": "cd ../pb && modd",
     "dev:remote": "ssh srv.us -R 1:localhost:59991",
-    "backend": "cd ../pb/ && pocketbase serve --http=0.0.0.0:59992",
+    "backend": "cd ../pb/ && pocketbase serve --http=localhost:59992",
     "build": "cross-env NODE_OPTIONS=--max-old-space-size=4000 vite build",
     "build:backend": "cd ../pb && go build",
     "typegen": "pocketbase-typegen --db ../pb/pb_data/data.db --out ./src/lib/pocketbase/generated-types.ts",

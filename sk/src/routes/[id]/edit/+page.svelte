@@ -87,6 +87,11 @@
         if (PRIVATE_TRACKERS.includes(torrent.tracker) && torrent.infoHash !== '<redacted>') {
           torrent.infoHash = '<redacted>'
           torrent.id = ''
+          try {
+            torrent.url = new URL(torrent.url).pathname
+          } catch (e) {
+          // it was already a pathname
+          }
         }
         savedTorrents.push(await findOrCreateTorrentEntry(torrent))
       }

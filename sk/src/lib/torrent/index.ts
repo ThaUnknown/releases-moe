@@ -10,7 +10,7 @@ function getTrackerByComment (comment?: string): { tracker: TorrentsTrackerOptio
     if (match?.[1]) return { tracker: TorrentsTrackerOptions.AniDex, url: 'https://anidex.info/torrent/' + match[1] }
     return { url: '', tracker: TorrentsTrackerOptions.AniDex }
   }
-  if (comment.startsWith('https://animebytes.tv')) return { url: comment, tracker: TorrentsTrackerOptions.AnimeBytes }
+  if (comment.startsWith(TRACKER_URL_MAP.PT)) return { url: comment, tracker: TorrentsTrackerOptions.PT }
   const ent = Object.entries(URL_TRACKER_MAP).find(([url]) => comment.startsWith(url)) ?? []
   if (ent[1]) return { url: comment, tracker: ent[1] }
   return { url: '', tracker: TorrentsTrackerOptions.RuTracker }
@@ -58,7 +58,7 @@ export async function fromTorrentList () {
     isBest: false,
     files: files.map(({ size, filename }) => ({ length: size, name: filename })),
     releaseGroup: parseObject.release_group || '',
-    tracker: TorrentsTrackerOptions.AnimeBytes,
+    tracker: TorrentsTrackerOptions.PT,
     url: ''
   }
 }
@@ -66,7 +66,8 @@ export async function fromTorrentList () {
 export const TRACKER_URL_MAP: Record<TorrentsTrackerOptions, string> = {
   [TorrentsTrackerOptions.Nyaa]: 'https://nyaa.si/view/',
   [TorrentsTrackerOptions.Other]: 'https://example.com/',
-  [TorrentsTrackerOptions.AnimeBytes]: 'https://animebytes.tv',
+  [TorrentsTrackerOptions.OtherPrivate]: 'https://example-pt.com/',
+  [TorrentsTrackerOptions.PT]: 'https://animebytes.tv',
   [TorrentsTrackerOptions.AniDex]: 'https://anidex.info/torrent/',
   [TorrentsTrackerOptions.RuTracker]: 'https://rutracker.org',
   [TorrentsTrackerOptions.AnimeTosho]: 'https://animetosho.org',
@@ -81,7 +82,8 @@ export const TRACKER_URL_MAP: Record<TorrentsTrackerOptions, string> = {
 export const URL_TRACKER_MAP = Object.fromEntries(Object.entries(TRACKER_URL_MAP).map(([key, value]) => [value, key])) as Record<string, TorrentsTrackerOptions>
 
 export const PRIVATE_TRACKERS = [
-  TorrentsTrackerOptions.AnimeBytes,
+  TorrentsTrackerOptions.OtherPrivate,
+  TorrentsTrackerOptions.PT,
   TorrentsTrackerOptions.BeyondHD,
   TorrentsTrackerOptions.Aither,
   TorrentsTrackerOptions.Blutopia,

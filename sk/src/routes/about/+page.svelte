@@ -48,7 +48,6 @@ const entriesList = await entriesResponse.json()`
   <h3 class='font-bold text-2xl py-4'>Are there any extensions/scripts?</h3>
   <ul class='list-disc list-inside'>
     <li><a href={`${origin}/nyaablue.user.js`} target='_blank' class='text-blue-600 dark:text-blue-500 hover:underline'>NyaaBlue</a></li>
-    <li><a href={`${origin}/animebytesmark.user.js`} target='_blank' class='text-blue-600 dark:text-blue-500 hover:underline'>AB Releases Marking</a></li>
   </ul>
   <h3 class='font-bold text-2xl py-4'>Who are the editors?</h3>
 

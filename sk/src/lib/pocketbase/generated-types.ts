@@ -51,7 +51,7 @@ export type AuditlogRecord<Tdata = unknown, Toriginal = unknown> = {
 
 export enum DeadDataTrackerOptions {
 	"Nyaa" = "Nyaa",
-	"AnimeBytes" = "AnimeBytes",
+	"PT" = "PT",
 	"AniDex" = "AniDex",
 	"RuTracker" = "RuTracker",
 	"AnimeTosho" = "AnimeTosho",
@@ -62,6 +62,7 @@ export enum DeadDataTrackerOptions {
 	"BroadcastTheNet" = "BroadcastTheNet",
 	"PassThePopcorn" = "PassThePopcorn",
 	"Other" = "Other",
+	"OtherPrivate" = "OtherPrivate",
 }
 export type DeadDataRecord = {
 	infoHash: string
@@ -96,7 +97,7 @@ export type HooksRecord = {
 
 export enum TorrentsTrackerOptions {
 	"Nyaa" = "Nyaa",
-	"AnimeBytes" = "AnimeBytes",
+	"PT" = "PT",
 	"AniDex" = "AniDex",
 	"RuTracker" = "RuTracker",
 	"AnimeTosho" = "AnimeTosho",
@@ -107,6 +108,7 @@ export enum TorrentsTrackerOptions {
 	"BroadcastTheNet" = "BroadcastTheNet",
 	"PassThePopcorn" = "PassThePopcorn",
 	"Other" = "Other",
+	"OtherPrivate" = "OtherPrivate",
 }
 export type TorrentsRecord<Tfiles = { length: number, name: string }[]> = {
 	dualAudio?: boolean
