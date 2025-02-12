@@ -10,7 +10,6 @@
 // @icon        http://animebytes.tv/favicon.ico
 // @downloadURL https://releases.moe/animebytesmark.user.js
 // @updateURL   https://releases.moe/animebytesmark.user.js
-// @require     https://raw.githubusercontent.com/CoeJoder/waitForKeyElements.js/refs/heads/master/waitForKeyElements.js
 // @connect     releases.moe
 // @license     MIT
 // @run-at      document-idle
@@ -184,16 +183,11 @@ async function doAnimeBytes() {
 }
 
 function revealABEntries() {
-  for (const element of document.querySelectorAll('a.pt-button.hidden')) {
-    element.href = 'https://animebytes.tv' + element.pathname + element.search
-    element.classList.remove('hidden')
-    element.classList.add('inline-flex')
-    element.childNodes[2].textContent = 'AnimeBytes'
-  }
+  document.head.insertAdjacentHTML('beforeend', '<style>a.pt-button.hidden {display: inline-flex !important;}</style>')
 }
 
 if (window.location.href.includes("animebytes.tv")) {
   doAnimeBytes()
 } else if (window.location.href.includes("releases.moe")) {
-  waitForKeyElements("body div > div.w-full", revealABEntries, false);
+  revealABEntries()
 }
