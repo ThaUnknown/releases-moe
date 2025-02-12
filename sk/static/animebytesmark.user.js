@@ -3,11 +3,14 @@
 // @description Tags the best releases on AnimeBytes according to https://releases.moe/
 // @namespace   ThaUnknown
 // @match       *://animebytes.tv/*
-// @version     1.2.0
-// @author      ThaUnknown
+// @match       *://releases.moe/*
+// @version     1.3.0
+// @author      ThaUnknown & Jimbo
 // @grant       GM_xmlhttpRequest
 // @icon        http://animebytes.tv/favicon.ico
 // @downloadURL https://releases.moe/animebytesmark.user.js
+// @updateURL   https://releases.moe/animebytesmark.user.js
+// @require     https://raw.githubusercontent.com/CoeJoder/waitForKeyElements.js/refs/heads/master/waitForKeyElements.js
 // @connect     releases.moe
 // @license     MIT
 // @run-at      document-idle
@@ -58,7 +61,7 @@ async function fetchSeadex (ids) {
   const query = ids.map(({ torrentId }) => {
     return 'trs.url?~\'%torrentid=' + torrentId + '%\''
   }).join('||')
-  const { items } = await seadexEndpoint('', { filter: `(trs.tracker='PT' && (${query}))`, expand: 'trs', fields: '*,expand.trs.url,expand.trs.isBest', skipTotal: true })
+  const { items } = await seadexEndpoint('', { filter: `(trs.tracker?='AB' && (${query}))`, expand: 'trs', fields: '*,expand.trs.url,expand.trs.isBest', skipTotal: true })
   const linkMap = {}
   for (const { alID, notes, comparison, expand } of items) {
     for (const { url, isBest } of expand.trs) {
@@ -113,7 +116,7 @@ function insertTorrentTab (torrentId, tabName, tabId, content) {
   if (e[1] === tabId) switchTabs(a)
 }
 
-(async function () {
+async function doAnimeBytes() {
   try {
     const torrents = torrentsOnPage()
     // Do a 100 torrents at a time to make url length manageable
@@ -178,4 +181,20 @@ function insertTorrentTab (torrentId, tabName, tabId, content) {
   } catch (err) {
     console.error(`Failed to fetch seadex for best releases - ${err?.message || err}`)
   }
-})()
+}
+
+function revealABEntries() {
+  for (const element of document.querySelectorAll('a.pt-button.hidden')) {
+    element.href = 'https://animebytes.tv' + element.pathname + element.search
+    element.classList.remove('hidden')
+    element.classList.add('inline-flex')
+    element.childNodes[2].textContent = 'AnimeBytes'
+    console.log(element.classList)
+  }
+}
+
+if (window.location.href.includes("animebytes.tv")) {
+  doAnimeBytes()
+} else if (window.location.href.includes("releases.moe")) {
+  waitForKeyElements("body div > div.w-full", revealABEntries, false);
+}
