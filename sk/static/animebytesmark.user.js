@@ -189,7 +189,6 @@ function revealABEntries() {
     element.classList.remove('hidden')
     element.classList.add('inline-flex')
     element.childNodes[2].textContent = 'AnimeBytes'
-    console.log(element.classList)
   }
 }
 
