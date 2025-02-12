@@ -42,7 +42,7 @@ async function setViewBlue () {
 
   const { items } = await collectionResponse.json()
   if (items?.length) {
-    element?.classList.add(items[0].expand.trs.find((info)=> info.infoHash === infoHash)?.isBest ? 'panel-best' : 'panel-best-alt')
+    element?.classList.add(items[0].expand.trs.find((info) => info.infoHash === infoHash)?.isBest ? 'panel-best' : 'panel-best-alt')
 
     const report = document.querySelector('body > div > div:nth-child(1) > div.panel-footer.clearfix > button')
 
@@ -50,14 +50,14 @@ async function setViewBlue () {
 
     for (const info of items) {
       const button = document.createElement('button')
-      button.classList.add("btn", "btn-xs", "btn-seadex", "pull-right")
-      button.textContent = "SeaDex"
+      button.classList.add('btn', 'btn-xs', 'btn-seadex', 'pull-right')
+      button.textContent = 'SeaDex'
       button.onclick = (e) => {
         e.preventDefault()
         e.stopImmediatePropagation()
-        window.open(`https://releases.moe/${info.alID}`, '_blank').focus()
+        window.open(`https://releases.moe/${info.alID}`, '_blank')?.focus()
       }
-      report?.insertAdjacentElement("afterend", button)
+      report?.insertAdjacentElement('afterend', button)
     }
   }
 }

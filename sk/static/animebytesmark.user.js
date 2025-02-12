@@ -13,7 +13,7 @@
 // @run-at      document-idle
 // ==/UserScript==
 
-/* global $ */
+/* global $, switchTabs, GM_xmlhttpRequest */
 
 const TORRENT_ID_REGEX = /&torrentid=(\d+)/i
 

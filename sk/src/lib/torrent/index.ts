@@ -10,7 +10,7 @@ function getTrackerByComment (comment?: string): { tracker: TorrentsTrackerOptio
     if (match?.[1]) return { tracker: TorrentsTrackerOptions.AniDex, url: 'https://anidex.info/torrent/' + match[1] }
     return { url: '', tracker: TorrentsTrackerOptions.AniDex }
   }
-  if (comment.startsWith(TRACKER_URL_MAP.PT)) return { url: comment, tracker: TorrentsTrackerOptions.PT }
+  if (comment.startsWith(TRACKER_URL_MAP.AB)) return { url: comment, tracker: TorrentsTrackerOptions.AB }
   const ent = Object.entries(URL_TRACKER_MAP).find(([url]) => comment.startsWith(url)) ?? []
   if (ent[1]) return { url: comment, tracker: ent[1] }
   return { url: '', tracker: TorrentsTrackerOptions.RuTracker }
@@ -58,7 +58,7 @@ export async function fromTorrentList () {
     isBest: false,
     files: files.map(({ size, filename }) => ({ length: size, name: filename })),
     releaseGroup: parseObject.release_group || '',
-    tracker: TorrentsTrackerOptions.PT,
+    tracker: TorrentsTrackerOptions.AB,
     url: ''
   }
 }
@@ -67,7 +67,7 @@ export const TRACKER_URL_MAP: Record<TorrentsTrackerOptions, string> = {
   [TorrentsTrackerOptions.Nyaa]: 'https://nyaa.si/view/',
   [TorrentsTrackerOptions.Other]: 'https://example.com/',
   [TorrentsTrackerOptions.OtherPrivate]: 'https://example-pt.com/',
-  [TorrentsTrackerOptions.PT]: 'https://animebytes.tv',
+  [TorrentsTrackerOptions.AB]: 'https://animebytes.tv',
   [TorrentsTrackerOptions.AniDex]: 'https://anidex.info/torrent/',
   [TorrentsTrackerOptions.RuTracker]: 'https://rutracker.org',
   [TorrentsTrackerOptions.AnimeTosho]: 'https://animetosho.org',
@@ -83,7 +83,7 @@ export const URL_TRACKER_MAP = Object.fromEntries(Object.entries(TRACKER_URL_MAP
 
 export const PRIVATE_TRACKERS = [
   TorrentsTrackerOptions.OtherPrivate,
-  TorrentsTrackerOptions.PT,
+  TorrentsTrackerOptions.AB,
   TorrentsTrackerOptions.BeyondHD,
   TorrentsTrackerOptions.Aither,
   TorrentsTrackerOptions.Blutopia,

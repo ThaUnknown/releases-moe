@@ -93,7 +93,7 @@
       {#each torrent.files || [] as file, i}
         <li class='mb-1 flex'>
           {file.name}
-          {#if torrent.tracker === TorrentsTrackerOptions.PT}
+          {#if torrent.tracker === TorrentsTrackerOptions.AB}
             <Button class='ms-auto' size='sm' variant='destructive' on:click={() => removeTorrentFile(i)}>Remove</Button>
           {/if}
         </li>

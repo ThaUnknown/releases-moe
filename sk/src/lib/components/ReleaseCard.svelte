@@ -22,7 +22,7 @@
   }
 
   const icons: Record<TorrentsTrackerOptions, string> = {
-    PT: '/ab.ico',
+    AB: '/ab.ico',
     AniDex: '/anidex.ico',
     AnimeTosho: '/tosho.ico',
     Nyaa: '/cat.png',

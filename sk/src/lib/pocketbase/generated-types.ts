@@ -51,7 +51,7 @@ export type AuditlogRecord<Tdata = unknown, Toriginal = unknown> = {
 
 export enum DeadDataTrackerOptions {
 	"Nyaa" = "Nyaa",
-	"PT" = "PT",
+	"AB" = "AB",
 	"AniDex" = "AniDex",
 	"RuTracker" = "RuTracker",
 	"AnimeTosho" = "AnimeTosho",
@@ -97,7 +97,7 @@ export type HooksRecord = {
 
 export enum TorrentsTrackerOptions {
 	"Nyaa" = "Nyaa",
-	"PT" = "PT",
+	"AB" = "AB",
 	"AniDex" = "AniDex",
 	"RuTracker" = "RuTracker",
 	"AnimeTosho" = "AnimeTosho",
