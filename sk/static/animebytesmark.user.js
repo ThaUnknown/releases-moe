@@ -4,12 +4,13 @@
 // @namespace   ThaUnknown
 // @match       *://animebytes.tv/*
 // @match       *://releases.moe/*
-// @version     1.3.0
+// @version     1.4.0
 // @author      ThaUnknown & Jimbo
 // @grant       GM_xmlhttpRequest
 // @icon        http://animebytes.tv/favicon.ico
 // @downloadURL https://releases.moe/animebytesmark.user.js
 // @updateURL   https://releases.moe/animebytesmark.user.js
+// @require     https://cdn.jsdelivr.net/gh/CoeJoder/waitForKeyElements.js@v1.3/waitForKeyElements.js
 // @connect     releases.moe
 // @license     MIT
 // @run-at      document-idle
@@ -183,7 +184,11 @@ async function doAnimeBytes() {
 }
 
 function revealABEntries() {
-  document.head.insertAdjacentHTML('beforeend', '<style>a.pt-button.hidden {display: inline-flex !important;}</style>')
+  waitForKeyElements("a.pt-button", (elm) => {
+    elm.href = new URL(elm.dataset.href, 'https://animebytes.tv')
+    elm.childNodes[0].src = '/ab.ico'
+    elm.childNodes[2].textContent = 'AnimeBytes'
+  }, false);
 }
 
 if (window.location.href.includes("animebytes.tv")) {
