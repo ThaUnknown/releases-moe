@@ -79,6 +79,7 @@ const entriesList = await entriesResponse.json()`
   <ul class='list-disc list-inside py-4'>
     <li><a href={`${origin}/api/collections/entries/records`} class='text-blue-600 dark:text-blue-500 hover:underline'>/entries/records</a></li>
     <li><a href={`${origin}/api/collections/torrents/records`} class='text-blue-600 dark:text-blue-500 hover:underline'>/torrents/records</a></li>
+    <li><a href={`${origin}/api/collections/releaseGroups/records`} class='text-blue-600 dark:text-blue-500 hover:underline'>/releaseGroups/records</a></li>
   </ul>
   <p>
     For details on how to use the query parameters visit the <a class='text-blue-600 dark:text-blue-500 hover:underline' href='https://pocketbase.io/docs/api-records/#listsearch-records'>PocketBase documentation</a>.
