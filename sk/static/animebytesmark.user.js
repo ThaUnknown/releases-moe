@@ -185,8 +185,7 @@ async function doAnimeBytes() {
 
 function revealABEntries() {
   waitForKeyElements("a.pt-button", (elm) => {
-    const url = new URL(elm.dataset.href)
-    elm.href = 'https://animebytes.tv' + url.pathname + url.search
+    elm.href = new URL(elm.dataset.href, 'https://animebytes.tv')
     elm.childNodes[0].src = '/ab.ico'
     elm.childNodes[2].textContent = 'AnimeBytes'
   }, false);
