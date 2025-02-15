@@ -4,7 +4,7 @@
 // @namespace   ThaUnknown
 // @match       *://animebytes.tv/*
 // @match       *://releases.moe/*
-// @version     1.4.0
+// @version     1.4.1
 // @author      ThaUnknown & Jimbo
 // @grant       GM_xmlhttpRequest
 // @icon        http://animebytes.tv/favicon.ico
@@ -116,7 +116,7 @@ function insertTorrentTab (torrentId, tabName, tabId, content) {
   if (e[1] === tabId) switchTabs(a)
 }
 
-async function doAnimeBytes() {
+async function doAnimeBytes () {
   try {
     const torrents = torrentsOnPage()
     // Do a 100 torrents at a time to make url length manageable
@@ -183,16 +183,17 @@ async function doAnimeBytes() {
   }
 }
 
-function revealABEntries() {
-  waitForKeyElements("a.pt-button", (elm) => {
+function revealABEntries () {
+  waitForKeyElements('a.pt-button', (elm) => {
     elm.href = new URL(elm.dataset.href, 'https://animebytes.tv')
+    elm.classList.remove('pointer-events-none')
     elm.childNodes[0].src = '/ab.ico'
     elm.childNodes[2].textContent = 'AnimeBytes'
-  }, false);
+  }, false)
 }
 
-if (window.location.href.includes("animebytes.tv")) {
+if (window.location.href.includes('animebytes.tv')) {
   doAnimeBytes()
-} else if (window.location.href.includes("releases.moe")) {
+} else if (window.location.href.includes('releases.moe')) {
   revealABEntries()
 }

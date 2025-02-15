@@ -37,7 +37,7 @@
     OtherPrivate: '/favicon.png'
   }
 
-  const alias: Record<TorrentsTrackerOptions, string> = {
+  const alias: Partial<Record<TorrentsTrackerOptions, string>> = {
     AB: 'Private Tracker'
   }
 </script>
@@ -66,7 +66,8 @@
     <Card.Footer>
       <div class='grid grid-cols-2 gap-4 w-full'>
         {#each torrents as torrent}
-          <Button size='sm' variant='outline' class='px-4 {PRIVATE_TRACKERS.includes(torrent.tracker) ? 'pt-button' : ''}' href={!PRIVATE_TRACKERS.includes(torrent.tracker) ? torrent.url : '#'} data-href={torrent.url} target='_blank'>
+          {@const isPrivate = PRIVATE_TRACKERS.includes(torrent.tracker)}
+          <Button size='sm' variant='outline' class='px-4 {isPrivate && 'pt-button pointer-events-none'}' href={torrent.url} data-href={torrent.url} target='_blank'>
             {#if icons[torrent.tracker]}
               <img src={icons[torrent.tracker]} alt={torrent.tracker} class='w-3 h-3 me-2' />
             {/if}
