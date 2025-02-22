@@ -91,9 +91,8 @@ function getInfoHashItemList () {
   })
 }
 
-// dark theme "support" (thanks olli)
-document.head.insertAdjacentHTML('beforeend', '<style id="css_blue" type="text/css">body.dark .torrent-list > tbody > tr.best > td {background-color: rgba(0, 172, 255, 0.12);} body.dark .torrent-list > tbody > tr.best:hover > td {background-color: rgba(0, 172, 255, 0.18);} body.dark div.panel-best, body.dark div.panel-best > .panel-heading {border-color: #2c414b;} body.dark div.panel-best > .panel-heading {background-color: #2a3f4a;}</style>')
-document.head.insertAdjacentHTML('beforeend', '<style id="css_orange" type="text/css">body.dark .torrent-list > tbody > tr.best-alt > td {background-color: rgba(255, 172, 0, 0.12);} body.dark .torrent-list > tbody > tr.best-alt:hover > td {background-color: rgba(255, 172, 0, 0.18);} body.dark div.panel-best-alt, body.dark div.panel-best-alt > .panel-heading {border-color: #b57b04;} body.dark div.panel-best-alt > .panel-heading {background-color: #a88131;}</style>')
+document.head.insertAdjacentHTML('beforeend', '<style id="css_blue" type="text/css">.best > td {background-color: rgba(0, 172, 255, 0.12) !important;} .best:hover > td {background-color: rgba(0, 172, 255, 0.18) !important;} .panel-best, .panel-best > .panel-heading {border-color: rgba(0, 172, 255, 0.12) !important;} .panel-best > .panel-heading {background-color: rgba(0, 172, 255, 0.12) !important;}</style>')
+document.head.insertAdjacentHTML('beforeend', '<style id="css_purple" type="text/css">.best-alt > td {background-color: rgba(188, 30, 157, 0.4) !important;} .best-alt:hover > td {background-color: rgba(188, 30, 157, 0.48) !important;} .panel-best-alt, .panel-best-alt > .panel-heading {border-color: rgba(188, 30, 157, 0.4) !important;} .panel-best-alt > .panel-heading {background-color: rgba(188, 30, 157, 0.4) !important;}</style>')
 
 if (window.location.href.match('view')) {
   setViewBlue()
