@@ -93,7 +93,7 @@ function getInfoHashItemList () {
 
 // Apply CSS for "best" and "best alt" table rows. "Best" is blue, "best alt" is purple.
 document.head.insertAdjacentHTML('beforeend', '<style id="css_blue" type="text/css">.best > td {background-color: rgba(0, 172, 255, 0.12) !important;} .best:hover > td {background-color: rgba(0, 172, 255, 0.18) !important;} .panel-best, .panel-best > .panel-heading {border-color: rgba(0, 172, 255, 0.12) !important;} .panel-best > .panel-heading {background-color: rgba(0, 172, 255, 0.12) !important;} .panel-success.panel-best > .panel-heading {color: unset;}</style>')
-document.head.insertAdjacentHTML('beforeend', '<style id="css_purple" type="text/css">.best-alt > td {background-color: rgba(188, 30, 157, 0.4) !important;} .best-alt:hover > td {background-color: rgba(188, 30, 157, 0.48) !important;} .panel-best-alt, .panel-best-alt > .panel-heading {border-color: rgba(188, 30, 157, 0.4) !important;} .panel-best-alt > .panel-heading {background-color: rgba(188, 30, 157, 0.4) !important;} .panel-success.panel-best-alt > .panel-heading {color: unset;}</style>')
+document.head.insertAdjacentHTML('beforeend', '<style id="css_purple" type="text/css">.best-alt > td {background-color: rgba(188, 30, 157, 0.12) !important;} .best-alt:hover > td {background-color: rgba(188, 30, 157, 0.18) !important;} .panel-best-alt, .panel-best-alt > .panel-heading {border-color: rgba(188, 30, 157, 0.12) !important;} .panel-best-alt > .panel-heading {background-color: rgba(188, 30, 157, 0.12) !important;} .panel-success.panel-best-alt > .panel-heading {color: unset;}</style>')
 
 if (window.location.href.match('view')) {
   setViewBlue()
