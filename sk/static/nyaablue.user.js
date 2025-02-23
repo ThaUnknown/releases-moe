@@ -3,7 +3,7 @@
 // @description Tags the best releases on Nyaa according to https://releases.moe/
 // @namespace   ThaUnknown
 // @match       https://nyaa.si/*
-// @version     1.1.1
+// @version     1.2.0
 // @author      ThaUnknown
 // @icon        https://nyaa.si/static/favicon.png
 // @downloadURL https://releases.moe/nyaablue.user.js
