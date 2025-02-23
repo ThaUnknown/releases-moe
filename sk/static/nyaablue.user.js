@@ -57,7 +57,7 @@ async function setViewBlue () {
         e.stopImmediatePropagation()
         window.open(`https://releases.moe/${info.alID}`, '_blank')?.focus()
       }
-      report?.appendChild(button)
+      report?.insertAdjacentHTML('beforeend', button)
     }
   }
 }
