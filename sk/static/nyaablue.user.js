@@ -3,7 +3,7 @@
 // @description Tags the best releases on Nyaa according to https://releases.moe/
 // @namespace   ThaUnknown
 // @match       https://nyaa.si/*
-// @version     1.2.0
+// @version     1.2.1
 // @author      ThaUnknown
 // @icon        https://nyaa.si/static/favicon.png
 // @downloadURL https://releases.moe/nyaablue.user.js
@@ -44,7 +44,7 @@ async function setViewBlue () {
   if (items?.length) {
     element?.classList.add(items[0].expand.trs.find((info) => info.infoHash === infoHash)?.isBest ? 'panel-best' : 'panel-best-alt')
 
-    const report = document.querySelector('body > div > div:nth-child(1) > div.panel-footer.clearfix > button')
+    const report = document.querySelector('body > div > div:nth-child(1) > div.panel-footer.clearfix')
 
     document.head.insertAdjacentHTML('beforeend', '<style id="css_blue" type="text/css">button.btn-seadex {margin-right: 5px; color: #fff; background-color: #247fcc; border-color: #247fcc;} button.btn-seadex:hover {margin-right: 5px; color: #fff; background-color: #19578b; border-color: #19578b;} </style>')
 
@@ -57,7 +57,7 @@ async function setViewBlue () {
         e.stopImmediatePropagation()
         window.open(`https://releases.moe/${info.alID}`, '_blank')?.focus()
       }
-      report?.insertAdjacentElement('afterend', button)
+      report?.insertAdjacentHTML('beforeend', button)
     }
   }
 }
