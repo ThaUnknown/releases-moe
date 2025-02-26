@@ -3,7 +3,7 @@
 // @description Tags the best releases on Nyaa according to https://releases.moe/
 // @namespace   ThaUnknown
 // @match       https://nyaa.si/*
-// @version     1.2.1
+// @version     1.2.2
 // @author      ThaUnknown
 // @icon        https://nyaa.si/static/favicon.png
 // @downloadURL https://releases.moe/nyaablue.user.js
@@ -57,7 +57,7 @@ async function setViewBlue () {
         e.stopImmediatePropagation()
         window.open(`https://releases.moe/${info.alID}`, '_blank')?.focus()
       }
-      report?.insertAdjacentHTML('beforeend', button)
+      report?.insertAdjacentElement('beforeend', button)
     }
   }
 }
