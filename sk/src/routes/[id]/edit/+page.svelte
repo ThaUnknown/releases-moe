@@ -84,11 +84,14 @@
       const savedTorrents = []
       for (const torrent of torrents) {
         // we want to duplicate torrents on private trackers, so id is removed to not override existing entries on publics
-        if (PRIVATE_TRACKERS.includes(torrent.tracker) && torrent.infoHash !== '<redacted>') {
-          torrent.infoHash = '<redacted>'
-          torrent.id = ''
+        if (PRIVATE_TRACKERS.includes(torrent.tracker)) {
+          if (torrent.infoHash !== '<redacted>') {
+            torrent.infoHash = '<redacted>'
+            torrent.id = ''
+          }
           try {
-            torrent.url = new URL(torrent.url).pathname
+            const url = new URL(torrent.url)
+            torrent.url = url.pathname + url.search
           } catch (e) {
           // it was already a pathname
           }
@@ -166,8 +169,8 @@
 </script>
 <TorrentModal bind:modalContent {addTorrentFile} />
 
-<form on:submit|preventDefault={submit}>
-  <div class='flex h-full lg:flex-row flex-col justify-content-center'>
+<form on:submit|preventDefault={submit} class='contents'>
+  <div class='flex h-full md:flex-row flex-col items-center md:items-start justify-center w-full'>
     <div class='mb-3 min-w-0 max-w-72 shrink-0'>
       <MediaDetails {media} />
       <div class='pt-2'>Episodes: {media.episodes || 'N/A'}</div>

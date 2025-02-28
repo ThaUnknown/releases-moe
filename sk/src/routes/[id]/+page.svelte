@@ -37,7 +37,7 @@
   $metadata.title = media.title.userPreferred
 </script>
 
-<div class='flex h-full md:flex-row flex-col justify-content-center'>
+<div class='flex h-full md:flex-row flex-col items-center md:items-start justify-center w-full'>
   <div class='mb-3 min-w-0 max-w-72 shrink-0'>
     {#if entry.incomplete}
       <div class='font-medium text-red-600 text-xl mb-3'>This Entry Is Incomplete</div>
@@ -53,7 +53,9 @@
         {#each entry.comparison.split(',') as comp}
           {#if comp}
             <Button href={comp} class='text-blue-600 dark:text-blue-500 hover:underline my-1 bg-blue-400/10 hover:bg-blue-400/15' target='_blank'>
-              {comp.replace(/https?:\/\//, '').replace(/\/$/, '')}
+              <div class='text-nowrap text-ellipsis overflow-hidden'>
+                {comp.replace(/https?:\/\//, '').replace(/\/$/, '')}
+              </div>
             </Button>
           {/if}
         {/each}
