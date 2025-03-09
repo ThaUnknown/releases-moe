@@ -4,7 +4,7 @@
 // @namespace   ThaUnknown
 // @match       *://animebytes.tv/*
 // @match       *://releases.moe/*
-// @version     1.4.1
+// @version     1.5.0
 // @author      ThaUnknown & Jimbo
 // @grant       GM_xmlhttpRequest
 // @icon        http://animebytes.tv/favicon.ico
@@ -66,7 +66,7 @@ async function fetchSeadex (ids) {
   for (const { alID, notes, comparison, expand } of items) {
     for (const { url, isBest } of expand.trs) {
       const torrentId = url.match(TORRENT_ID_REGEX)?.[1]
-      if (torrentId) linkMap[torrentId] = { alID, notes, isBest, comparison: comparison.split(',') }
+      if (torrentId) linkMap[torrentId] = { alID, notes, isBest, comparison: comparison.split(',').filter(i => i) }
     }
   }
   return linkMap
@@ -156,20 +156,20 @@ async function doAnimeBytes () {
 
         // seadex tab
         const tab = $('<div></div>')
-        tab.append(`<div style="margin-bottom: 16px;"><h2><a target="_blank" href="https://releases.moe/${entry.alID}">Releases.moe Entry</a></h2><span>Click to open the entry on the website</span></div>`)
-
+        tab.append(`<div style="margin-bottom: 4px;"><h2><a target="_blank" href="https://releases.moe/${entry.alID}">SeaDex Entry</a></h2></div>`)
+        tab.append(`<div style="border-top: 1px solid #bbb;"></div>`)
         if (entry.notes) {
           const span = $('<span style="white-space: pre-wrap;"></span>')
           span.text(entry.notes)
-          const div = $('<div style="margin-bottom: 16px;"></div>')
+          const div = $('<div style="margin-top: 16px;"></div>')
           div.append('<h2>Notes</h2>', span)
           tab.append(div)
         }
 
-        if (Array.isArray(entry.comparisons) && entry.comparisons?.length > 0) {
-          const div = $('<div style="margin-bottom: 16px;"></div>')
+        if (Array.isArray(entry.comparison) && entry.comparison?.length > 0) {
+          const div = $('<div style="margin-top: 16px;"></div>')
           div.append('<h2>Comparisons</h2>')
-          for (const link of entry.comparisons) {
+          for (const link of entry.comparison) {
             div.append(`<a target="_blank" href="${link}">${link}</a>`, '<br>')
           }
           tab.append(div)
@@ -184,12 +184,14 @@ async function doAnimeBytes () {
 }
 
 function revealABEntries () {
-  waitForKeyElements('a.pt-button', (elm) => {
+  waitForKeyElements('a.pt-button[data-href]', (elm) => {
     elm.href = new URL(elm.dataset.href, 'https://animebytes.tv')
     elm.classList.remove('pointer-events-none')
+    elm.removeAttribute('data-href')
     elm.childNodes[0].src = '/ab.ico'
     elm.childNodes[2].textContent = 'AnimeBytes'
-  }, false)
+    return true
+  }, false, 50)
 }
 
 if (window.location.href.includes('animebytes.tv')) {
