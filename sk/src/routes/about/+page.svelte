@@ -49,6 +49,14 @@ const entriesList = await entriesResponse.json()`
   <ul class='list-disc list-inside'>
     <li><a href={`${origin}/nyaablue.user.js`} target='_blank' class='text-blue-600 dark:text-blue-500 hover:underline'>NyaaBlue</a></li>
   </ul>
+  <h3 class='font-bold text-2xl py-4'>Community Projects:</h3>
+  <ul class='list-disc list-inside'>
+    <li><a href={`https://github.com/Dattebayo13/Tampermonkey_Userscripts/raw/refs/heads/main/nyaasonarr.user.js`} target='_blank' class='text-blue-600 dark:text-blue-500 hover:underline'>NyaaSonarr</a></li>
+  </ul>
+  <p>
+    Disclaimer: Please be aware that the community projects listed are provided without support.<br />
+    For any issues or feedback regarding a specific project, please refer to its respective repository.
+  <p>
   <h3 class='font-bold text-2xl py-4'>Who are the editors?</h3>
 
   {#await editors}
