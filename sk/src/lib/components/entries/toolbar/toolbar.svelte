@@ -34,6 +34,7 @@
       placeholder='Filter titles...'
       class='h-8 w-full'
       type='search'
+      autofocus={true}
       bind:value={$filterValues.title}
     />
 
