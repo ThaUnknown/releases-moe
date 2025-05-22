@@ -32,7 +32,7 @@ module.exports = {
     for (const record of trs) {
       if (record?.get(check) === expected) values.add(record?.get(retValue))
     }
-    return [...values].join('\n')
+    return [...values].sort().join('\n')
   },
   wrapMultiple (previous, current, check, retValue, expected = true) {
     const before = this.getValue(previous, check, retValue, expected)
