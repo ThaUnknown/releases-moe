@@ -118,6 +118,7 @@ export type TorrentsRecord<Tfiles = { length: number, name: string }[]> = {
 	releaseGroup: string
 	tracker: TorrentsTrackerOptions
 	url: string
+	groupUrl?: string
 }
 
 export type UsersRecord = {
