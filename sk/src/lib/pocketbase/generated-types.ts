@@ -11,6 +11,7 @@ export enum Collections {
 	Editors = "editors",
 	Entries = "entries",
 	Hooks = "hooks",
+	ReleaseGroups = "releaseGroups",
 	Torrents = "torrents",
 	Users = "users",
 }
@@ -95,6 +96,10 @@ export type HooksRecord = {
 	event: HooksEventOptions
 }
 
+export type ReleaseGroupsRecord = {
+	count?: number
+}
+
 export enum TorrentsTrackerOptions {
 	"Nyaa" = "Nyaa",
 	"AB" = "AB",
@@ -113,6 +118,7 @@ export enum TorrentsTrackerOptions {
 export type TorrentsRecord<Tfiles = { length: number, name: string }[]> = {
 	dualAudio?: boolean
 	files: null | Tfiles
+	groupedUrl?: string
 	infoHash: string
 	isBest?: boolean
 	releaseGroup: string
@@ -132,6 +138,7 @@ export type DeadDataResponse<Texpand = unknown> = Required<DeadDataRecord> & Bas
 export type EditorsResponse<Texpand = unknown> = Required<EditorsRecord> & BaseSystemFields<Texpand>
 export type EntriesResponse<Texpand = unknown> = Required<EntriesRecord> & BaseSystemFields<Texpand>
 export type HooksResponse<Texpand = unknown> = Required<HooksRecord> & BaseSystemFields<Texpand>
+export type ReleaseGroupsResponse<Texpand = unknown> = Required<ReleaseGroupsRecord> & BaseSystemFields<Texpand>
 export type TorrentsResponse<Tfiles = { length: number, name: string }[], Texpand = unknown> = Required<TorrentsRecord<Tfiles>> & BaseSystemFields<Texpand>
 export type UsersResponse<Texpand = unknown> = Required<UsersRecord> & AuthSystemFields<Texpand>
 
@@ -143,6 +150,7 @@ export type CollectionRecords = {
 	editors: EditorsRecord
 	entries: EntriesRecord
 	hooks: HooksRecord
+	releaseGroups: ReleaseGroupsRecord
 	torrents: TorrentsRecord
 	users: UsersRecord
 }
@@ -153,6 +161,7 @@ export type CollectionResponses = {
 	editors: EditorsResponse
 	entries: EntriesResponse
 	hooks: HooksResponse
+	releaseGroups: ReleaseGroupsResponse
 	torrents: TorrentsResponse
 	users: UsersResponse
 }
@@ -166,6 +175,7 @@ export type TypedPocketBase = PocketBase & {
 	collection(idOrName: 'editors'): RecordService<EditorsResponse>
 	collection(idOrName: 'entries'): RecordService<EntriesResponse>
 	collection(idOrName: 'hooks'): RecordService<HooksResponse>
+	collection(idOrName: 'releaseGroups'): RecordService<ReleaseGroupsResponse>
 	collection(idOrName: 'torrents'): RecordService<TorrentsResponse>
 	collection(idOrName: 'users'): RecordService<UsersResponse>
 }

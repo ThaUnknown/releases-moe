@@ -53,7 +53,7 @@
     </div>
   </div>
 </div>
-<div class='grid grid-cols-2 gap-3'>
+<div class='grid grid-cols-3 gap-3'>
   <div>
     <div class='mb-2'>
       <Label>Tracker</Label>
@@ -73,6 +73,12 @@
     <div class='mb-2'>
       <Label for={'url' + i}>URL</Label>
       <Input type='text' class='form-control' on:change={updateTracker} required id={'url' + i} bind:value={torrent.url} />
+    </div>
+  </div>
+  <div>
+    <div class='mb-2'>
+      <Label for={'groupedUrl' + i}>Group URL</Label>
+      <Input type='text' class='form-control' id={'groupedUrl' + i} bind:value={torrent.groupedUrl} />
     </div>
   </div>
 </div>
