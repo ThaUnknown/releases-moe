@@ -58,11 +58,11 @@
     AB: 'Private Tracker'
   }
 
-  const groupedTorrents = mapToTracker(torrents)
 </script>
 
 {#if torrents}
   {@const { isBest, isDual, sizes } = hasDualBest(torrents)}
+  {@const groupedTorrents = mapToTracker(torrents)}
   <Card.Root class='w-80 max-w-full'>
     <Card.Header class='pb-3'>
       <Card.Title>{releaseGroup}</Card.Title>
