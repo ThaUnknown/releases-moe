@@ -4,6 +4,15 @@ import type { EntriesResponse, TorrentsResponse } from '$lib/pocketbase/generate
 
 const client = new PocketBase(env.PROXY_TARGET || 'http://0.0.0.0:59992')
 
+function escapeHtml(unsafe) {
+  return unsafe
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
 export const handle = async ({ event, resolve }) => {
   if (!event.params.id || !Number(event.params.id)) return resolve(event)
   const ua = event.request.headers.get('user-agent')
@@ -60,7 +69,7 @@ export const handle = async ({ event, resolve }) => {
     if (item.notes) desc += `\n${item.notes}\n`
     // if (item.comparison) desc += `\n${item.comparison.replaceAll(',', ' ')}\n`
 
-    desc = desc.replaceAll('\'', '"')
+    desc = escapeHtml(desc)
 
     return resolve(event, {
       transformPageChunk: ({ html }) => {
