@@ -21,7 +21,7 @@ export const authModel = readable<UsersResponse | null>(
   }
 )
 
-if (browser) client.collection('users').authRefresh()
+if (browser && client.authStore.isValid) client.collection('users').authRefresh()
 
 export function logout () {
   client.authStore.clear()
