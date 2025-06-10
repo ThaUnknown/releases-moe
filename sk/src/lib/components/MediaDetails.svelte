@@ -9,18 +9,30 @@
 
 <div class='flex position-relative w-full'>
   <div class='w-full flex flex-col h-full content-visibility-auto'>
-    <div class='w-full flex justify-center pb-3'>
-      <img loading='lazy' src={media.coverImage.extraLarge || ''} alt='cover' class='rounded h-full mw-full' style:--color={media.coverImage.color || '#1890ff'} />
+    <div class='w-full flex justify-center pb-2'>
+      <a href={`https://anilist.co/anime/${media.id}`} target="_blank">
+        <img loading='lazy' src={media.coverImage.extraLarge || ''} alt='cover' class='rounded h-full mw-full' style:--color={media.coverImage.color || '#1890ff'} />
+      </a>
     </div>
-    <h2 class='font-bold pt-2 title overflow-hidden my-0 text-2xl'>
-      {media.title.english || media.title.userPreferred}
-    </h2>
+    <div class="w-full">      
+      <h2 class='font-bold pt-2 my-0 text-xl'>
+        {media.title.english || media.title.userPreferred}
+      </h2>
+      {#if (media.title.english && media.title.english != media.title.userPreferred)}
+        <h2 class='pt-2 my-0 text-base'>
+          {media.title.userPreferred}
+        </h2>
+      {/if}
+    </div>
     <div class='flex flex-row mt-auto pt-2 justify-between w-full font-size-18'>
       <div class='flex align-items-center' style='margin-left: -3px'>
         <Calendar class='pe-2' />
         {media.seasonYear || 'N/A'}
       </div>
       <div class='flex align-items-center'>
+        {#if media.episodes > 1}
+          {media.episodes}
+        {/if}
         {formatMap[format]}
         <Monitor class='ps-2' />
       </div>
