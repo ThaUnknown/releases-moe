@@ -18,7 +18,7 @@
     })
   }
 
-  const hidableCols = ['title', 'seasonYear', 'format', 'episodes', 'Best', 'Alt', 'incomplete', 'theoreticalBest']
+  const hidableCols = ['title', 'seasonYear', 'format', 'episodes', 'Best', 'Alt', 'incomplete', 'theoreticalBest', 'updated']
 </script>
 
 <DropdownMenu.Root>

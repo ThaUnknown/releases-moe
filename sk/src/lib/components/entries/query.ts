@@ -26,39 +26,78 @@ const SORT_ID_MAP: { [key: string]: string } = {
   format: 'FORMAT'
 }
 
+const SEADEX_SORTERS_LIST: string[] = ["updated"]
+
 // these loads have race conditions, oh well
 
 async function load (pageIndex: number, perPage: number, filterValues: Record<string, unknown>, sortKeys: SortKey[], ids?: number[]) {
-  let sort = SORT_ID_MAP[sortKeys[0]?.id] || undefined
-
-  if (sort && sortKeys[0].order === 'desc') {
-    sort += '_DESC'
-  }
-
+  const sortID = sortKeys[0]?.id
+  let sort = SORT_ID_MAP[sortID] || undefined
   const search = filterValues.title as string || undefined
-  const alRes = await idList({ ids, pageIndex, perPage, search, sort, format: (filterValues.format as string[])?.length ? filterValues.format as string[] : undefined })
-  progress.value?.setWidthRatio(0.7)
-  progress.value?.animate()
-  const res: ListResult<EntriesResponse<Texpand>> = await client.collection('entries').getList(1, 50, {
-    filter: alRes.media.map(({ id }) => 'alID=' + id).join('||'),
-    skipTotal: true,
-    expand: 'trs'
-  })
-  const dbmap: { [key: string]: EntriesResponse<Texpand> } = {}
-  for (const entry of res.items) {
-    dbmap[entry.alID] = entry
-  }
+  let total: number
+
   const entries: Entry[] = []
-  for (const media of alRes.media) {
-    const entry = dbmap[media.id] || {}
-    const obj = {
-      ...entry,
-      ...media,
-      dbid: entry?.id ? '' + entry.id : ''
-    } as Entry
-    entries.push(obj)
+  
+  if (SEADEX_SORTERS_LIST.includes(sortID)) {
+
+    const res: ListResult<EntriesResponse<Texpand>> = await client.collection('entries').getList(pageIndex+1, perPage, {
+      sort: `${sortKeys[0].order === 'desc'? '-' : ''}${sortID}`,
+      expand: 'trs'
+    })
+    progress.value?.setWidthRatio(0.7)
+    progress.value?.animate()
+
+    total = res.totalItems
+    const alRes = await idList({ ids: res.items.map(x=>x.alID), pageIndex:0, perPage, search, sort, format: (filterValues.format as string[])?.length ? filterValues.format as string[] : undefined })
+
+    const dbmap: { [key: string]: any } = {}
+    for (const media of alRes.media) {
+      dbmap[media.id] = media
+    }
+    
+    for (const entry of res.items) {
+      const media = dbmap[entry.alID] || {}
+      const obj = {
+        ...entry,
+        ...media,
+        dbid: entry?.id ? '' + entry.id : ''
+      } as Entry
+      entries.push(obj)
+    }
+
+  } else {
+    
+    if (sort && sortKeys[0].order === 'desc') {
+      sort += '_DESC'
+    }
+    const alRes = await idList({ ids, pageIndex, perPage, search, sort, format: (filterValues.format as string[])?.length ? filterValues.format as string[] : undefined })
+    progress.value?.setWidthRatio(0.7)
+    progress.value?.animate()
+    const res: ListResult<EntriesResponse<Texpand>> = await client.collection('entries').getList(1, perPage, {
+      filter: alRes.media.map(({ id }) => 'alID=' + id).join('||'),
+      skipTotal: true,
+      expand: 'trs'
+    })
+
+    total = alRes.pageInfo.total
+    
+    const dbmap: { [key: string]: EntriesResponse<Texpand> } = {}
+    for (const entry of res.items) {
+      dbmap[entry.alID] = entry
+    }
+
+    for (const media of alRes.media) {
+      const entry = dbmap[media.id] || {}
+      const obj = {
+        ...entry,
+        ...media,
+        dbid: entry?.id ? '' + entry.id : ''
+      } as Entry
+      entries.push(obj)
+    }
   }
-  serverItemCount.value = Math.min(ids?.length || Infinity, alRes.pageInfo.total)
+  
+  serverItemCount.value = Math.min(ids?.length || Infinity, total)
   progress.value?.complete()
   return entries
 }
