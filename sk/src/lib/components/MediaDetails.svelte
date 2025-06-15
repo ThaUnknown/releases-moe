@@ -33,7 +33,7 @@
         {#if (media.episodes || 0) > 1}
           {media.episodes}
         {/if}
-        {format}
+        {formatMap[format]}
         <Monitor class='ps-2' />
       </div>
     </div>
