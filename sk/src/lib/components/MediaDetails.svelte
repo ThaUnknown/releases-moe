@@ -4,7 +4,7 @@
 
   export let media: _media
 
-  const format = media.format as keyof typeof formatMap
+  $: format = media.format as keyof typeof formatMap
 </script>
 
 <div class='flex position-relative w-full'>
@@ -30,7 +30,7 @@
         {media.seasonYear || 'N/A'}
       </div>
       <div class='flex align-items-center'>
-        {#if media.episodes > 1}
+        {#if (media.episodes || 0) > 1}
           {media.episodes}
         {/if}
         {formatMap[format]}
@@ -41,11 +41,6 @@
 </div>
 
 <style>
-  .title {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-  }
   img {
     object-fit: contain;
     background-color: var(--color) !important;
