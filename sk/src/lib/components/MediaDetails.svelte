@@ -4,9 +4,7 @@
 
   export let media: _media
 
-  function getFormat(key:string| undefined) {
-    return formatMap[key as keyof typeof formatMap]
-  }
+  $: format = media.format as keyof typeof formatMap
 </script>
 
 <div class='flex position-relative w-full'>
@@ -35,7 +33,7 @@
         {#if (media.episodes || 0) > 1}
           {media.episodes}
         {/if}
-        {getFormat(media.format)}
+        {format}
         <Monitor class='ps-2' />
       </div>
     </div>
