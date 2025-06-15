@@ -47,11 +47,11 @@
 
   let open = false  
 
-  function handleKeyDown(event) {
+  function handleKeyDown(event:KeyboardEvent) {
     if (!show) return
     if ((event.ctrlKey || event.metaKey) && event.key === 'f') {
       event.preventDefault(); // Stop browser's default search
-      open = !open 
+      open = !open
     }
   }
 
@@ -77,15 +77,13 @@
           {@const active = $page.url.pathname === path}
           <a href={`${base}${path}`} class='transition-colors hover:text-foreground/80 {active ? 'text-foreground' : 'text-foreground/60'}'>{label}</a>
         {/each}
+        {#if show}
+          <Button variant='ghost' size='icon' on:click={() => open=true}>
+            <MagnifyingGlass></MagnifyingGlass>
+          </Button>  
+        {/if}
       </nav>
     </div>
-    {#if show}
-      <div class='ml-auto flex items-center'>
-        <Button class="ml-2" variant='outline' size='icon' on:click={() => open=true}>
-          <MagnifyingGlass></MagnifyingGlass>
-        </Button>  
-      </div>
-    {/if}
     <div class='ml-auto flex items-center space-x-4'>
       {#if $authModel}
         <DropdownMenu.Root>

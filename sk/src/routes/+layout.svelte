@@ -22,7 +22,7 @@
 </svelte:head>
 
 <ProgressBar zIndex={100} bind:this={$progress} />
-<Nav ids={$page.data.ids} search={$metadata.title && $metadata.title !== 'Home'} />
+<Nav ids={$page.data.ids} search={!!$metadata.title && $metadata.title !== 'Home'} />
 <Toaster visibleToasts={3} position='top-right' theme='dark' richColors duration={10000} />
 
 <div class='container mx-auto py-5 flex-grow flex'>
