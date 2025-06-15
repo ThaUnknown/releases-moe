@@ -5,8 +5,10 @@
   import { toast } from 'svelte-sonner'
   import Sun from 'svelte-radix/Sun.svelte'
   import Moon from 'svelte-radix/Moon.svelte'
+  import MagnifyingGlass from 'svelte-radix/MagnifyingGlass.svelte'
   import { toggleMode, ModeWatcher } from 'mode-watcher'
   import { Button } from '$lib/components/ui/button/index.js'
+  import AnilistModal from '$lib/components/AnilistModal.svelte'
 
   import * as DropdownMenu from '$lib/components/ui/dropdown-menu'
   import * as Avatar from '$lib/components/ui/avatar'
@@ -33,6 +35,36 @@
     ['https://sheet.releases.moe', 'Sheet']
   ]
 </script>
+
+<script lang='ts'>
+  import { onMount, onDestroy } from 'svelte';
+
+  export let search: boolean = false
+  export let ids: number[]
+  
+  let show: boolean
+  $: show = search
+
+  let open = false  
+
+  function handleKeyDown(event:KeyboardEvent) {
+    if (!show) return
+    if ((event.ctrlKey || event.metaKey) && event.key === 'f') {
+      event.preventDefault(); // Stop browser's default search
+      open = !open
+    }
+  }
+
+  onMount(() => {
+    window.addEventListener('keydown', handleKeyDown);
+  });
+
+  onDestroy(() => {
+    window.removeEventListener('keydown', handleKeyDown);
+  });
+
+</script>
+
 <header class='sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60'>
   <div class='container flex h-14 max-w-screen-2xl items-center'>
     <div class='mr-4 flex'>
@@ -45,6 +77,11 @@
           {@const active = $page.url.pathname === path}
           <a href={`${base}${path}`} class='transition-colors hover:text-foreground/80 {active ? 'text-foreground' : 'text-foreground/60'}'>{label}</a>
         {/each}
+        {#if show}
+          <Button variant='ghost' size='icon' on:click={() => open=true}>
+            <MagnifyingGlass></MagnifyingGlass>
+          </Button>  
+        {/if}
       </nav>
     </div>
     <div class='ml-auto flex items-center space-x-4'>
@@ -91,3 +128,5 @@
     </div>
   </div>
 </header>
+
+<AnilistModal bind:open ids={ids} />
