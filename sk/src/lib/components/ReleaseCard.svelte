@@ -12,14 +12,14 @@
   function hasDualBest (torrents: TorrentsResponse[]) {
     let isBest = false
     let isDual = false
-    const sizes: string[] = []
+    const sizes: Map<TorrentsTrackerOptions, number> = new Map()
     for (const torrent of torrents) {
       if (torrent.isBest) isBest = true
       if (torrent.dualAudio) isDual = true
-      const size = torrent.files && fastPrettyBytes(torrent.files.reduce((acc, { length }) => acc + length, 0))
-      if (size && !sizes.includes(size)) sizes.push(size)
+      const size = torrent.files && torrent.files.reduce((acc, { length }) => acc + length, 0)
+      if (size) sizes.set(torrent.tracker, (sizes.get(torrent.tracker) || 0) + size )
     }
-    return { isBest, isDual, sizes }
+    return { isBest, isDual, sizes: sizes.values().map((num) => fastPrettyBytes(num)) }
   }
 
   function mapToTracker (torrents: TorrentsResponse[]) {
