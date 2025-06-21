@@ -7,3 +7,4 @@ export interface Metadata {
 }
 
 export const metadata = writable<Metadata>({})
+export const openSearchModal = writable<boolean>(false)

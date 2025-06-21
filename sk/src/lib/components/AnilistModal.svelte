@@ -4,6 +4,7 @@
   import { Input } from '$lib/components/ui/input'
   import { debounce } from '$lib/util'
   import { idList, type alResponse } from '$lib/anilist'
+  import { onMount, onDestroy } from 'svelte';
 
   export let open: boolean = false
   export let ids: number[]
@@ -22,6 +23,21 @@
     searchResults = null
   }
 
+
+  function handleKeyDown(event:KeyboardEvent) {
+    if ((event.ctrlKey || event.metaKey) && event.key === 'f') {
+      event.preventDefault(); // Stop browser's default search
+      open = !open
+    }
+  }
+
+  onMount(() => {
+    window.addEventListener('keydown', handleKeyDown);
+  });
+
+  onDestroy(() => {
+    window.removeEventListener('keydown', handleKeyDown);
+  });
   
 </script>
 
