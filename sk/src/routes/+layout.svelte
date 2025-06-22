@@ -10,7 +10,6 @@
 </script>
 
 <script lang='ts'>
-  import { page } from '$app/stores';
   $: title = $metadata.title ? $metadata.title + ' | ' + site.name : site.name
   $: description = $metadata.description ?? site.description
 </script>
@@ -24,7 +23,7 @@
 
 <ProgressBar zIndex={100} bind:this={$progress} />
 <Nav/>
-<AnilistModal ids={$page.data.ids} bind:open={$openSearchModal} />
+<AnilistModal bind:open={$openSearchModal} />
 <Toaster visibleToasts={3} position='top-right' theme='dark' richColors duration={10000} />
 
 <div class='container mx-auto py-5 flex-grow flex'>

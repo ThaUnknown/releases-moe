@@ -5,24 +5,26 @@
   import { debounce } from '$lib/util'
   import { idList, type alResponse } from '$lib/anilist'
   import { onMount, onDestroy } from 'svelte';
+  import { page } from '$app/stores';
 
   export let open: boolean = false
-  export let ids: number[]
 
   let searchResults: alResponse | null
 
-  const debouncedQuery = debounce(({target}) => {
-    const searchText = (target as HTMLInputElement).value
-    idList({ids, search: searchText, sort:'START_DATE', pageIndex:0, perPage:10}).then(results => {
+  let value: string
+
+  const debouncedQuery = debounce((search:string) => {
+    idList({ids:$page.data.ids, search, sort:'START_DATE', pageIndex:0, perPage:10}).then(results => {
       searchResults = results
     })
   }, 300)
+
+  $: debouncedQuery(value)
 
   function onSelect() {
     open = false
     searchResults = null
   }
-
 
   function handleKeyDown(event:KeyboardEvent) {
     if ((event.ctrlKey || event.metaKey) && event.key === 'f') {
@@ -46,22 +48,22 @@
     <Dialog.Header class='w-full'>
       <Dialog.Title>
         <div class='flex align-items-ed bg-inherit sticky top-0 z-10 py-3 px-3'>
-          <Input type='text' placeholder='Search...' on:input={debouncedQuery} />
+          <Input type='text' placeholder='Search...' bind:value />
         </div>
       </Dialog.Title>
-        <Table.Root>
-          <Table.Body>
-            {#if searchResults && searchResults.media.length> 0}
-              {#each searchResults.media as media}
-                <Table.Row href='/{media.id}' on:click={onSelect} class='cursor-pointer'>
-                  <Table.Cell class='text-base'>
-                    {media.title.english || media.title.userPreferred}
-                  </Table.Cell>
-                </Table.Row>
-              {/each}
-            {/if}
-          </Table.Body>
-        </Table.Root>
+      <Table.Root>
+        <Table.Body>
+          {#if searchResults && searchResults.media.length> 0}
+            {#each searchResults.media as media}
+              <Table.Row href='/{media.id}' on:click={onSelect} class='cursor-pointer'>
+                <Table.Cell class='text-base'>
+                  {media.title.english || media.title.userPreferred}
+                </Table.Cell>
+              </Table.Row>
+            {/each}
+          {/if}
+        </Table.Body>
+      </Table.Root>
     </Dialog.Header>
   </Dialog.Content>
 </Dialog.Root>

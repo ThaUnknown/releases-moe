@@ -79,7 +79,7 @@ export const columns = table.createColumns([
     cell: ({ value }) => createRender(BoolCell, { value })
   }),
   table.column({
-    accessor: entry => new Date(entry.updated).toLocaleDateString('en-GB'),
+    accessor: entry => new Date(entry.updated).toLocaleDateString(),
     header: 'Updated',
     id: 'updated'
   }),
