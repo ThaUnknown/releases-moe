@@ -30,10 +30,10 @@
         {media.seasonYear || 'N/A'}
       </div>
       <div class='flex align-items-center'>
-        {#if (media.episodes || 0) > 1}
-          {media.episodes}
-        {/if}
         {formatMap[format]}
+        {#if (media.episodes || 0) > 1}
+          ({media.episodes})
+        {/if}
         <Monitor class='ps-2' />
       </div>
     </div>
