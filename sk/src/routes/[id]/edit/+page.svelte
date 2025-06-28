@@ -105,7 +105,7 @@
 
       await save('entries', newEntry)
       toast.success('Entry Created')
-      await removedDeadTorrent()
+      await removedDeadTorrents()
       await invalidateAll()
       goto('..')
     } catch (error) {
@@ -113,8 +113,8 @@
     }
   }
 
-  async function removedDeadTorrent() {
-    for (let torrent of deletedTorrents) {
+  async function removedDeadTorrents() {
+    for (const torrent of deletedTorrents) {
       if (!torrent.id) continue
   
       // Throws a 404 if the torrent isn't found
