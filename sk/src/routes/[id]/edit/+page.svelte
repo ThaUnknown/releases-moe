@@ -22,6 +22,7 @@
   import { Textarea } from '$lib/components/ui/textarea'
   import { Checkbox } from '$lib/components/ui/checkbox'
   import { Separator } from '$lib/components/ui/separator'
+  import { ClientResponseError } from 'pocketbase';
 
   export let data: PageData
 
@@ -29,6 +30,8 @@
 
   let { entry, media } = data
   let torrents: TorrentData[] = entry?.expand?.trs || []
+
+  let deletedTorrents: TorrentData[] = []
 
   $: entry = data.entry
   $: media = data.media
@@ -102,11 +105,29 @@
 
       await save('entries', newEntry)
       toast.success('Entry Created')
+      await removedDeadTorrents()
       await invalidateAll()
       goto('..')
     } catch (error) {
       toast.error('Failed To Save Entry' + error)
     }
+  }
+
+  async function removedDeadTorrents() {
+    for (const torrent of deletedTorrents) {
+      if (!torrent.id) continue
+  
+      // Throws a 404 if the torrent isn't found
+      try {
+        await client.collection('entries').getFirstListItem(`trs.id?="${torrent.id}"`, { expand: 'trs', skipTotal: true })  
+      } catch (error) {
+        if (error instanceof ClientResponseError && error.status == 404) {  
+          await client.collection('torrents').delete(torrent.id)
+        }
+      }
+    }
+
+    deletedTorrents = []
   }
 
   function duplicateTorrent (original: TorrentData) {
@@ -130,6 +151,8 @@
     const index = torrents.indexOf(torrent)
     torrents.splice(index, 1)
     torrents = torrents
+
+    deletedTorrents.push(torrent)
   }
   async function findTorrentsOnline () {
     const toshoTorrents = getToshotTorrentsForID(media.id)
