@@ -13,7 +13,8 @@
   let open = false
 
   const debouncedQuery = debounce((search:string) => {
-    idList({ ids: $page.data.ids, search, sort: 'START_DATE', pageIndex: 0, perPage: 10 }).then(results => {
+    if (!search) return
+    idList({ ids: $page.data.ids, search, sort: ['FORMAT', 'START_DATE'], pageIndex: 0, perPage: 10 }).then(results => {
       searchResults = results
     })
   }, 300)
