@@ -40,7 +40,8 @@ export const handle = async ({ event, resolve }) => {
               coverImage {
                 large
                 color
-              }
+              },
+              seasonYear
             }
           }
         `,
@@ -69,6 +70,9 @@ export const handle = async ({ event, resolve }) => {
     if (item.notes) desc += `\n${item.notes}\n`
     // if (item.comparison) desc += `\n${item.comparison.replaceAll(',', ' ')}\n`
 
+    let title: string = data.Media.title.english || data.Media.title.userPreferred
+    if (!title.includes(data.Media.seasonYear)) title += ` (${data.Media.seasonYear})`
+
     desc = escapeHtml(desc)
 
     return resolve(event, {
@@ -81,10 +85,10 @@ export const handle = async ({ event, resolve }) => {
           `<meta property="og:image" content="${data.Media.coverImage.large}"><meta property="og:site_name" content="SeaDex" />`
         ).replace(
           '<meta property="og:title" content="SeaDex">',
-          `<meta property="og:title" content="${data.Media.title.english || data.Media.title.userPreferred}">`
+          `<meta property="og:title" content="${title}">`
         ).replace(
           '<meta name="twitter:title" content="SeaDex">',
-          `<meta name="twitter:title" content="${data.Media.title.english || data.Media.title.userPreferred}">`
+          `<meta name="twitter:title" content="${title}">`
         ).replace(
           '<meta name="twitter:description" content="Your portal to the ultimate enthusiast releases - anime with unparalleled video, audio, and subtitle perfection, backed by in-depth comparisons.">',
           `<meta name="twitter:description" content="${desc}">`
