@@ -5,10 +5,9 @@
   import { toast } from 'svelte-sonner'
   import Sun from 'svelte-radix/Sun.svelte'
   import Moon from 'svelte-radix/Moon.svelte'
-  import MagnifyingGlass from 'svelte-radix/MagnifyingGlass.svelte'
   import { toggleMode, ModeWatcher } from 'mode-watcher'
-  import { Button } from '$lib/components/ui/button/index.js'
-  import { metadata, openSearchModal } from '$lib/app/stores'
+  import SearchModal from './SearchModal.svelte'
+  import { Button } from '$lib/components/ui/button'
 
   import * as DropdownMenu from '$lib/components/ui/dropdown-menu'
   import * as Avatar from '$lib/components/ui/avatar'
@@ -37,14 +36,10 @@
 
 </script>
 
-<script lang='ts'>  
-  $: search = !!$metadata.title && $metadata.title !== 'Home'
-</script>
-
 <header class='sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60'>
   <div class='container flex h-14 max-w-screen-2xl items-center'>
     <div class='mr-4 flex'>
-      <a href={`${base}/`} class='mr-6 flex items-center space-x-2'>
+      <a href={`${base}/`} class='mr-6 hidden sm:flex items-center space-x-2'>
         <img src={`${base}/favicon.png`} alt='logo' class='h-6 w-6' />
         <span class='hidden font-bold sm:inline-block'>SeaDex</span>
       </a>
@@ -53,14 +48,10 @@
           {@const active = $page.url.pathname === path}
           <a href={`${base}${path}`} class='transition-colors hover:text-foreground/80 {active ? 'text-foreground' : 'text-foreground/60'}'>{label}</a>
         {/each}
-        {#if search}
-          <Button variant='ghost' size='icon' on:click={() => $openSearchModal=true}>
-            <MagnifyingGlass></MagnifyingGlass>
-          </Button>  
-        {/if}
       </nav>
     </div>
-    <div class='ml-auto flex items-center space-x-4'>
+    <SearchModal />
+    <div class='flex items-center space-x-4 ml-auto sm:ml-0'>
       {#if $authModel}
         <DropdownMenu.Root>
           <DropdownMenu.Trigger asChild let:builder>
@@ -88,7 +79,7 @@
         {#await authMethods then methods}
           {#each methods.authProviders as p}
             <Button variant='outline' class='capitalize' on:click={() => providerLogin(p, coll)}>
-              <LogIn class='absolute h-[1rem] w-[1rem]' />
+              <LogIn class='absolute size-4' />
             </Button>
           {/each}
         {:catch}
@@ -97,8 +88,8 @@
       {/if}
       <ModeWatcher />
       <Button on:click={toggleMode} variant='outline' size='icon' class='ml-10'>
-        <Sun class='h-[1rem] w-[1rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0' />
-        <Moon class='absolute h-[1rem] w-[1rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100' />
+        <Sun class='size-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0' />
+        <Moon class='absolute size-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100' />
         <span class='sr-only'>Toggle theme</span>
       </Button>
     </div>

@@ -26,7 +26,7 @@ const SORT_ID_MAP: { [key: string]: string } = {
   format: 'FORMAT'
 }
 
-const POCKETBASE_SORTERS_LIST: string[] = ["updated"]
+const POCKETBASE_SORTERS_LIST: string[] = ['updated']
 
 // these loads have race conditions, oh well
 
@@ -38,32 +38,30 @@ async function load (pageIndex: number, perPage: number, filterValues: Record<st
   const entries: Entry[] = []
 
   const isPocketBase = POCKETBASE_SORTERS_LIST.includes(sortID)
-      
+
   if (sort && sortKeys[0].order === 'desc') {
     sort += '_DESC'
   }
 
-  let alRes: alResponse | undefined = undefined
-  if ((isPocketBase && search != undefined ) || !isPocketBase)
-    alRes = await idList({ ids, pageIndex, perPage, search, sort, format: (filterValues.format as string[])?.length ? filterValues.format as string[] : undefined })
+  let alRes: alResponse | undefined
+  if ((isPocketBase && search != null) || !isPocketBase) alRes = await idList({ ids, pageIndex, perPage, search, sort, format: (filterValues.format as string[])?.length ? filterValues.format as string[] : undefined })
   progress.value?.setWidthRatio(0.7)
   progress.value?.animate()
   const res: ListResult<EntriesResponse<Texpand>> = await client.collection('entries').getList(1, perPage, {
-    filter: (alRes) ? alRes?.media.map(({ id }) => 'alID=' + id).join('||'): '',
-    sort: isPocketBase ? `${sortKeys[0].order === 'desc'? '-' : ''}${sortID}` : '',
+    filter: (alRes) ? alRes?.media.map(({ id }) => 'alID=' + id).join('||') : '',
+    sort: isPocketBase ? `${sortKeys[0].order === 'desc' ? '-' : ''}${sortID}` : '',
     skipTotal: true,
     expand: 'trs'
   })
 
   // Check needed to use sorting from pocketbase or anilist.
   if (isPocketBase) {
-    if (search == undefined)
-      alRes = await idList({ ids: res.items.map(x=>x.alID), pageIndex:0, perPage, search, sort, format: undefined })
+    if (search == null) { alRes = await idList({ ids: res.items.map(x => x.alID), pageIndex: 0, perPage, search, sort, format: undefined }) }
     const dbmap: { [key: string]: media } = {}
     for (const media of alRes!.media) {
       dbmap[media.id] = media
     }
-    
+
     for (const entry of res.items) {
       const media = dbmap[entry.alID] || {}
       const obj = {
@@ -78,7 +76,7 @@ async function load (pageIndex: number, perPage: number, filterValues: Record<st
     for (const entry of res.items) {
       dbmap[entry.alID] = entry
     }
-  
+
     for (const media of alRes!.media) {
       const entry = dbmap[media.id] || {}
       const obj = {
@@ -89,7 +87,7 @@ async function load (pageIndex: number, perPage: number, filterValues: Record<st
       entries.push(obj)
     }
   }
-  
+
   serverItemCount.value = Math.min(ids?.length || Infinity, alRes!.pageInfo.total)
   progress.value?.complete()
   return entries

@@ -1,12 +1,11 @@
 <script context='module' lang='ts'>
-  import { metadata, openSearchModal } from '$lib/app/stores'
+  import { metadata } from '$lib/app/stores'
   import { ProgressBar } from '@prgm/sveltekit-progress-bar'
   import Nav from '$lib/components/Nav.svelte'
   import { site } from '$lib/config'
   import '../app.pcss'
   import { Toaster } from 'svelte-sonner'
   import { progress } from '$lib/components/entries/query'
-  import AnilistModal from '$lib/components/AnilistModal.svelte'
 </script>
 
 <script lang='ts'>
@@ -22,8 +21,7 @@
 </svelte:head>
 
 <ProgressBar zIndex={100} bind:this={$progress} />
-<Nav/>
-<AnilistModal bind:open={$openSearchModal} />
+<Nav />
 <Toaster visibleToasts={3} position='top-right' theme='dark' richColors duration={10000} />
 
 <div class='container mx-auto py-5 flex-grow flex'>
