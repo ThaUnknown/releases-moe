@@ -22,6 +22,7 @@
 
   function onSelect () {
     searchResults = null
+    open = false
   }
 
   function handleKeyDown (event: KeyboardEvent) {
