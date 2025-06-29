@@ -9,7 +9,7 @@ import {
 } from 'svelte-headless-table/plugins'
 import { RowActions, FormatCell, BoolCell } from '.'
 
-const initialHiddenColumnIds = ['incomplete', 'theoreticalBest']
+const initialHiddenColumnIds = ['incomplete', 'theoreticalBest', 'updated']
 
 const nextToHideBasedOnWidth = ['episodes', 'seasonYear', 'format']
 
@@ -77,6 +77,11 @@ export const columns = table.createColumns([
     accessor: 'incomplete',
     header: 'Complete',
     cell: ({ value }) => createRender(BoolCell, { value })
+  }),
+  table.column({
+    accessor: entry => new Date(entry.updated).toLocaleDateString(),
+    header: 'Updated',
+    id: 'updated'
   }),
   table.display({
     id: 'actions',

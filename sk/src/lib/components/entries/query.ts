@@ -2,7 +2,7 @@ import { writable, type Writable } from 'simple-store-svelte'
 import { type ProgressBar } from '@prgm/sveltekit-progress-bar'
 import type { Entry } from './schemas'
 import type { SortKey } from 'svelte-headless-table/plugins'
-import { idList } from '$lib/anilist'
+import { idList, type alResponse, type media } from '$lib/anilist'
 import { client } from '$lib/pocketbase'
 import type { ListResult } from 'pocketbase'
 import type { EntriesResponse, TorrentsResponse } from '$lib/pocketbase/generated-types'
@@ -26,39 +26,69 @@ const SORT_ID_MAP: { [key: string]: string } = {
   format: 'FORMAT'
 }
 
+const POCKETBASE_SORTERS_LIST: string[] = ['updated']
+
 // these loads have race conditions, oh well
 
 async function load (pageIndex: number, perPage: number, filterValues: Record<string, unknown>, sortKeys: SortKey[], ids?: number[]) {
-  let sort = SORT_ID_MAP[sortKeys[0]?.id] || undefined
+  const sortID = sortKeys[0]?.id
+  let sort = SORT_ID_MAP[sortID] || undefined
+  const search = filterValues.title as string || undefined
+
+  const entries: Entry[] = []
+
+  const isPocketBase = POCKETBASE_SORTERS_LIST.includes(sortID)
 
   if (sort && sortKeys[0].order === 'desc') {
     sort += '_DESC'
   }
 
-  const search = filterValues.title as string || undefined
-  const alRes = await idList({ ids, pageIndex, perPage, search, sort, format: (filterValues.format as string[])?.length ? filterValues.format as string[] : undefined })
+  let alRes: alResponse | undefined
+  if ((isPocketBase && search != null) || !isPocketBase) alRes = await idList({ ids, pageIndex, perPage, search, sort, format: (filterValues.format as string[])?.length ? filterValues.format as string[] : undefined })
   progress.value?.setWidthRatio(0.7)
   progress.value?.animate()
-  const res: ListResult<EntriesResponse<Texpand>> = await client.collection('entries').getList(1, 50, {
-    filter: alRes.media.map(({ id }) => 'alID=' + id).join('||'),
+  const res: ListResult<EntriesResponse<Texpand>> = await client.collection('entries').getList(1, perPage, {
+    filter: (alRes) ? alRes?.media.map(({ id }) => 'alID=' + id).join('||') : '',
+    sort: isPocketBase ? `${sortKeys[0].order === 'desc' ? '-' : ''}${sortID}` : '',
     skipTotal: true,
     expand: 'trs'
   })
-  const dbmap: { [key: string]: EntriesResponse<Texpand> } = {}
-  for (const entry of res.items) {
-    dbmap[entry.alID] = entry
+
+  // Check needed to use sorting from pocketbase or anilist.
+  if (isPocketBase) {
+    if (search == null) { alRes = await idList({ ids: res.items.map(x => x.alID), pageIndex: 0, perPage, search, sort, format: undefined }) }
+    const dbmap: { [key: string]: media } = {}
+    for (const media of alRes!.media) {
+      dbmap[media.id] = media
+    }
+
+    for (const entry of res.items) {
+      const media = dbmap[entry.alID] || {}
+      const obj = {
+        ...entry,
+        ...media,
+        dbid: entry?.alID ? '' + entry.alID : ''
+      } as Entry
+      entries.push(obj)
+    }
+  } else {
+    const dbmap: { [key: string]: EntriesResponse<Texpand> } = {}
+    for (const entry of res.items) {
+      dbmap[entry.alID] = entry
+    }
+
+    for (const media of alRes!.media) {
+      const entry = dbmap[media.id] || {}
+      const obj = {
+        ...entry,
+        ...media,
+        dbid: entry?.id ? '' + entry.id : ''
+      } as Entry
+      entries.push(obj)
+    }
   }
-  const entries: Entry[] = []
-  for (const media of alRes.media) {
-    const entry = dbmap[media.id] || {}
-    const obj = {
-      ...entry,
-      ...media,
-      dbid: entry?.id ? '' + entry.id : ''
-    } as Entry
-    entries.push(obj)
-  }
-  serverItemCount.value = Math.min(ids?.length || Infinity, alRes.pageInfo.total)
+
+  serverItemCount.value = Math.min(ids?.length || Infinity, alRes!.pageInfo.total)
   progress.value?.complete()
   return entries
 }
