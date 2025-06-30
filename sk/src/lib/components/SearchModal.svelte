@@ -38,9 +38,9 @@
 
 <Dialog.Root bind:open>
   <Dialog.Trigger asChild let:builder>
-    <Button variant='outline' builders={[builder]} class='mx-auto px-3 text-muted-foreground sm:flex hidden'>
-      <MagnifyingGlass class='size-4 mr-2' />
-      <div class='font-normal pr-5'>Search anime...</div>
+    <Button variant='outline' builders={[builder]} class='mx-auto px-3 text-muted-foreground sm:flex'>
+      <MagnifyingGlass class='size-4 sm:mr-2' />
+      <div class='font-normal pr-5 hidden sm:block'>Search anime...</div>
     </Button>
   </Dialog.Trigger>
   <Dialog.Content class='max-w-[90%] sm:max-w-[425px] top-4 left-1/2 -translate-x-1/2 translate-y-0 flex'>
