@@ -53,8 +53,11 @@
       <div class='flex flex-col w-full'>
         {#if searchResults && searchResults.media.length > 0}
           {#each searchResults.media as media}
-            <a href='/{media.id}' on:click={onSelect} class='cursor-pointer text-base truncate border-t first:border-none py-2 hover:bg-accent hover:text-accent-foreground px-3 transition-colors'>
+            <a href='/{media.id}' on:click={onSelect} class='cursor-pointer text-base text-left truncate border-t first:border-none py-2 hover:bg-accent hover:text-accent-foreground px-3 transition-colors'>
               {media.title.english || media.title.userPreferred}
+              <div class="inline opacity-75">
+                [{media.format}] ({media.seasonYear})
+              </div>
             </a>
           {/each}
         {/if}
