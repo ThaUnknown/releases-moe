@@ -19,7 +19,7 @@
       const size = torrent.files && torrent.files.reduce((acc, { length }) => acc + length, 0)
       if (size) sizes.set(torrent.tracker, (sizes.get(torrent.tracker) || 0) + size )
     }
-    return { isBest, isDual, sizes: sizes.values().map((num) => fastPrettyBytes(num)) }
+    return { isBest, isDual, sizes: [...sizes.values()].map((num) => fastPrettyBytes(num)) }
   }
 
   function mapToTracker (torrents: TorrentsResponse[]) {
