@@ -1,8 +1,14 @@
 <script lang='ts'>
   import { type media as _media, formatMap } from '$lib/anilist'
-  import { Monitor, Calendar } from 'lucide-svelte'
+  import { Monitor, Calendar, CalendarArrowUp, CalendarPlus } from 'lucide-svelte'
+  import type { TorrentsResponse } from '$lib/pocketbase/generated-types.js'
 
-  export let media: _media
+  export let data: {media: _media, entry: TorrentsResponse }
+
+  let { entry, media } = data
+
+  $: entry = data.entry
+  $: media = data.media
 
   $: format = media.format as keyof typeof formatMap
 </script>
@@ -35,6 +41,16 @@
           ({media.episodes})
         {/if}
         <Monitor class='ps-2' />
+      </div>
+    </div>
+    <div class='flex flex-row mt-auto pt-2 justify-between w-full font-size-18'>
+      <div class='flex align-items-center' style='margin-left: -3px' title='Created on'>
+        <CalendarPlus class='pe-2' />
+        {entry.created.substring(0, 10) || 'N/A'}
+      </div>
+      <div class='flex align-items-center' style='margin-left: -3px' title='Updated on'>
+        {entry.updated.substring(0, 10) || 'N/A'}
+        <CalendarArrowUp class='ps-2' />
       </div>
     </div>
   </div>

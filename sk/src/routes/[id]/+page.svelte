@@ -42,7 +42,7 @@
     {#if entry.incomplete}
       <div class='font-medium text-red-600 text-xl mb-3'>This Entry Is Incomplete</div>
     {/if}
-    <MediaDetails {media} />
+    <MediaDetails {data} />
     {#if $authModel?.canEdit}
       <Button class='my-3 px-5 h-8' href='./edit'>Edit</Button>
     {/if}
