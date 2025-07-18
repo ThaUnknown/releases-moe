@@ -1,14 +1,11 @@
 <script lang='ts'>
   import { type media as _media, formatMap } from '$lib/anilist'
   import { Monitor, Calendar, CalendarArrowUp, CalendarPlus } from 'lucide-svelte'
-  import type { TorrentsResponse } from '$lib/pocketbase/generated-types.js'
+  import type { EntriesResponse } from '$lib/pocketbase/generated-types.js'
 
-  export let data: {media: _media, entry: TorrentsResponse }
+  export let data: {entry: EntriesResponse, media: _media}
 
-  let { entry, media } = data
-
-  $: entry = data.entry
-  $: media = data.media
+  $: ({ entry, media } = data)
 
   $: format = media.format as keyof typeof formatMap
 </script>
