@@ -195,7 +195,7 @@
 <form on:submit|preventDefault={submit} class='contents'>
   <div class='flex h-full md:flex-row flex-col items-center md:items-start justify-center w-full'>
     <div class='mb-3 min-w-0 max-w-72 shrink-0'>
-      <MediaDetails {media} />
+      <MediaDetails {data} />
       <div class='pt-2'>Episodes: {media.episodes || 'N/A'}</div>
       <Separator class='my-10' />
       <Button type='submit' class='me-1 px-3 mt-3'>Save</Button>
