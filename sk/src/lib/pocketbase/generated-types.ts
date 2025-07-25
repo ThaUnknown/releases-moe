@@ -116,6 +116,7 @@ export enum TorrentsTrackerOptions {
 	"OtherPrivate" = "OtherPrivate",
 }
 export type TorrentsRecord<Tfiles = { length: number, name: string }[]> = {
+	compatibility?: string
 	dualAudio?: boolean
 	files: null | Tfiles
 	groupedUrl?: string

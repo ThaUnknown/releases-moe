@@ -82,6 +82,14 @@
     </div>
   </div>
 </div>
+<div class='grid grid-cols-1'>
+  <div>
+    <div class='mb-2'>
+      <Label for={'compatibility' + i}>Compatibility Issues</Label>
+      <Input type='text' class='form-control' id={'compatibility' + i} bind:value={torrent.compatibility} />
+    </div>
+  </div>
+</div>
 <div class='flex mb-2'>
   <div class='form-check me-3'>
     <Checkbox id={'isBest' + i} bind:checked={torrent.isBest} />
