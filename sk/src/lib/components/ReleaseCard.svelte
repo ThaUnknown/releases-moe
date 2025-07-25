@@ -12,16 +12,16 @@
   function hasDualBest (torrents: TorrentsResponse[]) {
     let isBest = false
     let isDual = false
-    let compatibilitys = new Array()
+    let compatibilities: string[] = []
     const sizes: Map<TorrentsTrackerOptions, number> = new Map()
     for (const torrent of torrents) {
       if (torrent.isBest) isBest = true
       if (torrent.dualAudio) isDual = true
       const size = torrent.files && torrent.files.reduce((acc, { length }) => acc + length, 0)
       if (size) sizes.set(torrent.tracker, (sizes.get(torrent.tracker) || 0) + size )
-      if (torrent.compatibility) compatibilitys = compatibilitys.concat(torrent.compatibility.split(","))
+      if (torrent.compatibility) compatibilities = compatibilities.concat(torrent.compatibility.split(","))
     }
-    return { isBest, isDual, compatibilitys, sizes: [...sizes.values()].map((num) => fastPrettyBytes(num)) }
+    return { isBest, isDual, compatibilities, sizes: [...sizes.values()].map((num) => fastPrettyBytes(num)) }
   }
 
   function mapToTracker (torrents: TorrentsResponse[]) {
@@ -63,7 +63,7 @@
 </script>
 
 {#if torrents}
-  {@const { isBest, isDual, compatibilitys, sizes } = hasDualBest(torrents)}
+  {@const { isBest, isDual, compatibilities, sizes } = hasDualBest(torrents)}
   {@const groupedTorrents = mapToTracker(torrents)}
   <Card.Root class='w-80 max-w-full'>
     <Card.Header class='pb-3'>
@@ -84,7 +84,7 @@
         {:else}
         <span class='bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300 inline-block'>Alt</span>
         {/if}
-        {#each compatibilitys as compatibility}
+        {#each compatibilities as compatibility}
           <span class='bg-purple-100 text-purple-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-purple-900 dark:text-purple-300 inline-block'>{compatibility}</span>
         {/each}
       </div>
