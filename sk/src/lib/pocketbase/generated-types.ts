@@ -115,6 +115,20 @@ export enum TorrentsTrackerOptions {
 	"Other" = "Other",
 	"OtherPrivate" = "OtherPrivate",
 }
+
+export enum TorrentTags {
+	"Dolby Vision" = "Dolby Vision",
+	"HDR" = "HDR",
+	"Deband Required" = "Deband Required",
+	"Deband Recommended" = "Deband Recommended",
+	"YUV444P" = "YUV444P",
+	"Patch Required" = "Patch Required",
+	"Misplaced Special" = "Misplaced Special",
+	"VFR" = "VFR",
+	"Incomplete" = "Incomplete",
+	"Broken" = "Broken",
+}
+
 export type TorrentsRecord<Tfiles = { length: number, name: string }[]> = {
 	dualAudio?: boolean
 	files: null | Tfiles
@@ -122,6 +136,7 @@ export type TorrentsRecord<Tfiles = { length: number, name: string }[]> = {
 	infoHash: string
 	isBest?: boolean
 	releaseGroup: string
+	tags: TorrentTags[]
 	tracker: TorrentsTrackerOptions
 	url: string
 }

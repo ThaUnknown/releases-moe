@@ -1,5 +1,5 @@
 <script lang='ts'>
-  import { TorrentsTrackerOptions, type TorrentsRecord } from '$lib/pocketbase/generated-types'
+  import { TorrentsTrackerOptions, TorrentTags, type TorrentsRecord } from '$lib/pocketbase/generated-types'
   import { Checkbox } from '$lib/components/ui/checkbox'
   import { Input } from '$lib/components/ui/input'
   import { Label } from '$lib/components/ui/label'
@@ -31,6 +31,14 @@
     const ent = Object.entries(URL_TRACKER_MAP).find(([url]) => torrent.url.startsWith(url)) ?? []
     if (ent[1]) {
       torrent.tracker = ent[1]
+    }
+  }
+
+  $: selectedTags = torrent.tags.map(value => { return {value, label: value}}) || undefined
+
+  function selectTag(objs: { value: TorrentTags }[] | undefined) {
+    if(objs) {
+      torrent.tags = objs.map(obj => obj.value)
     }
   }
 </script>
@@ -79,6 +87,23 @@
     <div class='mb-2'>
       <Label for={'groupedUrl' + i}>Group URL</Label>
       <Input type='text' class='form-control' id={'groupedUrl' + i} bind:value={torrent.groupedUrl} />
+    </div>
+  </div>
+</div>
+<div class='grid grid-cols-1'>
+  <div>
+    <div class='mb-2'>
+      <Label>Tags</Label>
+      <Select.Root required multiple selected={selectedTags} onSelectedChange={selectTag}>
+        <Select.Trigger>
+          <Select.Value placeholder='Select a tag' />
+        </Select.Trigger>
+        <Select.Content>
+          {#each Object.keys(TorrentTags) as tag}
+            <Select.Item value={tag} />
+          {/each}
+        </Select.Content>
+      </Select.Root>
     </div>
   </div>
 </div>
