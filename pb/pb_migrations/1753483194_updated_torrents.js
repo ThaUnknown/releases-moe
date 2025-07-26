@@ -6,16 +6,26 @@ migrate((db) => {
   // add
   collection.schema.addField(new SchemaField({
     "system": false,
-    "id": "tbuuypfi",
-    "name": "compatibility",
-    "type": "text",
+    "id": "4ixuxvzt",
+    "name": "tags",
+    "type": "select",
     "required": false,
     "presentable": false,
     "unique": false,
     "options": {
-      "min": null,
-      "max": null,
-      "pattern": ""
+      "maxSelect": 10,
+      "values": [
+        "Dolby Vision",
+        "HDR",
+        "Deband Required",
+        "Deband Recommended",
+        "YUV444P",
+        "Patch Required",
+        "Misplaced Special",
+        "VFR",
+        "Incomplete",
+        "Broken"
+      ]
     }
   }))
 
@@ -25,7 +35,7 @@ migrate((db) => {
   const collection = dao.findCollectionByNameOrId("oiwizhmushn5qqh")
 
   // remove
-  collection.schema.removeField("tbuuypfi")
+  collection.schema.removeField("4ixuxvzt")
 
   return dao.saveCollection(collection)
 })

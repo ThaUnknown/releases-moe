@@ -1,10 +1,11 @@
 <script lang='ts'>
-  import { type TorrentsResponse, TorrentsTrackerOptions } from '$lib/pocketbase/generated-types.js'
+  import { type TorrentsResponse, TorrentsTrackerOptions, TorrentTags } from '$lib/pocketbase/generated-types.js'
   import { fastPrettyBytes } from '$lib/util'
   import * as Card from '$lib/components/ui/card'
   import { Button } from '$lib/components/ui/button'
   import { PRIVATE_TRACKERS } from '$lib/torrent'
   import * as DropdownMenu from '$lib/components/ui/dropdown-menu'
+  import * as Tooltip from '$lib/components/ui/tooltip'
 
   export let torrents: TorrentsResponse[]
   export let releaseGroup: string
@@ -12,16 +13,16 @@
   function hasDualBest (torrents: TorrentsResponse[]) {
     let isBest = false
     let isDual = false
-    let compatibilities: string[] = []
+    let tags: TorrentTags[] = []
     const sizes: Map<TorrentsTrackerOptions, number> = new Map()
     for (const torrent of torrents) {
       if (torrent.isBest) isBest = true
       if (torrent.dualAudio) isDual = true
       const size = torrent.files && torrent.files.reduce((acc, { length }) => acc + length, 0)
       if (size) sizes.set(torrent.tracker, (sizes.get(torrent.tracker) || 0) + size )
-      if (torrent.compatibility) compatibilities = compatibilities.concat(torrent.compatibility.split(","))
+      tags = tags.concat(torrent.tags)
     }
-    return { isBest, isDual, compatibilities, sizes: [...sizes.values()].map((num) => fastPrettyBytes(num)) }
+    return { isBest, isDual, tags, sizes: [...sizes.values()].map((num) => fastPrettyBytes(num)) }
   }
 
   function mapToTracker (torrents: TorrentsResponse[]) {
@@ -56,6 +57,19 @@
     OtherPrivate: '/favicon.png'
   }
 
+  const tagDesc: Record<TorrentTags, string> = {
+    "Dolby Vision": "This release is Dolby Vision Profile 5 which will not display correctly on unsupported setups.",
+    "HDR": "This release is HDR which will not display correctly on unsupported setups.",
+    "Deband Required": "This release requires the use of MPV Deband (Press b). If you cannot deband, get the alt release.",
+    "Deband Recommended": "This release recommends the use of MPV Deband (Press b). If you cannot deband, still get this release.",
+    "YUV444P": "This release is encoded in YUV444P which has poor hardware support, make sure your device can play it properly or get the alt release.",
+    "Patch Required": "This release requires you to download an external patch to fix issues.",
+    "Misplaced Special": "This release has specials at the top of the file list, make sure you watch the episodes in the correct order.",
+    "VFR": "This release has a variable framerate, your screen should be set to a multiple of 120hz or use VRR to display it correctly.",
+    "Incomplete": "This release does not contain all the episodes.",
+    "Broken": "This release has issues, see notes for more information.",
+  }
+
   const alias: Partial<Record<TorrentsTrackerOptions, string>> = {
     AB: 'Private Tracker'
   }
@@ -63,7 +77,7 @@
 </script>
 
 {#if torrents}
-  {@const { isBest, isDual, compatibilities, sizes } = hasDualBest(torrents)}
+  {@const { isBest, isDual, tags, sizes } = hasDualBest(torrents)}
   {@const groupedTorrents = mapToTracker(torrents)}
   <Card.Root class='w-80 max-w-full'>
     <Card.Header class='pb-3'>
@@ -77,15 +91,22 @@
     <Card.Content class='pb-3'>
       <div class='flex flex-wrap gap-2 w-full'>
         {#if isDual}
-          <span class='bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300 inline-block'>DualAudio</span>
+          <span class='bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2 mr-0 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300 inline-block'>DualAudio</span>
         {/if}
         {#if isBest}
-        <span class='bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300 inline-block'>Best</span>
+        <span class='bg-green-100 text-green-800 text-xs font-medium me-2 px-2 mr-0 py-0.5 rounded dark:bg-green-900 dark:text-green-300 inline-block'>Best</span>
         {:else}
-        <span class='bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300 inline-block'>Alt</span>
+        <span class='bg-red-100 text-red-800 text-xs font-medium me-2 px-2 mr-0 py-0.5 rounded dark:bg-red-900 dark:text-red-300 inline-block'>Alt</span>
         {/if}
-        {#each compatibilities as compatibility}
-          <span class='bg-purple-100 text-purple-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-purple-900 dark:text-purple-300 inline-block'>{compatibility}</span>
+        {#each tags as tag}
+          <Tooltip.Root>
+            <Tooltip.Trigger class='flex'>
+              <span class='cursor-help bg-purple-100 text-purple-800 text-xs font-medium me-2 px-2 mr-0 py-0.5 rounded dark:bg-purple-900 dark:text-purple-300 inline-block'>{tag}</span>
+            </Tooltip.Trigger>
+            <Tooltip.Content>
+              <span class='font-semibold'>{tagDesc[tag]}</span>
+            </Tooltip.Content>
+          </Tooltip.Root>
         {/each}
       </div>
     </Card.Content>
