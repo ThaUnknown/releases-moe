@@ -102,7 +102,7 @@
         <span class='bg-red-100 text-red-800 text-xs font-medium me-2 px-2 mr-0 py-0.5 rounded dark:bg-red-900 dark:text-red-300 inline-block'>Alt</span>
         {/if}
         {#each tags as tag}
-          <Tooltip.Root>
+          <Tooltip.Root openDelay={200}>
             <Tooltip.Trigger class='flex'>
               <span class='cursor-help bg-purple-100 text-purple-800 text-xs font-medium me-2 px-2 mr-0 py-0.5 rounded dark:bg-purple-900 dark:text-purple-300 inline-block'>{tag}</span>
             </Tooltip.Trigger>
