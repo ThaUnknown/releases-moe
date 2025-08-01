@@ -34,7 +34,7 @@
     }
   }
 
-  $: selectedTags = torrent.tags.map(value => { return {value, label: value}}) || undefined
+  $: selectedTags = torrent.tags?.map(value => { return {value, label: value}})
 
   function selectTag(objs: { value: TorrentTags }[] | undefined) {
     if(objs) {
